@@ -1,12 +1,3 @@
-.gallery { list-style: none; padding: 0; margin: 0; }
-.gallery:after { clear: both; content: "."; display: block; height: 0; visibility: hidden; }
-.gallery li { float: left; width: 80px; height:80px; position:relative; margin: 5px; border: 1px solid #3c3c3c; }
-.gallery li a { display: block;  }
-.gallery li img { display: block; width: 100%; height: auto; }
-.gallery li .pn { position:absolute; bottom:2px; right:4px; color:white; text-shadow: 2px 2px 2px #000; font-size:15px; text-decoration:none;}
-#Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }
-
-
 /*
  * photoswipe.css
  * Copyright (c) %%year%% by Code Computerlove (http://www.codecomputerlove.com)
@@ -20,20 +11,21 @@
  */
 
  
-body.ps-active, body.ps-building 
+body.ps-active, body.ps-building, div.ps-active, div.ps-building
 {
 	background: #000;
 	overflow: hidden;
 }
-body.ps-active * 
+body.ps-active *, div.ps-active *
 { 
 	-webkit-tap-highlight-color:  rgba(255, 255, 255, 0); 
 	display: none;
 }
-body.ps-active *:focus 
+body.ps-active *:focus, div.ps-active *:focus 
 { 
 	outline: 0; 
 }
+
 
 /* Document overlay */
 div.ps-document-overlay 

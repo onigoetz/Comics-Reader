@@ -1,0 +1,26 @@
+ul.gallery {
+    list-style-type: none;
+    margin:0;
+    padding:0;
+}
+
+ul.gallery li {
+    border:black 1px solid;
+    float:left;
+    display:block;
+    position:relative;
+    
+    margin:6px;
+    
+    width:80px;
+    height:80px;
+}
+
+ul.gallery .pn {
+    position:absolute;
+    bottom:2px;
+    right:4px;
+    text-shadow: #000 2px 2px 2px;
+    color:white;
+    font-weight:bold;
+}

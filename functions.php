@@ -305,3 +305,84 @@ function search($array, $key, $value)
 
     return false;
 }
+
+function render_header(){
+    echo '        
+        <link rel="stylesheet" href="'.BASE.'css/jquery.mobile-1.0.min.css" />
+        <link rel="stylesheet" href="'.BASE.'css/photoswipe.css" />
+        <link rel="stylesheet" href="'.BASE.'css/specific.css" />
+        <script type="text/javascript" src="'.BASE.'js/jquery-1.6.4.min.js"></script>
+        <script type="text/javascript" src="'.BASE.'js/jquery.mobile-1.0.min.js"></script>
+        <script type="text/javascript" src="'.BASE.'js/klass.min.js"></script>
+        <script type="text/javascript" src="'.BASE.'js/code.photoswipe.jquery-3.0.4.min.js"></script>
+        
+	<script type="text/javascript">
+		
+		/*
+		 * IMPORTANT!!!
+		 * REMEMBER TO ADD  rel="external"  to your anchor tags. 
+		 * If you dont this will mess with how jQuery Mobile works
+		 */
+		
+		(function(window, $, PhotoSwipe){
+			
+			$(document).ready(function(){
+				
+				$("div.gallery-page")
+					.live("pageshow", function(e){
+						
+						var 
+							currentPage = $(e.target),
+							options = {},
+							photoSwipeInstance = $("ul.gallery a", e.target).photoSwipe(options,  currentPage.attr("id"));
+							
+						return true;
+						
+					})
+					
+					.live("pagehide", function(e){
+						var photoSwipeInstance = PhotoSwipe.instances[0];
+                                                
+						if (typeof photoSwipeInstance != "undefined" && photoSwipeInstance != null) {
+                                                        if(photoSwipeInstance.documentOverlay){
+                                                            photoSwipeInstance.hide();
+                                                        }
+                                                        PhotoSwipe.detatch(photoSwipeInstance);
+						}
+						
+						return true;
+						
+					});
+                                       
+                                        //if its on the first page
+                                        if($("div.gallery-page ul.gallery a").size()){
+                                            $("div.gallery-page ul.gallery a").photoSwipe({});
+                                        }
+				
+			});
+		
+		}(window, window.jQuery, window.Code.PhotoSwipe));
+		
+	</script>
+        
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
+}
+
+/**
+ * Check if the page was called by ajax or not
+ *
+ * @return bool
+ */
+function is_ajax() {
+    static $is_ajax;
+
+    if (!isset($is_ajax)) {
+        $is_ajax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == "XMLHttpRequest");
+    }
+
+    if ($is_ajax) {
+        return true;
+    } else {
+        return false;
+    }
+}
