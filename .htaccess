@@ -1,21 +1,18 @@
-
 <IfModule mod_rewrite.c>
-RewriteEngine on
+  Options +FollowSymlinks
+  Options +Indexes
+  RewriteEngine on
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^b/(.*)$ p_book.php?q=$1 [L,QSA]
+  # if your app is in a subfolder
+  # RewriteBase /my_app/ 
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^l/(.*)$ p_lib.php?q=$1 [L,QSA]
+  # test string is a valid files
+  RewriteCond %{SCRIPT_FILENAME} !-f
+  # test string is a valid directory
+  RewriteCond %{SCRIPT_FILENAME} !-d
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^big/(.*)$ img_bigature.php?q=$1 [L,QSA]
-
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^min/(.*)$ img_miniature.php?q=$1 [L,QSA]
-
+  RewriteRule ^(.*)$   index.php?uri=/$1    [NC,L,QSA]
+  # with QSA flag (query string append),
+  # forces the rewrite engine to append a query string part of the
+  # substitution string to the existing string, instead of replacing it.
 </IfModule>

@@ -38,8 +38,13 @@ define('CACHE', dirname(__FILE__).'/cache/INTERNAL');
 
 
 include 'functions.php';
-include 'classes/cache.php';
-include 'classes/image_manager.php';
+include 'lib/cache.php';
+include 'lib/image_manager.php';
+include 'lib/limonade.php';
+
+//Limonade options
+option('base_uri', 'Public/BD/');
+option('views_dir', dirname(__FILE__).'/views');
 
 $cache = new Cache();
 
