@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="<?php echo BASE; ?>asset/css/jquery.mobile-1.0.min.css" />
+        <link rel="stylesheet" href="<?php echo BASE; ?>asset/css/jquery.mobile-1.1.0.min.css" />
         <link rel="stylesheet" href="<?php echo BASE; ?>asset/css/photoswipe.css" />
         <link rel="stylesheet" href="<?php echo BASE; ?>asset/css/specific.css" />
-        <script type="text/javascript" src="<?php echo BASE; ?>asset/js/jquery-1.6.4.min.js"></script>
-        <script type="text/javascript" src="<?php echo BASE; ?>asset/js/jquery.mobile-1.0.min.js"></script>
+        <script type="text/javascript" src="<?php echo BASE; ?>asset/js/jquery-1.7.1.js"></script>
+        <script type="text/javascript" src="<?php echo BASE; ?>asset/js/jquery.mobile-1.1.0.min.js"></script>
         <script type="text/javascript" src="<?php echo BASE; ?>asset/js/klass.min.js"></script>
         <script type="text/javascript" src="<?php echo BASE; ?>asset/js/code.photoswipe.jquery-3.0.4.min.js"></script>
 
