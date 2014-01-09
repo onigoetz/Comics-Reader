@@ -141,18 +141,6 @@ function gal_render_list($data, $filter = true) {
     }
 }
 
-function gal_image_type($file) {
-    $type = strtolower(substr($file, strrpos($file, ".")));
-    if (($type == ".jpg") or ($type == ".jpeg")) {
-        return "jpeg";
-    } elseif ($type == ".png") {
-        return "png";
-    } elseif ($type == ".gif") {
-        return "gif";
-    }
-    return FALSE;
-}
-
 function gal_dir_make($dir_path) {
     $dir_path = str_replace('//', '/', $dir_path);
 
@@ -201,6 +189,16 @@ function hash_encode($string) {
 
 function hash_decode($string) {
     return str_replace('_HASH_', '#', $string);
+}
+
+function cache_get($key){
+    global $app;
+    return $app->cache->fetch($key);
+}
+
+function cache_set($key, $data, $ttl = 3600){
+    global $app;
+    return $app->cache->store($key, $data, $ttl);
 }
 
 /**

@@ -9,7 +9,6 @@ define('BASE', dirname($_SERVER['SCRIPT_NAME']).'/');
  */
 define('GALLERY_ROOT', '/Volumes/Data/THE_DATA/Data/BD');
 
-
 /*
  * Thumbs
  */
@@ -35,25 +34,3 @@ define("ENLARGE_SMALL_IMAGES", FALSE);
 define("JPEG_QUALITY", 75);
 
 define('CACHE', dirname(__FILE__).'/cache/INTERNAL');
-
-
-include 'functions.php';
-include 'lib/cache.php';
-include 'lib/image_manager.php';
-include 'lib/limonade.php';
-
-//Limonade options
-option('base_uri', 'Public/BD/');
-option('views_dir', dirname(__FILE__).'/views');
-
-$cache = new Cache();
-
-function cache_get($key){
-    global $cache;
-    return $cache->fetch($key);
-}
-
-function cache_set($key, $data, $ttl = 3600){
-    global $cache;
-    return $cache->store($key, $data, $ttl);
-}
