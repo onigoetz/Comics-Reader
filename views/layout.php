@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html>
     <head>
+                <link rel="apple-touch-icon" href="<?php echo BASE; ?>asset/images/apple-touch.png" />
+                <link rel="apple-touch-icon" sizes="72x72" href="<?php echo BASE; ?>asset/images/apple-touch-72.png" />
+                <link rel="apple-touch-icon" sizes="114x114" href="<?php echo BASE; ?>asset/images/apple-touch-114.png" />
+                <link rel="apple-touch-icon" sizes="144x144" href="<?php echo BASE; ?>asset/images/apple-touch-144.png" />
+
+                <meta name="apple-mobile-web-app-capable" content="yes">
+                <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+                <title>Comics Reader</title>
+
         <link rel="stylesheet" href="<?php echo BASE; ?>asset/css/jquery.mobile-1.1.0.min.css" />
         <link rel="stylesheet" href="<?php echo BASE; ?>asset/css/photoswipe.css" />
         <link rel="stylesheet" href="<?php echo BASE; ?>asset/css/specific.css" />
