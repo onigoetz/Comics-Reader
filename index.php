@@ -10,6 +10,8 @@ $app = new \Slim\Slim(array(
     'templates.path' => 'views',
 ));
 
+Onigoetz\Imagecache\Support\Slim\ImagecacheRegister::register($app, $image_config);
+
 $app->container->singleton(
     'cache',
     function () {
@@ -80,53 +82,5 @@ $app->get(
         return $app->render('book.php', array('title' => end($end), 'book' => $pages));
     }
 )->conditions(array('book' => '.*'));
-
-$app->get(
-    '/min/:image',
-    function ($image) {
-        $path = hash_decode($image);
-
-        $thumb_file = "";
-        if (THUMB_ROOT != "") {
-            $thumb_file = THUMB_ROOT . $path;
-        }
-
-        $thumb_type = Image::type($thumb_file);
-        if (!(file_exists($thumb_file) and $thumb_type)) {
-            $img = new Image($path);
-            list($width, $height) = $img->cropped_ratio_calculation(THUMB_MAX_WIDTH, THUMB_MAX_HEIGHT);
-
-            $img->create_thumb($width, $height);
-            $img->crop_thumb($width, $height, THUMB_MAX_WIDTH, THUMB_MAX_HEIGHT);
-
-            $img->write_file(THUMB_ROOT);
-            $img->output();
-            $img->destroy();
-        }
-    }
-)->conditions(array('image' => '.*'));
-
-$app->get(
-    '/big/:image',
-    function ($image) {
-        $path = hash_decode($image);
-
-        $thumb_file = "";
-        if (BIG_ROOT != "") {
-            $thumb_file = BIG_ROOT . $path;
-        }
-
-        $thumb_type = Image::type($thumb_file);
-        if (!file_exists($thumb_file) and $thumb_type) {
-            $img = new Image($path);
-            list($width, $height) = $img->ratio_calculation(BIG_MAX_WIDTH, BIG_MAX_HEIGHT);
-            $img->create_thumb($width, $height);
-
-            $img->write_file(BIG_ROOT);
-            $img->output();
-            $img->destroy();
-        }
-    }
-)->conditions(array('image' => '.*'));
 
 $app->run();

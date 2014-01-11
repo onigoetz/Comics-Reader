@@ -1,6 +1,7 @@
 {
     "require": {
-        "slim/slim": "2.*"
+        "slim/slim": "2.*",
+        "onigoetz/imagecache": "dev-master"
     },
 	"autoload": {
 	    "psr-0": {"": "lib/"}

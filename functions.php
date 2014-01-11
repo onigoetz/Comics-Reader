@@ -5,7 +5,7 @@ function gal_list_all($path = '.') {
     $directories = array();
 
     // Directories to ignore when listing output.
-    $ignore = array('cgi-bin', '.', '..');
+    $ignore = array('cgi-bin', '.', '..', 'cache');
 
     // Open the directory to the handle $dh
     $dh = @opendir($path);
@@ -38,9 +38,7 @@ function gal_list_all($path = '.') {
     }
 
     closedir($dh);
-
     return $directories;
-    // Close the directory handle
 }
 
 function gal_prepare_list($folder = '.') {
@@ -61,37 +59,34 @@ function gal_first_images($folder) {
 
 function gal_first_image(&$folder) {
     if ($folder['type'] == 'tome') {
-        $image_extensions_allowed = array('jpg', 'jpeg', 'png', 'gif', 'bmp');
+        $image_extensions_allowed = array('jpg', 'jpeg', 'png', 'gif');
 
         $handle = opendir($folder['path']);
         if ($handle) {
             while (false !== ($file = readdir($handle))) {
                 $ext = strtolower(substr(strrchr($file, "."), 1));
 
-                if ($file != "." && $file != ".." && $file != "thumbs" && $file != ".DS_Store" && strpos($file, '._') === false) {
-                    //echo $file;
+                if (!in_array($file, array('.', '..', 'thumbs', '.DS_Store')) && strpos($file, '._') === false) {
                     if (in_array($ext, $image_extensions_allowed)) {
-                        //got it, close dir and go back
                         return $folder['path'] . '/' . $file;
                     }
                 }
             }
             closedir($handle);
-        } else {
-            return false;
         }
-    } else {
-        foreach ($folder['childs'] as $subfolder) {
-            $subresult = gal_first_image($subfolder);
-            if ($subresult) {
-                return $subresult;
-            }
-        }
+		
+        return false;
     }
+	
+    foreach ($folder['childs'] as $subfolder) {
+        $subresult = gal_first_image($subfolder);
+        if ($subresult) {
+            return $subresult;
+        }
+    } 
 }
 
-function gal_render_list($data, $filter = true) {
-
+function gal_render_list($data) {
     foreach ($data as $key => $row) {
         $names[$key] = ucfirst($row['name']);
     }
@@ -120,16 +115,15 @@ function gal_render_list($data, $filter = true) {
             echo '<li>';
 
             if ($folder['type'] == 'tome') {
-                echo '<img src="' . BASE . 'min/' . hash_encode($folder['thumb']) . '" />';
-                echo '<h3><a href="' . BASE . 'book/' . $folder['url_path'] . '">' . $folder['name'] . '</a></h3>';
+                echo '<img src="' . image_url('small', $folder['thumb']) . '" />';
+                echo '<h3><a href="' . url('book/' . $folder['url_path']) . '">' . $folder['name'] . '</a></h3>';
             } else {
                 if (!count($folder['childs'])) {
                     echo '<h3>' . $folder['name'] . '</h3>';
                     echo '<p>PDF : ne fonctionne pas pour le moment';
                 } else {
-                    //echo $folder['name'];
-                    echo '<img src="' . BASE . 'min/' . hash_encode($folder['thumb']) . '" />';
-                    echo '<h3><a href="' . BASE . 'list/' . $folder['url_path'] . '">' . $folder['name'] . '</a></h3>';
+                    echo '<img src="' . image_url('small', $folder['thumb']) . '" />';
+                    echo '<h3><a href="' . url('list/' . $folder['url_path']) . '">' . $folder['name'] . '</a></h3>';
                     echo '<p>' . count($folder['childs']) . ' Tomes</p>';
                 }
             }
@@ -184,11 +178,7 @@ function search($array, $key, $value) {
 }
 
 function hash_encode($string) {
-    return str_replace('#', '_HASH_', $string);
-}
-
-function hash_decode($string) {
-    return str_replace('_HASH_', '#', $string);
+    return str_replace('#', '%23', $string);
 }
 
 function cache_get($key){
@@ -199,6 +189,15 @@ function cache_get($key){
 function cache_set($key, $data, $ttl = 3600){
     global $app;
     return $app->cache->store($key, $data, $ttl);
+}
+
+function image_url($preset, $image) {
+	global $app;
+	return url($app->imagecache->url($preset, hash_encode($image)));
+}
+
+function url($link = '') {
+	return BASE . $link;
 }
 
 /**
@@ -213,9 +212,5 @@ function is_ajax() {
         $is_ajax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == "XMLHttpRequest");
     }
 
-    if ($is_ajax) {
-        return true;
-    } else {
-        return false;
-    }
+    return $is_ajax;
 }

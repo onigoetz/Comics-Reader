@@ -26,6 +26,9 @@ class Cache {
         }
         $data = '<?php return ' . var_export(array($time,$data), true) . ';';
 
+		if (!is_dir($dir = dirname($filename))) {
+			mkdir($dir, 0755, true);
+		}
         if (file_put_contents($filename, $data)===false) {
             throw new Exception('Could not write to cache');
         }

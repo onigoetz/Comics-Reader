@@ -13,9 +13,10 @@
             $i = 0;
             
             foreach($book as $pages){
-                echo '<li><a href="'.BASE.'big'.hash_encode($pages).'" rel="external"><img src="'.BASE.'min'.hash_encode($pages).'"/><span class="pn">'.$i.'</span></a></li>';
+                echo '<li>';
+                echo '<a href="'. image_url('big', $pages) . '"><img src="'. image_url('small', $pages) . '"/><span class="pn">'.$i.'</span></a>';
+                echo '</li>';
                 $i++;
-                
             } ?>
         </ul>
 
