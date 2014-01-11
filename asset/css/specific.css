@@ -1,3 +1,8 @@
+body {
+	margin:0;
+	padding:0;
+}
+
 ul.gallery {
     list-style-type: none;
     margin:0;
@@ -5,7 +10,7 @@ ul.gallery {
 }
 
 ul.gallery li {
-    border:black 1px solid;
+    border:#1d1d1d 1px solid;
     float:left;
     display:block;
     position:relative;
@@ -18,9 +23,21 @@ ul.gallery li {
 
 ul.gallery .pn {
     position:absolute;
-    bottom:2px;
-    right:4px;
-    text-shadow: #000 2px 2px 2px;
+    bottom:0;
+    right:0;
     color:white;
     font-weight:bold;
+	
+	padding:0 4px;
+	line-height:1.4em;
+	
+	display:block;
+	
+	border-top:#1d1d1d 1px solid;
+	border-left:#1d1d1d 1px solid;
+	background:#2a2a2a;
+	
+	-webkit-border-top-left-radius: 8px;
+	-moz-border-radius-topleft: 8px;
+	border-top-left-radius: 8px;
 }

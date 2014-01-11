@@ -95,11 +95,7 @@ function gal_render_list($data) {
     $current_letter = '';
 
     if (count($data)) {
-        if ($filter) {
-            echo '<ul data-role="listview" data-filter="true">';
-        } else {
-            echo '<ul data-role="listview">';
-        }
+        echo '<ul class="ui-listview">';
         foreach ($data as $folder) {
             $first_letter = strtoupper($folder['name'][0]);
 
@@ -109,10 +105,10 @@ function gal_render_list($data) {
 
             if ($first_letter != $current_letter) {
                 $current_letter = $first_letter;
-                echo '<li data-role="list-divider">' . $current_letter . '</li>';
+                echo '<li class="ui-li-divider ui-bar-inherit">' . $current_letter . '</li>';
             }
 
-            echo '<li>';
+            echo '<li class="ui-li-static ui-body-inherit ui-li-has-thumb">';
 
             if ($folder['type'] == 'tome') {
                 echo '<img src="' . image_url('small', $folder['thumb']) . '" />';
