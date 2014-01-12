@@ -17,7 +17,7 @@ $image_config = array(
 	'path_cache' => 'cache',
 	'presets' => array(
 	    'small' => array( //exact size
-	        array('action' => 'scale_and_crop', 'width' => 80, 'height' => 80)
+	        array('action' => 'scale_and_crop', 'width' => 60, 'height' => 75)
 	    ),
 	    'big' => array( //fixed height
 	        array('action' => 'scale', 'width' => 800, 'height' => 2000)

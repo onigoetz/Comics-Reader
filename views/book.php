@@ -8,18 +8,23 @@
 		<a href="<?php echo url(); ?>" class="ui-btn ui-btn-right ui-corner-all ui-icon-home ui-btn-icon-notext">Home</a>
     </div>
     <div class=ui-content>
-        <ul class="gallery">
+        <ol class="gallery">
             <?php 
-            $i = 0;
-            
             foreach($book as $pages){
-                echo '<li>';
-                echo '<a href="'. image_url('big', $pages) . '"><img src="'. image_url('small', $pages) . '"/><span class="pn">'.$i.'</span></a>';
+                echo '<li data-img="'. image_url('big', $pages) .'">';
+                echo '<img class=lazy data-src="'. image_url('small', $pages) . '" width=60 height=75/>';
                 echo '</li>';
-                $i++;
             } ?>
-        </ul>
+        </ol>
 
     </div>
+</div>
+<div id="carousel">
+	<ul></ul>
+	<div class=carousel-toolbar>
+		<div class=close><i class=content></i></div>
+		<div class=prev><i class=content></i></div>
+		<div class=next><i class=content></i></div>
+	</div>
 </div>
         

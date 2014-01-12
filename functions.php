@@ -111,14 +111,14 @@ function gal_render_list($data) {
             echo '<li class="ui-li-static ui-body-inherit ui-li-has-thumb">';
 
             if ($folder['type'] == 'tome') {
-                echo '<img src="' . image_url('small', $folder['thumb']) . '" />';
+                echo '<img class=lazy data-src="' . image_url('small', $folder['thumb']) . '" width=60 height=75 />';
                 echo '<h3><a href="' . url('book/' . $folder['url_path']) . '">' . $folder['name'] . '</a></h3>';
             } else {
                 if (!count($folder['childs'])) {
                     echo '<h3>' . $folder['name'] . '</h3>';
                     echo '<p>PDF : ne fonctionne pas pour le moment';
                 } else {
-                    echo '<img src="' . image_url('small', $folder['thumb']) . '" />';
+                    echo '<img class=lazy data-src="' . image_url('small', $folder['thumb']) . '" width=60 height=75 />';
                     echo '<h3><a href="' . url('list/' . $folder['url_path']) . '">' . $folder['name'] . '</a></h3>';
                     echo '<p>' . count($folder['childs']) . ' Tomes</p>';
                 }

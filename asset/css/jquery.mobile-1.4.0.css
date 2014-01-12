@@ -42,6 +42,66 @@
 .ui-nosvg .ui-alt-icon .ui-icon-back:after {
 	background-image: url(images/icons-png/back-black.png);
 }
+
+/* Loading */
+
+/* Loader */
+.ui-icon-loading {
+	background: url(images/ajax-loader.gif);
+	background-size: 2.875em 2.875em;
+}
+
+/* Loading screen */
+.ui-loading .ui-loader-overlay {
+	display: block;
+}
+
+.ui-loader-overlay {
+	display: none;
+	z-index: 9999999;
+	
+	position:fixed;
+	top:0;
+	left:0;
+	
+	height:100%;
+	width:100%;
+	
+	background:rgba(0, 0, 0, .5);
+}
+
+.ui-loader {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	border:0;
+
+	width: 12.5em;
+	
+	height: auto;
+	margin-left: -6.250em;
+	margin-top: -2.6250em;
+}
+.ui-loader p {
+	font-size: 1em;
+	margin: 0;
+	text-align: center;
+}
+.ui-loader .ui-icon-loading {
+	background-color: #000;
+	display: block;
+	margin: 0;
+	width: 2.75em;
+	height: 2.75em;
+	padding: .0625em;
+	-webkit-border-radius: 2.25em;
+	border-radius: 2.25em;
+
+	margin: 0 auto .625em;
+	filter: Alpha(Opacity=75);
+	opacity: .75;
+}
+
 /* Globals */
 /* Font
 -----------------------------------------------------------------------------------------------------------*/
@@ -593,102 +653,10 @@ button.ui-btn-icon-notext,
 	box-sizing: content-box;
 	width: 1.75em;
 }
-/* Form labels */
-.ui-mobile label,
-.ui-controlgroup-label {
-	display: block;
-	margin: 0 0 .4em;
-}
-/* Accessible content hiding */
-/* ui-hide-label deprecated in 1.4. TODO: Remove in 1.5 */
-.ui-hide-label > label,
-.ui-hide-label .ui-controlgroup-label,
-.ui-hide-label .ui-rangeslider label,
-.ui-hidden-accessible {
-	position: absolute !important;
-	height: 1px;
-	width: 1px;
-	overflow: hidden;
-	clip: rect(1px,1px,1px,1px);
-}
+
 /* Used for hiding elements by the filterable widget. You can also use this class to hide list items or buttons in controlgroups; this ensures correct corner styling. */
 .ui-screen-hidden {
 	display: none !important;
-}
-
-.ui-navbar {
-	max-width: 100%;
-}
-.ui-navbar ul:before,
-.ui-navbar ul:after {
-	content: "";
-	display: table;
-}
-.ui-navbar ul:after {
-	clear: both;
-}
-.ui-navbar ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	position: relative;
-	display: block;
-	border: 0;
-	max-width: 100%;
-	overflow: visible;
-}
-.ui-navbar li .ui-btn {
-	font-size: 12.5px;
-	display: block;
-	margin: 0;
-	border-right-width: 0;
-}
-.ui-navbar .ui-btn:focus {
-	z-index: 1;
-}
-/* fixes gaps caused by subpixel problem */
-.ui-navbar li:last-child .ui-btn {
-	margin-right: -4px;
-}
-.ui-navbar li:last-child .ui-btn:after {
-	margin-right: 4px;
-}
-.ui-content .ui-navbar li:last-child .ui-btn,
-.ui-content .ui-navbar .ui-grid-duo .ui-block-b .ui-btn {
-	border-right-width: 1px;
-	margin-right: 0;
-}
-.ui-content .ui-navbar li:last-child .ui-btn:after,
-.ui-content .ui-navbar .ui-grid-duo .ui-block-b .ui-btn:after {
-	margin-right: 0;
-}
-.ui-navbar .ui-grid-duo .ui-block-a:last-child .ui-btn {
-	border-right-width: 1px;
-	margin-right: -1px;
-}
-.ui-navbar .ui-grid-duo .ui-block-a:last-child .ui-btn:after {
-	margin-right: 1px;
-}
-.ui-navbar .ui-grid-duo .ui-btn {
-	border-top-width: 0;
-}
-.ui-navbar .ui-grid-duo .ui-block-a:first-child .ui-btn,
-.ui-navbar .ui-grid-duo .ui-block-a:first-child + .ui-block-b .ui-btn {
-	border-top-width: 1px;
-}
-.ui-header .ui-navbar .ui-btn {
-	border-top-width: 0;
-	border-bottom-width: 0;
-}
-.ui-header .ui-navbar .ui-grid-duo .ui-block-a:first-child .ui-btn,
-.ui-header .ui-navbar .ui-grid-duo .ui-block-a:first-child + .ui-block-b .ui-btn {
-	border-top-width: 0;
-}
-.ui-header .ui-title ~ .ui-navbar .ui-btn,
-.ui-header .ui-navbar .ui-grid-duo .ui-btn,
-.ui-header .ui-title ~ .ui-navbar .ui-grid-duo .ui-block-a:first-child .ui-btn,
-.ui-header .ui-title ~ .ui-navbar .ui-grid-duo .ui-block-a:first-child + .ui-block-b .ui-btn {
-	border-top-width: 1px;
 }
 
 .ui-listview,
@@ -697,19 +665,8 @@ button.ui-btn-icon-notext,
 	padding: 0;
 	list-style: none;
 }
-.ui-content .ui-listview,
-.ui-panel-inner > .ui-listview {
+.ui-content .ui-listview {
 	margin: -1em;
-}
-.ui-content .ui-listview-inset,
-.ui-panel-inner > .ui-listview-inset {
-	margin: 1em 0;
-}
-.ui-collapsible-content > .ui-listview {
-	margin: -.5em -1em;
-}
-.ui-collapsible-content > .ui-listview-inset {
-	margin: .5em 0;
 }
 .ui-listview > li {
 	display: block;
@@ -717,8 +674,7 @@ button.ui-btn-icon-notext,
 	overflow: visible;
 }
 .ui-listview > .ui-li-static,
-.ui-listview > .ui-li-divider,
-.ui-listview > li > a.ui-btn {
+.ui-listview > .ui-li-divider {
 	margin: 0;
 	display: block;
 	position: relative;
@@ -726,66 +682,9 @@ button.ui-btn-icon-notext,
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-}
-.ui-listview > li > .ui-btn:focus {
-	z-index: 1;
-}
-.ui-listview > .ui-li-static,
-.ui-listview > .ui-li-divider,
-.ui-listview > li > a.ui-btn {
+
 	border-width: 1px 0 0 0;
 	border-style: solid;
-}
-.ui-listview-inset > .ui-li-static,
-.ui-listview-inset > .ui-li-divider,
-.ui-listview-inset > li > a.ui-btn {
-	border-right-width: 1px;
-	border-left-width: 1px;
-}
-.ui-listview > .ui-li-static.ui-last-child,
-.ui-listview > .ui-li-divider.ui-last-child,
-.ui-listview > li.ui-last-child > a.ui-btn {
-	border-bottom-width: 1px;
-}
-.ui-listview > li.ui-first-child,
-.ui-listview > li.ui-first-child > a.ui-btn {
-	-webkit-border-top-right-radius: inherit;	
-	border-top-right-radius: inherit;
-	-webkit-border-top-left-radius: inherit;
-	border-top-left-radius: inherit;
-}
-.ui-listview > li.ui-last-child,
-.ui-listview > li.ui-last-child > a.ui-btn {
-	-webkit-border-bottom-right-radius: inherit;
-	border-bottom-right-radius: inherit;
-	-webkit-border-bottom-left-radius: inherit;
-	border-bottom-left-radius: inherit;
-}
-.ui-listview > li.ui-li-has-alt > a.ui-btn {
-	-webkit-border-top-right-radius: 0;
-	border-top-right-radius: 0;
-	-webkit-border-bottom-right-radius: 0;
-	border-bottom-right-radius: 0;
-}
-.ui-listview > li.ui-first-child > a.ui-btn + a.ui-btn {
-	-webkit-border-top-left-radius: 0;	
-	border-top-left-radius: 0;
-	-webkit-border-top-right-radius: inherit;
-	border-top-right-radius: inherit;
-}
-.ui-listview > li.ui-last-child > a.ui-btn + a.ui-btn {
-	-webkit-border-bottom-left-radius: 0;
-	border-bottom-left-radius: 0;
-	-webkit-border-bottom-right-radius: inherit;
-	border-bottom-right-radius: inherit;
-}
-.ui-listview > li.ui-first-child img:first-child:not(.ui-li-icon) {
-	-webkit-border-top-left-radius: inherit;
-	border-top-left-radius: inherit;	
-}
-.ui-listview > li.ui-last-child img:first-child:not(.ui-li-icon) {
-	-webkit-border-bottom-left-radius: inherit;
-	border-bottom-left-radius: inherit;	
 }
 .ui-listview > .ui-li-static {
 	padding: .7em 1em;
@@ -797,46 +696,12 @@ button.ui-btn-icon-notext,
 	cursor: default;
 	outline: 0; /* Dividers in custom selectmenus have tabindex */
 }
-.ui-listview > .ui-li-has-count > .ui-btn,
-.ui-listview > .ui-li-static.ui-li-has-count,
-.ui-listview > .ui-li-divider.ui-li-has-count {
-	padding-right: 2.8125em;
-}
-.ui-listview > .ui-li-has-count > .ui-btn-icon-right {
-	padding-right: 4.6875em;
-}
-.ui-listview > .ui-li-has-thumb > .ui-btn,
 .ui-listview > .ui-li-static.ui-li-has-thumb {
-	min-height: 3.625em;
-	padding-left: 6.25em;
+	min-height: 3.31em;
+	padding-left: 4.7em;
 }
-/* ui-li-has-icon deprecated in 1.4. TODO: remove in 1.5 */
-.ui-listview > .ui-li-has-icon > .ui-btn,
-.ui-listview > .ui-li-static.ui-li-has-icon {
-	min-height: 1.25em;
-	padding-left: 2.5em;
-}
-/* Used by both listview and custom multiple select button */
-.ui-li-count {
-	position: absolute;
-	font-size: 12.5px;
-	font-weight: bold;
-	text-align: center;
-	border-width: 1px;
-	border-style: solid;
-	padding: 0 .48em;
-	line-height: 1.6em;
-	min-height: 1.6em;
-	min-width: .64em;
-	right: .8em;
-	top: 50%;
-	margin-top: -.88em;
-}
-.ui-listview .ui-btn-icon-right .ui-li-count {
-	right: 3.2em;
-}
+
 .ui-listview .ui-li-has-thumb > img:first-child,
-.ui-listview .ui-li-has-thumb > .ui-btn > img:first-child,
 .ui-listview .ui-li-has-thumb .ui-li-thumb {
 	position: absolute;
 	left: 0;
@@ -844,25 +709,11 @@ button.ui-btn-icon-notext,
 	max-height: 5em;
 	max-width: 5em;
 }
-/* ui-li-has-icon deprecated in 1.4. TODO: remove in 1.5 */
-.ui-listview > .ui-li-has-icon > img:first-child,
-.ui-listview > .ui-li-has-icon > .ui-btn > img:first-child {
-	position: absolute;
-	left: .625em;
-	top: .9em;
-	max-height: 1em;
-	max-width: 1em;
-}
-.ui-listview > li h1,
-.ui-listview > li h2,
-.ui-listview > li h3,
-.ui-listview > li h4,
-.ui-listview > li h5,
-.ui-listview > li h6 {
+.ui-listview > li h3 {
 	font-size: 1em;
 	font-weight: bold;
 	display: block;
-	margin: .45em 0;
+	margin: .4em 0;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
@@ -871,50 +722,8 @@ button.ui-btn-icon-notext,
 	font-size: .75em;
 	font-weight: normal;
 	display: block;
-	margin: .6em 0;
+	margin: .6em 0 0 0;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-}
-.ui-listview .ui-li-aside {
-	position: absolute;
-	top: 1em;
-	right: 3.333em;
-	margin: 0;
-	text-align: right;
-}
-.ui-listview > li.ui-li-has-alt > .ui-btn {
-	margin-right: 2.5em;
-	border-right-width: 0;
-}
-.ui-listview > li.ui-li-has-alt > .ui-btn + .ui-btn {
-	position: absolute;
-	width: 2.5em;
-	height: 100%;
-	min-height: auto;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	border-left-width: 1px;
-	top: 0;
-	right: 0;
-	margin: 0;
-	padding: 0;
-	z-index: 2;
-}
-.ui-listview-inset > li.ui-li-has-alt > .ui-btn + .ui-btn {
-	border-right-width: 1px;
-}
-.ui-listview > li.ui-li-has-alt > .ui-btn + .ui-btn:focus {
-	z-index: 3;
-}
-html .ui-filterable + .ui-listview,
-html .ui-filterable.ui-listview {
-	margin-top: .5em;
-}
-.ui-collapsible-content > .ui-filterable + .ui-listview:not(.ui-listview-inset) > li.ui-first-child,
-.ui-collapsible-content > .ui-filterable + .ui-listview:not(.ui-listview-inset) > li.ui-first-child > a.ui-btn,
-.ui-collapsible-content > .ui-filterable.ui-listview:not(.ui-listview-inset) > li.ui-first-child,
-.ui-collapsible-content > .ui-filterable.ui-listview:not(.ui-listview-inset) > li.ui-first-child > a.ui-btn {
-	border-top-width: 1px;
 }
