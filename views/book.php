@@ -18,9 +18,10 @@
 </div>
 <div id="carousel">
 	<ul></ul>
+    <div class="close carousel-button"><i class=content></i></div>
 	<div class=carousel-toolbar>
-		<div class=close><i class=content></i></div>
-		<div class=prev><i class=content></i></div>
-		<div class=next><i class=content></i></div>
+		<div class="close carousel-button"><i class=content></i></div>
+		<div class="prev carousel-button"><i class=content></i></div>
+		<div class="next carousel-button"><i class=content></i></div>
 	</div>
 </div>

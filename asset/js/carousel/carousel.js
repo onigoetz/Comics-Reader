@@ -238,19 +238,20 @@ function Carousel(source)
                 break;
 			case 'tap':
 				//console.log('TAP');
-				//console.log(ev.gesture);
+				//console.log(ev.target);
+
+                var $target = $(ev.target.nodeName == "I"? ev.target.parentNode : ev.target);
+                if ($target.hasClass('close')) self.hide();
+
 				if($.contains(toolbar[0], ev.target)) {
-
-					var $target = $(ev.target.nodeName == "I"? ev.target.parentNode : ev.target);
-
-					if ($target.hasClass('close')) self.hide();
 					if ($target.hasClass('prev')) self.prev();
 					if ($target.hasClass('next')) self.next();
 
 					return true;
 				}
 
-				toolbar.toggle();
+                element.toggleClass('carousel-toolbar-visible');
+
 				break;
 		}
 	}
