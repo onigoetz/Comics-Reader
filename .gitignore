@@ -1,5 +1,10 @@
 
+# project
 cache
 
-vendor/
+# composer
+/vendor/*
 composer.lock
+
+# npm
+node_modules

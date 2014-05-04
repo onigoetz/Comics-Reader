@@ -69,7 +69,7 @@ function Carousel(source) {
         //remove useless preloaded images
         cleanPanes(toKeep);
         setPaneDimensions();
-        alignCurrentPane(false)
+        alignCurrentPane(false);
     }
 
     /**
@@ -98,11 +98,11 @@ function Carousel(source) {
      * Preload a panel before or after
      */
     function preloadPane(index, where) {
-        if (!index in images) return; // do nothing if not found
+        if (!(index in images)) return; // do nothing if not found
 
         if (!pane_objects.has(index)) {
             var $li = $('<li></li>')[where](container);
-            pane_objects.set(index, new CarouselPane(images[index], $li))
+            pane_objects.set(index, new CarouselPane(images[index], $li));
         }
 
         return pane_objects.get(index);
@@ -204,9 +204,9 @@ function Carousel(source) {
                 var drag_offset = ((100 / pane_width) * ev.gesture.deltaX) / pane_count;
 
                 // slow down at the first and last pane
-                if ((current_pane == 0 && ev.gesture.direction == "right") ||
+                if ((current_pane === 0 && ev.gesture.direction == "right") ||
                     (current_pane == pane_count - 1 && ev.gesture.direction == "left")) {
-                    drag_offset *= .4;
+                    drag_offset *= 0.4;
                 }
 
                 setContainerOffset(drag_offset + pane_offset);
@@ -336,5 +336,5 @@ function Carousel(source) {
      */
     this.destroy = function () {
         cleanPanes();
-    }
+    };
 }

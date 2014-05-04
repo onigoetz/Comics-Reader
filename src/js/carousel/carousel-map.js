@@ -2,7 +2,7 @@ function CarouselMap() {
 	var items = {};
 
 	function hash(index) {
-		return '__' + index + '__'
+		return '__' + index + '__';
 	}
 
 	this.all = function() {

@@ -1,6 +1,7 @@
 var $doc = $(document);
 var $content = null;
 var carouselInstance = null;
+var restoreState = null;
 
 function load_page(url) {
     $('body').addClass('ui-loading');
@@ -19,12 +20,19 @@ function load_page(url) {
 
 // When a page is shown
 $doc.on("page-show", function (e) {
-    var page = $('div.ui-page')
+    var page = $('div.ui-page');
     if (page.hasClass("gallery-page")) {
         carouselInstance = new Carousel(page.find("ol.gallery li"));
     }
 
     page.find("img.lazy").unveil(100);
+
+    if(restoreState) {
+        window.scrollTo(0, restoreState.top);
+        restoreState = null;
+    } else {
+        window.scrollTo(0, 0);
+    }
 
     $('body').removeClass('ui-loading');
 
@@ -49,6 +57,8 @@ $doc.on('click', 'a', function () {
 $doc.on('tap', 'a[href]', function () {
     load_page($(this).attr('href'));
 
+    //will save the current scroll place on the page
+    history.replaceState({top: window.pageYOffset || document.documentElement.scrollTop }, null, document.location);
     history.pushState(null, null, this.href);
 
     return false;
@@ -60,6 +70,7 @@ $doc.ready(function () {
     $doc.trigger('page-show');
 });
 
-window.onpopstate = function () {
+window.onpopstate = function (event) {
+    restoreState = event.state;
     load_page(document.location);
 };

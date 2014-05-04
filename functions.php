@@ -74,16 +74,16 @@ function gal_first_image(&$folder) {
             }
             closedir($handle);
         }
-		
+
         return false;
     }
-	
+
     foreach ($folder['childs'] as $subfolder) {
         $subresult = gal_first_image($subfolder);
         if ($subresult) {
             return $subresult;
         }
-    } 
+    }
 }
 
 function gal_render_list($data) {
@@ -108,7 +108,7 @@ function gal_render_list($data) {
                 echo '<li class="ui-li-divider ui-bar-inherit">' . $current_letter . '</li>';
             }
 
-            echo '<li class="ui-li-static ui-body-inherit ui-li-has-thumb">';
+            echo '<li class="ui-li-static ui-li-has-thumb">';
 
             if ($folder['type'] == 'tome') {
                 echo '<img class=lazy data-src="' . image_url('small', $folder['thumb']) . '" width=60 height=75 />';
