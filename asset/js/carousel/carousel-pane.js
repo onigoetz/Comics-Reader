@@ -21,19 +21,13 @@ function CarouselPane(src, $li) {
             height = img_height * scale;
 
         //calculate left/top
-        var left = (max_width - width) / 2,
-            top = (max_height - height) / 2;
+        //var left = (max_width - width) / 2,
+        //    top = (max_height - height) / 2;
 
-        $(image).css({
-            width: width + 'px',
-            height: height + 'px',
-            left: left + 'px',
-            top: top + 'px'
-        });
+        $(image).css({width: width + 'px', height: height + 'px'});
     };
 
     this.setWidth = function(width) {
-        console.log('width', width);
         $li.css('width', width + 'px');
         return this;
     };
@@ -47,7 +41,7 @@ function CarouselPane(src, $li) {
 
         $li.append(image);
 
-        window.requestAnimationFrame(this.fit);
+        this.fit();
         shown = true;
     };
 

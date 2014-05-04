@@ -38,7 +38,7 @@ function Carousel(source) {
             i++;
         });
 
-        source.on('tap', function () {
+        source.on('click', function () {
             self.init();
 
             self.show();
@@ -136,9 +136,7 @@ function Carousel(source) {
         var panes = pane_objects.all();
         for (var i in panes) {
             if (panes.hasOwnProperty(i)) {
-                window.requestAnimationFrame(function() {
-                    panes[i].value.setWidth(pane_width).fit();
-                });
+                panes[i].value.setWidth(pane_width).fit();
             }
         }
     }
@@ -171,7 +169,7 @@ function Carousel(source) {
         }
     }
 
-    /*
+    /**
      * Offset of the current active pane in percent
      */
     function currentPaneOffset() {
@@ -245,20 +243,16 @@ function Carousel(source) {
 
                 break;
             case 'tap':
-                var $target = $(ev.target.nodeName == "I" ? ev.target.parentNode : ev.target);
-                if ($target.hasClass('close')) self.hide();
-
-                if ($.contains(toolbar[0], ev.target)) {
-                    if ($target.hasClass('prev')) self.prev();
-                    if ($target.hasClass('next')) self.next();
-
-                    return true;
-                }
-
                 element.toggleClass('carousel-toolbar-visible');
-
                 break;
         }
+    }
+
+    function handleToolbarTouch(ev) {
+        var $target = $(ev.target.nodeName == "I" ? ev.target.parentNode : ev.target);
+        if ($target.hasClass('close')) self.hide();
+        if ($target.hasClass('prev')) self.prev();
+        if ($target.hasClass('next')) self.next();
     }
 
     /*
@@ -276,7 +270,9 @@ function Carousel(source) {
 
         $(window).on("load resize orientationchange", setPaneDimensions);
 
-        hammertime = new Hammer(element[0], { drag_lock_to_axis: true }).on("dragleft dragright release swipeleft swiperight tap", handleTouch);
+        hammertime = new Hammer(element.find('ul')[0], { drag_lock_to_axis: true }).on("dragleft dragright release swipeleft swiperight tap", handleTouch);
+
+        element.find('.carousel-button').on('click', handleToolbarTouch);
 
         initialized = true;
     };
