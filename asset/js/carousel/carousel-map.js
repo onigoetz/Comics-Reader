@@ -49,5 +49,13 @@ function CarouselMap() {
 		}
 
 		return keys;
-	}
+	};
+
+    this.length = function() {
+        var size = 0, key;
+        for (key in items) {
+            if (items.hasOwnProperty(key)) size++;
+        }
+        return size;
+    };
 }

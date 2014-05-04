@@ -1,3 +1,10 @@
+
+/* apply a natural box layout model to all elements */
+*, *:before, *:after {
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+
+
 body {
     margin:0;
     padding:0;
@@ -94,8 +101,14 @@ body.carousel-active #carousel {
 #carousel li {
     float:left;
     overflow:hidden;
+
     -webkit-transform-style:preserve-3d;
     -webkit-transform:translate3d(0, 0, 0);
+}
+
+#carousel li img {
+    margin:auto auto;
+    display:block;
 }
 
 /* Carousel */

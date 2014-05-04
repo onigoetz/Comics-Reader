@@ -2,211 +2,217 @@
  * super simple carousel
  * animation between panes happens with css transitions
  */
-function Carousel(source)
-{
-	var animation_time = 300;
+function Carousel(source) {
+    var animation_time = 300;
 
-	var initialized = false;
+    var initialized = false;
     var self = this;
 
-	var element = $("#carousel");
-	var toolbar = element.find('.carousel-toolbar');
-	var hammertime;
+    var element = $("#carousel");
+    var toolbar = element.find('.carousel-toolbar');
+    var hammertime;
 
-	//content
-	var images = [];
+    //content
+    var images = [];
     var container = element.find(">ul");
     var pane_width = 0;
     var current_pane = 0;
-	var pane_objects = new CarouselMap();
-    var pane_count = listPanes(source);
+    var pane_objects = new CarouselMap();
+    var pane_count = 0;
 
-	/*
-	 * private methods
-	 ****************************************************************** */
+    listPanes(source);
 
-	/**
-	 * Prepare a list of all the available panes
-	 */
-	function listPanes(source) {
-		var i = 0;
-		source.each(function() {
-			var $this = $(this).data('index', i);
-			images[i] = $this.data('img');
+    /*
+     * private methods
+     ****************************************************************** */
 
-			i++;
-		});
+    /**
+     * Prepare a list of all the available panes
+     */
+    function listPanes(source) {
+        var i = 0;
+        source.each(function () {
+            var $this = $(this).data('index', i);
+            images[i] = $this.data('img');
 
-		source.on('tap', function () {
-			self.init();
+            i++;
+        });
 
-			self.show();
+        source.on('tap', function () {
+            self.init();
 
-			self.showPane($(this).data('index'), false);
-		});
+            self.show();
 
-		return i+1;
-	}
+            self.showPane($(this).data('index'), false);
+        });
+    }
 
-	/**
-	 * prepare the sliding window for scrolling, add a pane before,
-	 * a pane after, and removes the useless ones
-	 */
-	function prepareSurroundingPanes() {
-		var toKeep = [current_pane];
+    /**
+     * prepare the sliding window for scrolling, add a pane before,
+     * a pane after, and removes the useless ones
+     */
+    function prepareSurroundingPanes() {
+        var toKeep = [current_pane];
 
-		//keep previous
-		if(current_pane > 0) {
-			addBefore(current_pane-1);
-			toKeep.push(current_pane-1);
-		}
+        //keep previous
+        if (current_pane > 0) {
+            addBefore(current_pane - 1);
+            toKeep.push(current_pane - 1);
+        }
 
-		//also load next image
-		if(current_pane < images.length) {
-			addAfter(current_pane+1);
-			toKeep.push(current_pane+1);
-		}
+        //also load next image
+        if (current_pane < images.length) {
+            addAfter(current_pane + 1);
+            toKeep.push(current_pane + 1);
+        }
 
-		//remove useless preloaded images
-		cleanPanes(toKeep);
-		setPaneDimensions();
-		alignCurrentPane(false)
-	}
+        //remove useless preloaded images
+        cleanPanes(toKeep);
+        setPaneDimensions();
+        alignCurrentPane(false)
+    }
 
-	/**
-	 * same as prepareSurroundingPanes, but delayed at the end of animations
-	 */
-	var prepareSurroundingPanes_delayed = _.debounce(prepareSurroundingPanes, animation_time);
+    /**
+     * same as prepareSurroundingPanes, but delayed at the end of animations
+     */
+    var prepareSurroundingPanes_delayed = debounce(prepareSurroundingPanes, animation_time);
 
-	/**
-	 * remove unused panes
-	 */
-	function cleanPanes(keep) {
-		keep = keep || [];
-		var key, keys = pane_objects.keys();
+    /**
+     * remove unused panes
+     */
+    function cleanPanes(keep) {
+        keep = keep || [];
+        var key, keys = pane_objects.keys();
 
-		for (var i in pane_objects.keys()) {
-		  key = keys[i];
-		  if (keys.hasOwnProperty(i) && !inArray(key, keep)) {
-			  //delete `key`
-			  pane_objects.get(key).remove();
-			  pane_objects.remove(key);
-		  }
-		}
-	}
+        for (var i in pane_objects.keys()) {
+            key = keys[i];
+            if (keys.hasOwnProperty(i) && !inArray(key, keep)) {
+                //delete `key`
+                pane_objects.get(key).remove();
+                pane_objects.remove(key);
+            }
+        }
+    }
 
-	/**
-	 * Preload a panel before or after
-	 */
-	function preloadPane(index, func) {
-		if (!index in images) return; // do nothing if not found
+    /**
+     * Preload a panel before or after
+     */
+    function preloadPane(index, where) {
+        if (!index in images) return; // do nothing if not found
 
-		if (!pane_objects.has(index)) {
-			var $li = $('<li></li>')[func](container);
-			pane_objects.set(index, new CarouselPane(images[index], $li))
-		}
+        if (!pane_objects.has(index)) {
+            var $li = $('<li></li>')[where](container);
+            pane_objects.set(index, new CarouselPane(images[index], $li))
+        }
 
-		return pane_objects.get(index);
-	}
+        return pane_objects.get(index);
+    }
 
-	/**
-	 * add a panel at the beginning
-	 */
-	function addBefore(index) {
-		return preloadPane(index, 'prependTo');
-	}
+    /**
+     * add a panel at the beginning
+     */
+    function addBefore(index) {
+        return preloadPane(index, 'prependTo');
+    }
 
-	/**
-	 * Add a panel at the end
-	 */
-	function addAfter(index) {
-		return preloadPane(index, 'appendTo');
-	}
+    /**
+     * Add a panel at the end
+     */
+    function addAfter(index) {
+        return preloadPane(index, 'appendTo');
+    }
 
     /**
      * set the pane dimensions and scale the container
      */
     function setPaneDimensions() {
-	    var panes = element.find(">ul>li");
-		pane_count = panes.length;
+        pane_count = pane_objects.length();
         pane_width = $('body').width();
-        panes.each(function() {
-            $(this).width(pane_width);
-        });
+
+        //adjust container
         container.width(pane_width*pane_count);
+
+        //adjust panes
+        var panes = pane_objects.all();
+        for (var i in panes) {
+            if (panes.hasOwnProperty(i)) {
+                window.requestAnimationFrame(function() {
+                    panes[i].value.setWidth(pane_width).fit();
+                });
+            }
+        }
     }
 
-	/**
-	 * Move the container
-	 */
+    /**
+     * Move the container
+     */
     function setContainerOffset(percent, animate) {
         container.removeClass("animate");
 
-        if(animate) {
+        if (animate) {
             container.addClass("animate");
         }
 
-        if(Modernizr.csstransforms3d) {
+        if (Modernizr.csstransforms3d) {
             container.css({
-				"-webkit-transform": "translate3d("+ percent +"%,0,0) scale3d(1,1,1)",
-				"transform": "translate3d("+ percent +"%,0,0) scale3d(1,1,1)"
-			});
+                "-webkit-transform": "translate3d(" + percent + "%,0,0) scale3d(1,1,1)",
+                "transform": "translate3d(" + percent + "%,0,0) scale3d(1,1,1)"
+            });
         }
-        else if(Modernizr.csstransforms) {
+        else if (Modernizr.csstransforms) {
             container.css({
-				"-webkit-transform": "translate("+ percent +"%,0)",
-				"transform": "translate("+ percent +"%,0)"
-			});
+                "-webkit-transform": "translate(" + percent + "%,0)",
+                "transform": "translate(" + percent + "%,0)"
+            });
         }
         else {
-			var px = ((pane_width*pane_count) / 100) * percent;
-            container.css("left", px+"px");
+            var px = ((pane_width * pane_count) / 100) * percent;
+            container.css("left", px + "px");
         }
     }
 
-	/*
-	 * Offset of the current active pane in percent
-	 */
-	function currentPaneOffset() {
-		var container_width = pane_width*pane_count;
+    /*
+     * Offset of the current active pane in percent
+     */
+    function currentPaneOffset() {
+        var container_width = pane_width * pane_count;
 
-		var current_offset = pane_objects.get(current_pane).offset();
-        return -((100/container_width)*current_offset);
-	}
+        var current_offset = pane_objects.get(current_pane).offset();
+        return -((100 / container_width) * current_offset);
+    }
 
-	/**
-	 * Return to the current offset
-	 */
-	function alignCurrentPane(animate) {
+    /**
+     * Return to the current offset
+     */
+    function alignCurrentPane(animate) {
         setContainerOffset(currentPaneOffset(), animate);
-	}
+    }
 
-	/**
-	 * Handle touch events
-	 */
-	function handleTouch(ev) {
-        //console.log(ev);
+    /**
+     * Handle touch events
+     */
+    function handleTouch(ev) {
         // disable browser scrolling
         ev.gesture && ev.gesture.preventDefault();
 
-        switch(ev.type) {
-			case 'dragright':
+        switch (ev.type) {
+            case 'dragright':
             case 'dragleft':
-		        // disable browser scrolling
-		        ev.gesture.preventDefault();
+                // disable browser scrolling
+                ev.gesture.preventDefault();
 
-		        // stick to the finger
-				var pane_offset = currentPaneOffset();
-				var drag_offset = ((100/pane_width)*ev.gesture.deltaX) / pane_count;
+                // stick to the finger
+                var pane_offset = currentPaneOffset();
+                var drag_offset = ((100 / pane_width) * ev.gesture.deltaX) / pane_count;
 
-		        // slow down at the first and last pane
-		        if((current_pane == 0 && ev.gesture.direction == "right") ||
-		            (current_pane == pane_count-1 && ev.gesture.direction == "left")) {
-		            drag_offset *= .4;
-		        }
+                // slow down at the first and last pane
+                if ((current_pane == 0 && ev.gesture.direction == "right") ||
+                    (current_pane == pane_count - 1 && ev.gesture.direction == "left")) {
+                    drag_offset *= .4;
+                }
 
-		        setContainerOffset(drag_offset + pane_offset);
-				break;
+                setContainerOffset(drag_offset + pane_offset);
+                break;
 
             case 'swipeleft':
                 self.next();
@@ -219,102 +225,120 @@ function Carousel(source)
                 break;
 
             case 'release':
-				//do nothing if we're in the toolbar
-				if($.contains(toolbar[0], ev.target)) {
-					return true;
-				}
+                //do nothing if we're in the toolbar
+                if ($.contains(toolbar[0], ev.target)) {
+                    return true;
+                }
 
-                // more then 50% moved, navigate
-                if(Math.abs(ev.gesture.deltaX) > pane_width/2) {
-                    if(ev.gesture.direction == 'right') {
+                // more then 33% moved, navigate
+                if (Math.abs(ev.gesture.deltaX) > pane_width / 3) {
+                    if (ev.gesture.direction == 'right') {
                         self.prev();
                     } else {
                         self.next();
                     }
+                    return;
                 }
-                else {
-                    self.showPane(current_pane, true);
-                }
-                break;
-			case 'tap':
-				//console.log('TAP');
-				//console.log(ev.target);
 
-                var $target = $(ev.target.nodeName == "I"? ev.target.parentNode : ev.target);
+                //or realign current pane
+                alignCurrentPane(true);
+
+                break;
+            case 'tap':
+                var $target = $(ev.target.nodeName == "I" ? ev.target.parentNode : ev.target);
                 if ($target.hasClass('close')) self.hide();
 
-				if($.contains(toolbar[0], ev.target)) {
-					if ($target.hasClass('prev')) self.prev();
-					if ($target.hasClass('next')) self.next();
+                if ($.contains(toolbar[0], ev.target)) {
+                    if ($target.hasClass('prev')) self.prev();
+                    if ($target.hasClass('next')) self.next();
 
-					return true;
-				}
+                    return true;
+                }
 
                 element.toggleClass('carousel-toolbar-visible');
 
-				break;
-		}
-	}
+                break;
+        }
+    }
 
-	/*
-	 * public methods
-	 ****************************************************************** */
+    /*
+     * public methods
+     ****************************************************************** */
 
     /**
-     * initial
+     * initialize
      */
-    this.init = function() {
-		if (initialized) {
-			return true;
-		}
+    this.init = function () {
+        if (initialized) {
+            return true;
+        }
         setPaneDimensions();
 
-        $(window).on("load resize orientationchange", function() {
-            setPaneDimensions();
-        });
+        $(window).on("load resize orientationchange", setPaneDimensions);
 
-		hammertime = new Hammer(element[0], { drag_lock_to_axis: true }).on("dragleft dragright release swipeleft swiperight tap", handleTouch);
+        hammertime = new Hammer(element[0], { drag_lock_to_axis: true }).on("dragleft dragright release swipeleft swiperight tap", handleTouch);
 
-		initialized = true;
+        initialized = true;
     };
 
     /**
-     * show pane by index
+     * Show pane by index
+     *
+     * @param index
+     * @param animate
      */
-    this.showPane = function(index, animate) {
-		if(index != current_pane) addAfter(index).show();
+    this.showPane = function (index, animate) {
+        //is it the first pane shown ? add it
+        if (index != current_pane) addAfter(index).show();
 
-		setPaneDimensions();
+        setPaneDimensions();
 
         // between the bounds
-        index = Math.max(0, Math.min(index, images.length-1));
+        index = Math.max(0, Math.min(index, images.length - 1));
 
         current_pane = index;
-		alignCurrentPane(animate);
+        alignCurrentPane(animate);
 
-		//Adjust sliding window
-		if(animate) {
-			prepareSurroundingPanes_delayed();
-		} else {
-			prepareSurroundingPanes();
-		}
+        //Adjust sliding window
+        if (animate) {
+            prepareSurroundingPanes_delayed();
+        } else {
+            prepareSurroundingPanes();
+        }
     };
 
-    this.next = function() { return self.showPane(current_pane+1, true); };
-    this.prev = function() { return self.showPane(current_pane-1, true); };
+    /**
+     * Go to next pane
+     */
+    this.next = function () {
+        self.showPane(current_pane + 1, true);
+    };
 
-	this.show = function() {
-		$('body').addClass('carousel-active');
-	};
+    /**
+     * Go back to previous pane
+     */
+    this.prev = function () {
+        self.showPane(current_pane - 1, true);
+    };
 
-	this.hide = function() {
-		$('body').removeClass('carousel-active');
-	};
+    /**
+     * Show the carousel
+     */
+    this.show = function () {
+        $('body').addClass('carousel-active');
+    };
 
-	/**
-	 * Remove all panes to delete the carousel
-	 */
-	this.destroy = function() {
-		cleanPanes();
-	}
+    /**
+     * Hide the carousel
+     */
+    this.hide = function () {
+        $('body').removeClass('carousel-active');
+    };
+
+    /**
+     * Remove all panes to delete the carousel
+     */
+    this.destroy = function () {
+        cleanPanes();
+    }
 }
