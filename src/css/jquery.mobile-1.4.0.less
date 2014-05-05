@@ -19,9 +19,10 @@ html {
 }
 
 body {
-    background: 			#252525;
-    border-color:	 		#454545;
-    color: 					#fff;
+    margin:0;
+    padding:0;
+    background: #303030;
+    color: #fff;
     text-shadow: 0 1px 0 #111;
 }
 
@@ -245,11 +246,15 @@ label.ui-btn {
 	outline: 0 !important;
 }
 .ui-content {
-    margin-top:40px;
 	border-width: 0;
 	overflow: visible;
 	overflow-x: hidden;
 	padding: 1em;
+
+    position:absolute;
+    top:40px;
+    left:0;
+    width:100%;
 }
 /* Buttons and icons */
 .ui-btn {
@@ -340,7 +345,7 @@ label.ui-btn {
 	display: block;
 	position: relative;
 	overflow: visible;
-    border-color:#454545;
+    border-color:#222;
 
     h3 {
         font-size: 1em;
@@ -372,13 +377,16 @@ label.ui-btn {
 	overflow: hidden;
 	white-space: nowrap;
 
-	border-width: 1px 0 0 0;
+
 	border-style: solid;
 }
 .ui-listview > .ui-li-static {
-	padding: .7em 1em;
+	padding: .7em 1em .7em 4.7em;
+    min-height: 3.31em;
+    border-width: 1px 0 0 0;
 }
 .ui-listview > .ui-li-divider {
+    border-width:0;
     background:#151515;
 	padding: .5em 1.143em;
 	font-size: 14px;
@@ -386,9 +394,9 @@ label.ui-btn {
 	cursor: default;
 	outline: 0; /* Dividers in custom selectmenus have tabindex */
 }
-.ui-listview > .ui-li-static.ui-li-has-thumb {
-	min-height: 3.31em;
-	padding-left: 4.7em;
+
+.ui-listview > .ui-li-divider + .ui-li-static {
+    border-top-width:0;
 }
 
 .ui-listview .ui-li-has-thumb > img:first-child,

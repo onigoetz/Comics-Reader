@@ -9,7 +9,7 @@
             <?php
             foreach($book as $pages){
                 echo '<li data-img="'. image_url('big', $pages) .'">';
-                echo '<img class=lazy data-src="'. image_url('small', $pages) . '" width=60 height=75/>';
+                echo '<img class=lazy data-src="'. image_url('small', $pages) . '" width=60 height=75>';
                 echo '</li>';
             } ?>
         </ol>

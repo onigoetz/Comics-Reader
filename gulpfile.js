@@ -9,7 +9,7 @@ var gulp = require('gulp'),
     less = require('gulp-less');
 
 gulp.task('styles', function() {
-    return gulp.src(['src/css/jquery.mobile-1.4.0.less', 'src/css/specific.less'])
+    return gulp.src(['src/css/jquery.mobile-1.4.0.less', 'src/css/carousel.less', 'src/css/site.less'])
         .pipe(concat('app.css'))
         .pipe(less())
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
