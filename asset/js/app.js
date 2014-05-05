@@ -637,7 +637,7 @@ function Carousel(source) {
     var images = [];
     var container = element.find(">ul");
     var pane_width = 0;
-    var current_pane = 0;
+    var current_pane = null;
     var pane_objects = new CarouselMap();
     var pane_count = 0;
 
