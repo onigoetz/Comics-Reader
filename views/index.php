@@ -1,7 +1,4 @@
-<div class="ui-page">
-    <div class="ui-header"><h1>Comics Reader</h1></div>
-    <div class="ui-content">
-        <?php gal_render_list($data); ?>
-    </div>
+<header class="bar bar-nav"><h1 class="title">Comics Reader</h1></header>
+<div class="content">
+    <?php include __DIR__ . '/_list.php'; ?>
 </div>
-

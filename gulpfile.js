@@ -6,41 +6,56 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     concat = require('gulp-concat'),
     notify = require('gulp-notify'),
-    less = require('gulp-less');
+    sass = require('gulp-sass');
 
-gulp.task('styles', function() {
-    return gulp.src(['src/css/jquery.mobile-1.4.0.less', 'src/css/carousel.less', 'src/css/site.less'])
-        .pipe(concat('app.css'))
-        .pipe(less())
+
+function styles_generator(filename, destination) {
+    return gulp.src(filename)
+        .pipe(rename(destination + '.css'))
+        .pipe(sass())
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         .pipe(gulp.dest('asset/css'))
         .pipe(rename({suffix: '.min'}))
         .pipe(minifycss())
         .pipe(gulp.dest('asset/css'))
         .pipe(notify({ message: 'Styles task complete' }));
+}
+
+gulp.task('styles', ['styles-base', 'styles-ios', 'styles-android']);
+
+gulp.task('styles-base', function() {
+    return styles_generator('src/css/app.scss', 'app');
+});
+
+gulp.task('styles-ios', function() {
+    return styles_generator('src/css/ratchet/theme-ios.scss', 'theme-ios');
+});
+
+gulp.task('styles-android', function() {
+    return styles_generator('src/css/ratchet/theme-android.scss', 'theme-android');
 });
 
 gulp.task('scripts', function() {
-    gulp.src('src/js/carousel/*.js')
-        .pipe(jshint('.jshintrc'))
-        .pipe(jshint.reporter('default'));
-
-    gulp.src(['src/js/vendor/modernizr-2.8.1.min.js'])
-        .pipe(concat('before-app.js'))
-        .pipe(gulp.dest('asset/js'))
-        .pipe(rename({suffix: '.min'}))
-        .pipe(uglify())
-        .pipe(gulp.dest('asset/js'));
-
     return gulp.src([
-        'src/js/vendor/zepto-1.1.3.min.js',
-        'src/js/vendor/zepto.plugins-1.1.3.js',
-        'src/js/vendor/hammer-1.1.2.min.js',
+        'src/js/vendor/zepto-1.1.4.min.js',
+        'src/js/vendor/zepto.plugins-1.1.4.js',
         'src/js/vendor/jquery.unveil.js',
-        'src/js/helpers.js',
-        'src/js/carousel/carousel-map.js',
-        'src/js/carousel/carousel-pane.js',
-        'src/js/carousel/carousel.js',
+
+        //'src/js/vendor/ratchet/modals.js',
+        //'src/js/vendor/ratchet/popovers.js',
+        'src/js/vendor/ratchet/push.js',
+        //'src/js/vendor/ratchet/segmented-controllers.js',
+        //'src/js/vendor/ratchet/sliders.js',
+        //'src/js/vendor/ratchet/toggles.js',
+        //'src/js/vendor/ratchet/fingerblast.js',
+
+        'src/js/photo-viewer/clickable-1.0.min.js',
+        'src/js/photo-viewer/from_app.js',
+        'src/js/photo-viewer/photo-viewer.js',
+        'src/js/photo-viewer/slide-viewer.js',
+        'src/js/photo-viewer/touchy.js',
+        'src/js/photo-viewer/zoomable.js',
+
         'src/js/site.js'
     ])
         .pipe(concat('app.js'))
@@ -56,11 +71,9 @@ gulp.task('default', function() {
 });
 
 gulp.task('watch', function() {
-
     // Watch .scss files
-    gulp.watch('src/css/**/*.less', ['styles']);
+    gulp.watch('src/css/**/*.scss', ['styles']);
 
     // Watch .js files
     gulp.watch('src/js/**/*.js', ['scripts']);
-
 });

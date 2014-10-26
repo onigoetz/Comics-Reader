@@ -1,76 +1,55 @@
-var $doc = $(document);
-var $content = null;
-var carouselInstance = null;
-var restoreState = null;
 
-function load_page(url) {
-    $('body').addClass('ui-loading');
-    $.ajax({
-        type: 'GET',
-        url: url,
-        success: function (content) {
-            $doc.trigger('page-hide');
+window.photoViewer = null;
 
-            $content.empty().html(content);
+function viewerOnResize() {
+    if (!window.photoViewer) return;
+    window.photoViewer.resize();
+}
 
-            $doc.trigger('page-show');
-        }
+function viewerLoad(page, data) {
+    window.photoViewer = new PhotoViewer(page, data.images, {
+        startAt: parseInt(data.index, 10)
     });
 }
 
-// When a page is shown
-$doc.on("page-show", function (e) {
-    var page = $('div.ui-page');
-    if (page.hasClass("gallery-page")) {
-        carouselInstance = new Carousel(page.find("ol.gallery li"));
-    }
+// Listen for orientation and resize changes
+window.addEventListener("orientationchange", viewerOnResize, false);
+window.addEventListener("resize", viewerOnResize, false);
 
+
+
+function loadedPage(event) {
+    var page = $('#content > .content');
+
+    // Lazy load images
     page.find("img.lazy").unveil(100);
 
-    if(restoreState) {
-        window.scrollTo(0, restoreState.top);
-        restoreState = null;
-    } else {
-        window.scrollTo(0, 0);
+    // Kill any previous phpto viewer
+    if (window.photoViewer) {
+        window.photoViewer.kill();
+        window.photoViewer = null;
     }
 
-    $('body').removeClass('ui-loading');
+    // Present the gallery
+    if (page.hasClass("gallery-page")) {
 
-    return true;
-});
+        var images = [],
+            i = 0,
+            lis = page.find("ol.gallery li");
 
-//before we remove a page from DOM
-$doc.on("page-hide", function (e) {
-    if (carouselInstance != null) {
-        carouselInstance.destroy();
+        lis.on('tap', function() {
+            viewerLoad(page[0], {images: images, index: $(this).data('index')})
+        });
+
+        lis.each(function () {
+            var $this = $(this);
+
+            $this.data('index', i);
+            images[i] = (window.isRetina) ? toRetina($this.data('img')) : $this.data('img');
+            i++;
+        });
     }
+}
 
-    return true;
-});
-
-//disable default clicks
-$doc.on('click', 'a', function () {
-    return false;
-});
-
-//bind on tap, avoid the 300ms wait on safari
-$doc.on('tap', 'a[href]', function () {
-    load_page($(this).attr('href'));
-
-    //will save the current scroll place on the page
-    history.replaceState({top: window.pageYOffset || document.documentElement.scrollTop }, null, document.location);
-    history.pushState(null, null, this.href);
-
-    return false;
-});
-
-//when the page is ready
-$doc.ready(function () {
-    $content = $("#content");
-    $doc.trigger('page-show');
-});
-
-window.onpopstate = function (event) {
-    restoreState = event.state;
-    load_page(document.location);
-};
+$(window).on('load', loadedPage);
+window.addEventListener('push', loadedPage);

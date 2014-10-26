@@ -4,7 +4,7 @@
         "onigoetz/imagecache": "dev-master"
     },
 	"autoload": {
-	    "psr-0": {"": "lib/"}
+	    "psr-0": {"": "src/php/lib/"}
 	},
 	"prefer-stable": true
 }

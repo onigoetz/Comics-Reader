@@ -1,27 +1,20 @@
-<div class="ui-page gallery-page">
-    <div class="ui-header">
-        <a onclick="window.history.back();" class="ui-btn ui-btn-left ui-corner-all ui-icon-back ui-btn-icon-notext">Back</a>
-        <h1><?php echo $title; ?></h1>
-		<a href="<?php echo url(); ?>" class="ui-btn ui-btn-right ui-corner-all ui-icon-home ui-btn-icon-notext">Home</a>
-    </div>
-    <div class=ui-content>
+<header class="bar bar-nav">
+    <a href="<?= url("list/{$parent->getPath()}"); ?>" class="btn btn-link btn-nav pull-left" data-transition="slide-out">
+        <span class="icon icon-left-nav"></span><?= $parent->getName(); ?>
+    </a>
+    <a href="<?= url(); ?>" class="btn btn-link btn-nav pull-right" data-transition="fade">
+        <span class="icon icon-home"></span>
+    </a>
+    <h1 class=title><?= $title; ?></h1>
+</header>
+<div class="content gallery-page">
+    <div class="content-padded">
         <ol class="gallery">
-            <?php
-            foreach($book as $pages){
-                echo '<li data-img="'. image_url('big', $pages) .'">';
-                echo '<img class=lazy data-src="'. image_url('small', $pages) . '" width=60 height=75>';
-                echo '</li>';
-            } ?>
+            <?php foreach($book as $pages): ?>
+            <li data-img="<?= image('big', $pages) ?>">
+                <img class=lazy data-src="<?= image('small', $pages) ?>" width=60 height=75>
+            </li>
+            <?php endforeach; ?>
         </ol>
-
     </div>
-</div>
-<div id="carousel">
-	<ul></ul>
-    <div class="close carousel-button"><i class=content></i></div>
-	<div class=carousel-toolbar>
-		<div class="close carousel-button"><i class=content></i></div>
-		<div class="prev carousel-button"><i class=content></i></div>
-		<div class="next carousel-button"><i class=content></i></div>
-	</div>
 </div>

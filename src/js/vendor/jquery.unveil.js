@@ -8,52 +8,67 @@
  * https://github.com/luis-almeida
  */
 
-;(function($, isRetina) {
+window.isRetina = (function (window) {
+    if (window.devicePixelRatio > 1)
+        return true;
 
-  $.fn.unveil = function(threshold, callback) {
+    var mediaQuery = "(-webkit-min-device-pixel-ratio: 1.5),\
+  	                  (min--moz-device-pixel-ratio: 1.5),\
+  	                  (-o-min-device-pixel-ratio: 3/2),\
+  	                  (min-resolution: 1.5dppx)";
 
-    var $w = $(window),
-        th = threshold || 0,
-        images = this,
-        loaded;
+    return !!(window.matchMedia && window.matchMedia(mediaQuery).matches);
+})(window);
 
-    this.one("unveil", function() {
-      var source = this.getAttribute("data-src");
-	  
-	  if(isRetina) {
-	  	source = toRetina(source);
-	  }
-	  
-      if (source) {
-        this.setAttribute("src", source);
-        if (typeof callback === "function") callback.call(this);
-      }
-    });
+function toRetina(src) {
+    return src.replace(/\.\w+$/, function (match) {
+        return "@2x" + match;
+    })
+}
 
-    function unveil() {
-      var inview = images.filter(function() {
-        var $e = $(this);
-        if ($e.is(":hidden")) return;
+(function ($, isRetina) {
+    $.fn.unveil = function (threshold, callback) {
+        var $w = $(window),
+            th = threshold || 0,
+            images = this,
+            loaded;
 
-        var wt = $w.scrollTop(),
-            wb = wt + $w.height(),
-            et = $e.offset().top,
-            eb = et + $e.height();
+        this.one("unveil", function () {
+            var source = this.getAttribute("data-src");
 
-        return eb >= wt - th && et <= wb + th;
-      });
+            if (isRetina) {
+                source = toRetina(source);
+            }
 
-      loaded = inview.trigger("unveil");
-      images = images.not(loaded);
-    }
+            if (source) {
+                this.setAttribute("src", source);
+                if (typeof callback === "function") callback.call(this);
+            }
+        });
 
-    $w.scroll(unveil);
-    $w.resize(unveil);
+        function unveil() {
+            var inview = images.filter(function () {
+                var $e = $(this);
+                if ($e.is(":hidden")) return;
 
-    unveil();
+                var wt = $w.scrollTop(),
+                    wb = wt + $w.height(),
+                    et = $e.offset().top,
+                    eb = et + $e.height();
 
-    return this;
+                return eb >= wt - th && et <= wb + th;
+            });
 
-  };
+            loaded = inview.trigger("unveil");
+            images = images.not(loaded);
+        }
+
+        $w.scroll(unveil);
+        $w.resize(unveil);
+
+        unveil();
+
+        return this;
+    };
 
 })(window.jQuery || window.Zepto, window.isRetina);
