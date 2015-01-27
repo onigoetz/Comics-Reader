@@ -10,9 +10,9 @@
 <div class="content gallery-page">
     <div class="content-padded">
         <ol class="gallery">
-            <?php foreach($book as $pages): ?>
-            <li data-img="<?= image('big', $pages) ?>">
-                <img class=lazy data-src="<?= image('small', $pages) ?>" width=60 height=75>
+            <?php foreach($book as $page): ?>
+            <li data-img="<?= image('big', $page['src']) ?>" data-width=<?= $page['width'] ?> data-height=<?= $page['height'] ?>>
+                <img class=lazy data-src="<?= image('small', $page['src']) ?>" width=60 height=75>
             </li>
             <?php endforeach; ?>
         </ol>

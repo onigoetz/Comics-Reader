@@ -30,13 +30,29 @@ $app->get(
 
         $ignore = array('.', '..', 'thumbs', ".DS_Store", "Thumbs.db");
 
+        $imagine = new Imagine\Gd\Imagine();
+
         $it = new DirectoryIterator($path);
         foreach ($it as $item) {
-            if (!in_array($item->getFilename(), $ignore) && !$item->isDir() && strpos($item, '._') === false) {
-                $pages[] = str_replace(GALLERY_ROOT, '', "$path/{$item->getFilename()}");
+            if (in_array($item->getFilename(), $ignore) || $item->isDir() || strpos($item, '._') === 0) {
+                continue;
             }
+
+            $fullPath = "$path/{$item->getFilename()}";
+            $size = $imagine->open($fullPath)->getSize()->widen(BIG_WIDTH);
+
+            $pages[] = [
+                'src' => str_replace(GALLERY_ROOT, '', $fullPath),
+                'width' => $size->getWidth(),
+                'height' => $size->getHeight()
+            ];
         }
-        natsort($pages);
+
+        $ps = array();
+        foreach($pages as $key => $page) {
+            $ps[$key] = $page['src'];
+        }
+        array_multisort($ps, $pages, SORT_NATURAL);
 
         $parent_folder = search(getGallery(), dirname($book));
         $parent = $parent_folder[0]->getParent();

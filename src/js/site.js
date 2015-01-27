@@ -1,34 +1,26 @@
 
-window.photoViewer = null;
+// On desktop computers we don't need touch support
+window.touchdevice = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
+if (window.touchdevice && typeof CustomEvent !== 'undefined') window.PUSH();
 
-function viewerOnResize() {
-    if (!window.photoViewer) return;
-    window.photoViewer.resize();
+window.gallery = null;
+
+function viewerLoad(images, index) {
+    var pswpElement = document.querySelectorAll('.pswp')[0];
+    var options = {
+        index: index
+    };
+
+    // Initializes and opens PhotoSwipe
+    window.gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, images, options);
+    window.gallery.init();
 }
-
-function viewerLoad(page, data) {
-    window.photoViewer = new PhotoViewer(page, data.images, {
-        startAt: parseInt(data.index, 10)
-    });
-}
-
-// Listen for orientation and resize changes
-window.addEventListener("orientationchange", viewerOnResize, false);
-window.addEventListener("resize", viewerOnResize, false);
-
-
 
 function loadedPage(event) {
     var page = $('#content > .content');
 
     // Lazy load images
     page.find("img.lazy").unveil(100);
-
-    // Kill any previous phpto viewer
-    if (window.photoViewer) {
-        window.photoViewer.kill();
-        window.photoViewer = null;
-    }
 
     // Present the gallery
     if (page.hasClass("gallery-page")) {
@@ -37,15 +29,16 @@ function loadedPage(event) {
             i = 0,
             lis = page.find("ol.gallery li");
 
-        lis.on('tap', function() {
-            viewerLoad(page[0], {images: images, index: $(this).data('index')})
+        lis.on(window.touchdevice? 'tap' : 'click', function() {
+            viewerLoad(images, $(this).data('index'))
         });
 
         lis.each(function () {
-            var $this = $(this);
+            var $this = $(this),
+                img = (window.isRetina) ? toRetina($this.data('img')) : $this.data('img');
 
             $this.data('index', i);
-            images[i] = (window.isRetina) ? toRetina($this.data('img')) : $this.data('img');
+            images[i] = {src:img, w:$this.data('width'), h:$this.data('height')};
             i++;
         });
     }

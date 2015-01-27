@@ -49,12 +49,8 @@ gulp.task('scripts', function() {
         //'src/js/vendor/ratchet/toggles.js',
         //'src/js/vendor/ratchet/fingerblast.js',
 
-        'src/js/photo-viewer/clickable-1.0.min.js',
-        'src/js/photo-viewer/from_app.js',
-        'src/js/photo-viewer/photo-viewer.js',
-        'src/js/photo-viewer/slide-viewer.js',
-        'src/js/photo-viewer/touchy.js',
-        'src/js/photo-viewer/zoomable.js',
+        'src/js/photoswipe/photoswipe.js',
+        'src/js/photoswipe/photoswipe-ui-default.js',
 
         'src/js/site.js'
     ])

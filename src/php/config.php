@@ -12,6 +12,7 @@ define('DIR_IMAGE_FILE', '_image.jpg');
 define('ROOT', dirname(dirname(__DIR__)));
 define('CACHE', ROOT . '/cache');
 define('GALLERY_ROOT', ROOT . '/images');
+define('BIG_WIDTH', 800);
 
 $image_config = array(
     'path_images' => 'images',
@@ -22,7 +23,7 @@ $image_config = array(
             array('action' => 'scale_and_crop', 'width' => 60, 'height' => 75)
         ),
         'big' => array( //fixed height
-            array('action' => 'scale', 'width' => 800, 'height' => 2000)
+            array('action' => 'scale', 'width' => BIG_WIDTH)
         )
     )
 );
