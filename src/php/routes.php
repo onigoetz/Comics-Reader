@@ -28,7 +28,7 @@ $app->get(
         $pages = array();
         $path = GALLERY_ROOT . '/' . $book;
 
-        $ignore = array('.', '..', 'thumbs', ".DS_Store");
+        $ignore = array('.', '..', 'thumbs', ".DS_Store", "Thumbs.db");
 
         $it = new DirectoryIterator($path);
         foreach ($it as $item) {
