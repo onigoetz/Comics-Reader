@@ -29,9 +29,10 @@ function toRetina(src) {
 (function ($, isRetina) {
     $.fn.unveil = function (threshold, callback) {
         var $w = $(window),
-            th = threshold || 0,
             images = this,
             loaded;
+
+        if (!threshold) threshold = 0;
 
         this.one("unveil", function () {
             var source = this.getAttribute("data-src");
@@ -47,24 +48,25 @@ function toRetina(src) {
         });
 
         function unveil() {
-            var inview = images.filter(function () {
-                var $e = $(this);
-                if ($e.is(":hidden")) return;
+            var viewportTop = $w.scrollTop(),
+                viewportBottom = viewportTop + $w.height();
 
-                var wt = $w.scrollTop(),
-                    wb = wt + $w.height(),
-                    et = $e.offset().top,
-                    eb = et + $e.height();
+            var inView = images.filter(function () {
+                var $image = $(this);
+                if ($image.is(":hidden")) return;
 
-                return eb >= wt - th && et <= wb + th;
+                var imageTop = $image.offset().top,
+                    imageBottom = imageTop + $image.height();
+
+                return imageBottom >= viewportTop - threshold && imageTop <= viewportBottom + threshold;
             });
 
-            loaded = inview.trigger("unveil");
+            loaded = inView.trigger("unveil");
             images = images.not(loaded);
         }
 
-        $w.scroll(unveil);
-        $w.resize(unveil);
+        $(".content").scroll(unveil); //ratchet compatibility
+        $w.on("scroll.unveil resize.unveil lookup.unveil", unveil);
 
         unveil();
 
