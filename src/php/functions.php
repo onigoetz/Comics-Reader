@@ -39,3 +39,11 @@ function image($preset, $image) {
 function url($link = '') {
 	return BASE . $link;
 }
+
+function standardize_unicode($link) {
+    $replace = [
+        urldecode("%C3%A9") => urldecode("e%CC%81"), //é
+    ];
+
+    return strtr($link, $replace);
+}

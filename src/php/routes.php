@@ -10,6 +10,7 @@ $app->get(
 $app->get(
     '/list/:list',
     function ($query) use ($app) {
+        $query = standardize_unicode($query);
         $data = search(getGallery(), $query);
         $parent = $data[0]->getParent()->getParent();
 
@@ -21,6 +22,8 @@ $app->get(
 $app->get(
     '/book/:book',
     function ($book) use ($app) {
+        $book = standardize_unicode($book);
+
         //Get the pages
         $pages = array();
         $path = GALLERY_ROOT . '/' . $book;
