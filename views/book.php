@@ -8,13 +8,11 @@
     <h1 class=title><?= $title; ?></h1>
 </header>
 <div class="content gallery-page">
-    <div class="content-padded">
-        <ol class="gallery">
-            <?php foreach($book as $page): ?>
-            <li data-img="<?= image('big', $page['src']) ?>" data-width=<?= $page['width'] ?> data-height=<?= $page['height'] ?>>
-                <img class=lazy data-src="<?= image('small', $page['src']) ?>" width=60 height=75>
-            </li>
-            <?php endforeach; ?>
-        </ol>
-    </div>
+    <ol class="gallery">
+        <?php foreach($book as $page): ?>
+        <li data-img="<?= image('big', $page['src']) ?>" data-width=<?= $page['width'] ?> data-height=<?= $page['height'] ?>>
+            <img class=lazy data-src="<?= image('small', $page['src']) ?>" />
+        </li>
+        <?php endforeach; ?>
+    </ol>
 </div>
