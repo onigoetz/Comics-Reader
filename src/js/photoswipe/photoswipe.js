@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.0.5 - 2015-01-15
+/*! PhotoSwipe - v4.0.8 - 2015-05-21
 * http://photoswipe.com
 * Copyright (c) 2015 Dmitry Semenov; */
 (function (root, factory) { 
@@ -318,6 +318,7 @@ var _options = {
 	pinchToClose: true,
 	closeOnScroll: true,
 	closeOnVerticalDrag: true,
+	verticalDragRange: 0.6,
 	hideAnimationDuration: 333,
 	showAnimationDuration: 333,
 	showHideOpacity: false,
@@ -337,10 +338,10 @@ var _options = {
     	}
     },
     maxSpreadZoom: 2,
+	modal: true,
 
 	// not fully implemented yet
 	scaleMode: 'fit', // TODO
-	modal: true, // TODO
 	alwaysFadeIn: false // TODO
 };
 framework.extend(_options, options);
@@ -374,9 +375,8 @@ var _isOpen,
 	_updateSizeInterval,
 	_itemsNeedUpdate,
 	_currPositionIndex = 0,
-	_offset,
+	_offset = {},
 	_slideSize = _getEmptyPoint(), // size of slide area, including spacing
-	_scrollChanged,
 	_itemHolders,
 	_prevItemIndex,
 	_indexDiff = 0, // difference of indexes since last content update
@@ -606,9 +606,10 @@ var _isOpen,
 		};
 		_applyZoomPanToItem = function(item) {
 
-			var s = item.container.style,
-				w = item.fitRatio * item.w,
-				h = item.fitRatio * item.h;
+			var zoomRatio = item.fitRatio > 1 ? 1 : item.fitRatio,
+				s = item.container.style,
+				w = zoomRatio * item.w,
+				h = zoomRatio * item.h;
 
 			s.width = w + 'px';
 			s.height = h + 'px';
@@ -618,11 +619,12 @@ var _isOpen,
 		};
 		_applyCurrentZoomPan = function() {
 			if(_currZoomElementStyle) {
-				var s = _currZoomElementStyle;
-				var item = self.currItem;
 
-				var w = item.fitRatio * item.w;
-				var h = item.fitRatio * item.h;
+				var s = _currZoomElementStyle,
+					item = self.currItem,
+					zoomRatio = item.fitRatio > 1 ? 1 : item.fitRatio,
+					w = zoomRatio * item.w,
+					h = zoomRatio * item.h;
 
 				s.width = w + 'px';
 				s.height = h + 'px';
@@ -673,16 +675,8 @@ var _isOpen,
 		}
 	},
 
-	_onPageScroll = function() {
-		_scrollChanged = true;
-		// "close" on scroll works only on desktop devices, or when mouse is used
-		if(_options.closeOnScroll && _isOpen && (!self.likelyTouchDevice || _options.mouseUsed) ) { 
-			// if scrolled for more than 2px
-			if(Math.abs(framework.getScrollY() - _initalWindowScrollY) > 2) { 
-				_closedByScroll = true;
-				self.close();
-			}
-		}
+	_updatePageScrollOffset = function() {
+		self.setScrollOffset(0, framework.getScrollY());		
 	};
 	
 
@@ -773,6 +767,11 @@ var publicMethods = {
 	isZooming: function() {
 		return _isZooming;
 	},
+	setScrollOffset: function(x,y) {
+		_offset.x = x;
+		_currentWindowScrollY = _offset.y = y;
+		_shout('updateScrollOffset', _offset);
+	},
 	applyZoomPan: function(zoomLevel,panX,panY) {
 		_panOffset.x = panX;
 		_panOffset.y = panY;
@@ -821,7 +820,7 @@ var publicMethods = {
 		// Setup global events
 		_globalEventHandlers = {
 			resize: self.updateSize,
-			scroll: _onPageScroll,
+			scroll: _updatePageScrollOffset,
 			keydown: _onKeyDown,
 			click: _onGlobalClick
 		};
@@ -857,8 +856,8 @@ var publicMethods = {
 			_isFixedPosition = false;
 		}
 		
+		template.setAttribute('aria-hidden', 'false');
 		if(_options.modal) {
-			template.setAttribute('aria-hidden', 'false');
 			if(!_isFixedPosition) {
 				template.style.position = 'absolute';
 				template.style.top = framework.getScrollY() + 'px';
@@ -965,10 +964,8 @@ var publicMethods = {
 			clearTimeout(_showOrHideTimeout);
 		}
 		
-		if(_options.modal) {
-			template.setAttribute('aria-hidden', 'true');
-			template.className = _initalClassName;
-		}
+		template.setAttribute('aria-hidden', 'true');
+		template.className = _initalClassName;
 
 		if(_updateSizeInterval) {
 			clearInterval(_updateSizeInterval);
@@ -1152,7 +1149,7 @@ var publicMethods = {
 
 	updateSize: function(force) {
 		
-		if(!_isFixedPosition) {
+		if(!_isFixedPosition && _options.modal) {
 			var windowScrollY = framework.getScrollY();
 			if(_currentWindowScrollY !== windowScrollY) {
 				template.style.top = windowScrollY + 'px';
@@ -1173,8 +1170,7 @@ var publicMethods = {
 		_viewportSize.x = self.scrollWrap.clientWidth;
 		_viewportSize.y = self.scrollWrap.clientHeight;
 
-		
-		_offset = {x:0,y:_currentWindowScrollY};//framework.getOffset(template); 
+		_updatePageScrollOffset();
 
 		_slideSize.x = _viewportSize.x + Math.round(_viewportSize.x * _options.spacing);
 		_slideSize.y = _viewportSize.y;
@@ -1182,6 +1178,7 @@ var publicMethods = {
 		_moveMainScroll(_slideSize.x * _currPositionIndex);
 
 		_shout('beforeResize'); // even may be used for example to switch image sources
+
 
 		// don't re-calculate size on inital size update
 		if(_containerShiftIndex !== undefined) {
@@ -1194,18 +1191,20 @@ var publicMethods = {
 				holder = _itemHolders[i];
 				_setTranslateX( (i+_containerShiftIndex) * _slideSize.x, holder.el.style);
 
-				hIndex = _getLoopedId(_currentItemIndex+i-1);
+				hIndex = _currentItemIndex+i-1;
+
+				if(_options.loop && _getNumItems() > 2) {
+					hIndex = _getLoopedId(hIndex);
+				}
 
 				// update zoom level on items and refresh source (if needsUpdate)
 				item = _getItemAt( hIndex );
 
 				// re-render gallery item if `needsUpdate`,
 				// or doesn't have `bounds` (entirely new slide object)
-				if(_itemsNeedUpdate || item.needsUpdate || !item.bounds) {
+				if( item && (_itemsNeedUpdate || item.needsUpdate || !item.bounds) ) {
 
-					if(item) {
-						self.cleanSlide( item );
-					}
+					self.cleanSlide( item );
 					
 					self.setContent( holder, hIndex );
 
@@ -1216,6 +1215,7 @@ var publicMethods = {
 					}
 
 					item.needsUpdate = false;
+
 				} else if(holder.index === -1 && hIndex >= 0) {
 					// add content first time
 					self.setContent( holder, hIndex );
@@ -1241,9 +1241,8 @@ var publicMethods = {
 		_shout('resize');
 	},
 	
-	//Zoom current item to
+	// Zoom current item to
 	zoomTo: function(destZoomLevel, centerPoint, speed, easingFn, updateFn) {
-		
 		/*
 			if(destZoomLevel === 'fit') {
 				destZoomLevel = self.currItem.fitRatio;
@@ -1273,7 +1272,7 @@ var publicMethods = {
 
 		_roundPoint(destPanOffset);
 
-		//_startZoomLevel = destZoomLevel;
+		// _startZoomLevel = destZoomLevel;
 		var onUpdate = function(now) {
 			if(now === 1) {
 				_currZoomLevel = destZoomLevel;
@@ -1301,6 +1300,7 @@ var publicMethods = {
 
 
 };
+
 
 /*>>core*/
 
@@ -2048,7 +2048,7 @@ var _gestureStartTime,
 
 			var opacityRatio = _calculateVerticalDragOpacityRatio();
 
-			if(opacityRatio < 0.6) {
+			if(opacityRatio < _options.verticalDragRange) {
 				self.close();
 			} else {
 				var initalPanY = _panOffset.y,
@@ -2321,6 +2321,8 @@ var _gestureStartTime,
 		}
 		
 		_mainScrollAnimating = true;
+		
+		_shout('mainScrollAnimStart');
 
 		_animateProp('mainScroll', _mainScrollPos.x, animateToX, finishAnimDuration, framework.easing.cubic.out, 
 			_moveMainScroll,
@@ -2454,6 +2456,7 @@ _registerModule('Gestures', {
 
 	}
 });
+
 
 /*>>gestures*/
 
@@ -2600,22 +2603,17 @@ var _showOrHideTimeout,
 							y: _panOffset.y
 						},
 						initialZoomLevel = _currZoomLevel,
-						scrollY = _initalWindowScrollY,
 						initalBgOpacity = _bgOpacity,
 						onUpdate = function(now) {
-							if(_scrollChanged) {
-								scrollY = framework.getScrollY();
-								_scrollChanged = false;
-							}
 							
 							if(now === 1) {
 								_currZoomLevel = destZoomLevel;
 								_panOffset.x = thumbBounds.x;
-								_panOffset.y = thumbBounds.y  - scrollY;
+								_panOffset.y = thumbBounds.y  - _currentWindowScrollY;
 							} else {
 								_currZoomLevel = (destZoomLevel - initialZoomLevel) * now + initialZoomLevel;
 								_panOffset.x = (thumbBounds.x - initialPanOffset.x) * now + initialPanOffset.x;
-								_panOffset.y = (thumbBounds.y - scrollY - initialPanOffset.y) * now + initialPanOffset.y;
+								_panOffset.y = (thumbBounds.y - _currentWindowScrollY - initialPanOffset.y) * now + initialPanOffset.y;
 							}
 							
 							_applyCurrentZoomPan();
@@ -2790,7 +2788,8 @@ var _getItemAt,
 			}
 
 			item.imageAppended = true;
-
+			_setImageSize(img, item.w, item.h);
+			
 			baseDiv.appendChild(img);
 
 			if(animate) {
@@ -2850,6 +2849,10 @@ var _getItemAt,
 			
 		}
 	},
+	_setImageSize = function(img, w, h) {
+		img.style.width = w + 'px';
+		img.style.height = h + 'px';
+	},
 	_appendImagesPool = function() {
 
 		if(_imagesToAppendPool.length) {
@@ -2875,11 +2878,16 @@ _registerModule('Controller', {
 			index = _getLoopedId(index);
 			var item = _getItemAt(index);
 
-			if(!item || !item.src || item.loaded || item.loading) {
+			if(!item || item.loaded || item.loading) {
 				return;
 			}
 
 			_shout('gettingData', index, item);
+
+			if (!item.src) {
+				return;
+			}
+
 			_preloadImage(item);
 		},
 		initController: function() {
@@ -3022,7 +3030,9 @@ _registerModule('Controller', {
 					// This is webkit progressive image loading bugfix.
 					// https://bugs.webkit.org/show_bug.cgi?id=108630
 					// https://code.google.com/p/chromium/issues/detail?id=404547
-					item.img.style.webkitBackfaceVisibility = 'hidden';
+					if(item.img) {
+						item.img.style.webkitBackfaceVisibility = 'hidden';
+					}
 
 					// check if holder hasn't changed while image was loading
 					if(holder && holder.index === index ) {
@@ -3074,8 +3084,7 @@ _registerModule('Controller', {
 						placeholder.src = item.msrc;
 					}
 					
-					placeholder.style.width = item.w + 'px';
-					placeholder.style.height = item.h + 'px';
+					_setImageSize(placeholder, item.w, item.h);
 
 					baseDiv.appendChild(placeholder);
 					item.placeholder = placeholder;
@@ -3111,6 +3120,7 @@ _registerModule('Controller', {
 				img.style.webkitBackfaceVisibility = 'hidden';
 				img.style.opacity = 1;
 				img.src = item.src;
+				_setImageSize(img, item.w, item.h);
 				_appendImage(index, item, baseDiv, img, true);
 			}
 			
@@ -3315,13 +3325,21 @@ _registerModule('DesktopZoom', {
 		handleMouseWheel: function(e) {
 
 			if(_currZoomLevel <= self.currItem.fitRatio) {
-				if(!_options.closeOnScroll) {
-					e.preventDefault();
+				if( _options.modal ) {
+
+					if ( !_options.closeOnScroll ) {
+						e.preventDefault();
+					} else if( _transformKey && Math.abs(e.deltaY) > 2 ) {
+						// close PhotoSwipe
+						// if browser supports transforms & scroll changed enough
+						_closedByScroll = true;
+						self.close();
+					}
+
 				}
 				return true;
 			}
 
-			e.preventDefault();
 			// allow just one event to fire
 			e.stopPropagation();
 
@@ -3329,12 +3347,18 @@ _registerModule('DesktopZoom', {
 			_wheelDelta.x = 0;
 
 			if('deltaX' in e) {
-				_wheelDelta.x = e.deltaX;
-				_wheelDelta.y = e.deltaY;
+				if(e.deltaMode === 1 /* DOM_DELTA_LINE */) {
+					// 18 - average line height
+					_wheelDelta.x = e.deltaX * 18;
+					_wheelDelta.y = e.deltaY * 18;
+				} else {
+					_wheelDelta.x = e.deltaX;
+					_wheelDelta.y = e.deltaY;
+				}
 			} else if('wheelDelta' in e) {
 				if(e.wheelDeltaX) {
 					_wheelDelta.x = -0.16 * e.wheelDeltaX;
-				} 
+				}
 				if(e.wheelDeltaY) {
 					_wheelDelta.y = -0.16 * e.wheelDeltaY;
 				} else {
@@ -3345,14 +3369,27 @@ _registerModule('DesktopZoom', {
 			} else {
 				return;
 			}
-		
-			// TODO: use rAF instead of mousewheel?
+
 			_calculatePanBounds(_currZoomLevel, true);
-			self.panTo(_panOffset.x - _wheelDelta.x, _panOffset.y - _wheelDelta.y);
+
+			var newPanX = _panOffset.x - _wheelDelta.x,
+				newPanY = _panOffset.y - _wheelDelta.y;
+
+			// only prevent scrolling in nonmodal mode when not at edges
+			if (_options.modal ||
+				(
+				newPanX <= _currPanBounds.min.x && newPanX >= _currPanBounds.max.x &&
+				newPanY <= _currPanBounds.min.y && newPanY >= _currPanBounds.max.y
+				) ) {
+				e.preventDefault();
+			}
+
+			// TODO: use rAF instead of mousewheel?
+			self.panTo(newPanX, newPanY);
 		},
 
 		toggleDesktopZoom: function(centerPoint) {
-			centerPoint = centerPoint || {x:_viewportSize.x/2, y:_viewportSize.y/2 + _initalWindowScrollY };
+			centerPoint = centerPoint || {x:_viewportSize.x/2 + _offset.x, y:_viewportSize.y/2 + _offset.y };
 
 			var doubleTapZoomLevel = _options.getDoubleTapZoom(true, self.currItem);
 			var zoomOut = _currZoomLevel === doubleTapZoomLevel;
@@ -3365,6 +3402,7 @@ _registerModule('DesktopZoom', {
 
 	}
 });
+
 
 /*>>desktop-zoom*/
 
@@ -3426,8 +3464,8 @@ var _historyUpdateTimeout,
 			return params;
 		}
 
-		var vars = hash.split('&');
-		for (var i = 0; i < vars.length; i++) {
+		var i, vars = hash.split('&');
+		for (i = 0; i < vars.length; i++) {
 			if(!vars[i]) {
 				continue;
 			}
@@ -3437,7 +3475,19 @@ var _historyUpdateTimeout,
 			}
 			params[pair[0]] = pair[1];
 		}
-		params.pid = parseInt(params.pid,10)-1;
+		if(_options.galleryPIDs) {
+			// detect custom pid in hash and search for it among the items collection
+			var searchfor = params.pid;
+			params.pid = 0; // if custom pid cannot be found, fallback to the first item
+			for(i = 0; i < _items.length; i++) {
+				if(_items[i].pid === searchfor) {
+					params.pid = i;
+					break;
+				}
+			}
+		} else {
+			params.pid = parseInt(params.pid,10)-1;
+		}
 		if( params.pid < 0 ) {
 			params.pid = 0;
 		}
@@ -3464,7 +3514,13 @@ var _historyUpdateTimeout,
 		}
 
 
-		var newHash = _initialHash + '&'  +  'gid=' + _options.galleryUID + '&' + 'pid=' + (_currentItemIndex + 1);
+		var pid = (_currentItemIndex + 1);
+		var item = _getItemAt( _currentItemIndex );
+		if(item.hasOwnProperty('pid')) {
+			// carry forward any custom pid assigned to the item
+			pid = item.pid;
+		}
+		var newHash = _initialHash + '&'  +  'gid=' + _options.galleryUID + '&' + 'pid=' + pid;
 
 		if(!_historyChanged) {
 			if(_windowLoc.hash.indexOf(newHash) === -1) {
@@ -3634,6 +3690,7 @@ _registerModule('History', {
 	
 	}
 });
+
 
 /*>>history*/
 	framework.extend(self, publicMethods); };
