@@ -5,7 +5,6 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     rename = require('gulp-rename'),
     concat = require('gulp-concat'),
-    notify = require('gulp-notify'),
     sass = require('gulp-sass');
 
 
@@ -17,8 +16,7 @@ function styles_generator(filename, destination) {
         .pipe(gulp.dest('asset/css'))
         .pipe(rename({suffix: '.min'}))
         .pipe(minifycss())
-        .pipe(gulp.dest('asset/css'))
-        .pipe(notify({ message: 'Styles task complete' }));
+        .pipe(gulp.dest('asset/css'));
 }
 
 gulp.task('styles', ['styles-base', 'styles-ios', 'styles-android']);
@@ -58,8 +56,7 @@ gulp.task('scripts', function() {
         .pipe(gulp.dest('asset/js'))
         .pipe(rename({suffix: '.min'}))
         .pipe(uglify())
-        .pipe(gulp.dest('asset/js'))
-        .pipe(notify({ message: 'Scripts task complete' }));
+        .pipe(gulp.dest('asset/js'));
 });
 
 gulp.task('default', function() {
