@@ -10,7 +10,7 @@
 <div class="content gallery-page">
     <ol class="gallery">
         <?php foreach($book as $page): ?>
-        <li data-img="<?= image('big', $page['src']) ?>" data-width=<?= $page['width'] ?> data-height=<?= $page['height'] ?>>
+        <li data-img="<?= image('big', $page['src']) ?>" data-size=<?= $page['width'] ?>x<?= $page['height'] ?>>
             <img class=lazy data-src="<?= image('small', $page['src']) ?>" />
         </li>
         <?php endforeach; ?>

@@ -1,48 +1,154 @@
 
 // On desktop computers we don't need touch support
 window.touchdevice = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
-if (window.touchdevice && typeof CustomEvent !== 'undefined') window.PUSH();
+if (window.touchdevice && window.PUSH && typeof CustomEvent !== 'undefined') window.PUSH();
 
-window.gallery = null;
+var initPhotoSwipeFromDOM = (function() {
 
-function viewerLoad(images, index) {
-    var pswpElement = document.querySelectorAll('.pswp')[0];
-    var options = {
-        index: index
+    function parseThumbnailElements(el) {
+        var thumbElements = el.childNodes,
+            numNodes = thumbElements.length,
+            items = [],
+            childElements,
+            size,
+            item;
+
+        for(var i = 0; i < numNodes; i++) {
+            el = thumbElements[i];
+
+            // include only element nodes
+            if(el.nodeType !== 1) {
+                continue;
+            }
+
+            size = el.getAttribute('data-size').split('x');
+
+            // create slide object
+            item = {
+                src: (window.isRetina) ? toRetina(el.getAttribute('data-img')) : el.getAttribute('data-img'),
+                w: parseInt(size[0], 10),
+                h: parseInt(size[1], 10)/*,
+                author: el.getAttribute('data-author')*/
+            };
+
+            item.el = el; // save link to element for getThumbBoundsFn
+
+            childElements = el.children;
+            if(childElements.length > 0) {
+                item.msrc = childElements[0].getAttribute('src'); // thumbnail url
+            }
+
+            items.push(item);
+        }
+
+        return items;
+    }
+
+    // find nearest parent element
+    function closest(el, fn) {
+        return el && ( fn(el) ? el : closest(el.parentNode, fn) );
+    }
+
+    function onThumbnailsClick(e) {
+        e = e || window.event;
+        e.preventDefault ? e.preventDefault() : e.returnValue = false;
+
+        var eTarget = e.target || e.srcElement;
+
+        var clickedListItem = closest(eTarget, function(el) {
+            return el.tagName === 'LI';
+        });
+
+        if(!clickedListItem) {
+            return;
+        }
+
+        var clickedGallery = clickedListItem.parentNode;
+
+        var childNodes = clickedListItem.parentNode.childNodes,
+            numChildNodes = childNodes.length,
+            nodeIndex = 0,
+            index;
+
+        for (var i = 0; i < numChildNodes; i++) {
+            if(childNodes[i].nodeType !== 1) {
+                continue;
+            }
+
+            if(childNodes[i] === clickedListItem) {
+                index = nodeIndex;
+                break;
+            }
+            nodeIndex++;
+        }
+
+        if(index >= 0) {
+            openPhotoSwipe( index, clickedGallery );
+        }
+        return false;
+    }
+
+    function openPhotoSwipe(index, galleryElement) {
+        var pswpElement = document.querySelectorAll('.pswp')[0],
+            gallery,
+            options,
+            items;
+
+        items = parseThumbnailElements(galleryElement);
+
+        // define options (if needed)
+        options = {
+            galleryUID: galleryElement.getAttribute('data-pswp-uid'),
+
+            getThumbBoundsFn: function(index) {
+                // See Options->getThumbBoundsFn section of docs for more info
+                var thumbnail = items[index].el.children[0],
+                    pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
+                    rect = thumbnail.getBoundingClientRect();
+
+                return {x:rect.left, y:rect.top + pageYScroll, w:rect.width};
+            },
+
+            addCaptionHTMLFn: function(item, captionEl, isFake) {
+                if(!item.title) {
+                    captionEl.children[0].innerText = '';
+                    return false;
+                }
+                captionEl.children[0].innerHTML = item.title +  '<br/><small>Photo: ' + item.author + '</small>';
+                return true;
+            }
+        };
+
+        options.index = parseInt(index, 10);
+
+
+        // exit if index not found
+        if( isNaN(options.index) ) {
+            return;
+        }
+
+        // Pass data to PhotoSwipe and initialize it
+        gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
+        gallery.init();
+    }
+
+    return function(gallerySelector) {
+        // select all gallery elements
+        var galleryElements = document.querySelectorAll( gallerySelector );
+        for(var i = 0, l = galleryElements.length; i < l; i++) {
+            galleryElements[i].setAttribute('data-pswp-uid', i+1);
+            galleryElements[i].onclick = onThumbnailsClick;
+        }
     };
-
-    // Initializes and opens PhotoSwipe
-    window.gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, images, options);
-    window.gallery.init();
-}
+})();
 
 function loadedPage(event) {
-    var page = $('#content > .content');
-
     // Lazy load images
-    page.find("img.lazy").unveil(100);
+    window.resetImageList();
 
     // Present the gallery
-    if (page.hasClass("gallery-page")) {
-
-        var images = [],
-            i = 0,
-            lis = page.find("ol.gallery li");
-
-        lis.on(window.touchdevice? 'tap' : 'click', function() {
-            viewerLoad(images, $(this).data('index'))
-        });
-
-        lis.each(function () {
-            var $this = $(this),
-                img = (window.isRetina) ? toRetina($this.data('img')) : $this.data('img');
-
-            $this.data('index', i);
-            images[i] = {src:img, w:$this.data('width'), h:$this.data('height')};
-            i++;
-        });
-    }
+    initPhotoSwipeFromDOM('ol.gallery li');
 }
 
-$(window).on('load', loadedPage);
+window.addEventListener('load', loadedPage);
 window.addEventListener('push', loadedPage);

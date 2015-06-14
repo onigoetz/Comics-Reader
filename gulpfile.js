@@ -35,17 +35,9 @@ gulp.task('styles-android', function() {
 
 gulp.task('scripts', function() {
     return gulp.src([
-        'src/js/vendor/zepto-1.1.4.min.js',
-        'src/js/vendor/zepto.plugins-1.1.4.js',
-        'src/js/vendor/jquery.unveil.js',
+        'src/js/vendor/lazyload.js',
 
-        //'src/js/vendor/ratchet/modals.js',
-        //'src/js/vendor/ratchet/popovers.js',
-        'src/js/vendor/ratchet/push.js',
-        //'src/js/vendor/ratchet/segmented-controllers.js',
-        //'src/js/vendor/ratchet/sliders.js',
-        //'src/js/vendor/ratchet/toggles.js',
-        //'src/js/vendor/ratchet/fingerblast.js',
+        //'src/js/vendor/ratchet/push.js',
 
         'src/js/photoswipe/photoswipe.js',
         'src/js/photoswipe/photoswipe-ui-default.js',
