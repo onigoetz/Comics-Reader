@@ -52,7 +52,7 @@ $app->get(
         foreach($pages as $key => $page) {
             $ps[$key] = $page['src'];
         }
-        array_multisort($ps, $pages, SORT_NATURAL);
+        array_multisort($ps, SORT_NATURAL, $pages);
 
         $parent_folder = search(getGallery(), dirname($book));
         $parent = $parent_folder[0]->getParent();
