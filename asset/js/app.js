@@ -19,14 +19,35 @@
         return res;
     }
 
-    function loadImage(el, fn) {
-        el.src = el.getAttribute('data-src');
+    var getNow = Date.now || function () {
+        return new Date().getTime();
+    };
 
-        el.classList.remove("lazy");
-
-        if (fn) {
-            fn();
-        }
+    // Returns a function, that, when invoked, will only be triggered at most once
+    // during a given window of time. Normally, the throttled function will run
+    // as much as it can, without ever going more than once per `wait` duration;
+    function throttle(func, wait) {
+        var timeout = null;
+        var previous = 0;
+        var later = function later() {
+            previous = getNow();
+            timeout = null;
+            func();
+        };
+        return function () {
+            var now = getNow();
+            var remaining = wait - (now - previous);
+            if (remaining <= 0 || remaining > wait) {
+                if (timeout) {
+                    clearTimeout(timeout);
+                    timeout = null;
+                }
+                previous = now;
+                func();
+            } else if (!timeout) {
+                timeout = setTimeout(later, remaining);
+            }
+        };
     }
 
     function elementInViewport(el) {
@@ -49,13 +70,16 @@
     function processScroll() {
         var i = images.length;
         while (i--) {
-            if (elementInViewport(images[i])) {
-                loadImage(images[i], function () {
-                    images.splice(i, i);
-                });
+            var el = images[i];
+            if (elementInViewport(el)) {
+                el.src = el.getAttribute('data-src');
+                el.classList.remove("lazy");
+                images.splice(i, 1);
             }
         }
     }
+
+    var throttledScroll = throttle(processScroll, 100);
 
     function resetImageList() {
         var i;
@@ -71,16 +95,16 @@
         // Ratchet compatibility
         var contents = $q('.content');
         for (i = 0; i < contents.length; i++) {
-            contents[i].addEventListener('scroll', processScroll);
+            contents[i].addEventListener('scroll', throttledScroll);
         }
 
-        processScroll();
+        throttledScroll();
     }
 
     resetImageList();
 
     //Make it ready for the rest
-    window.addEventListener('scroll', processScroll);
+    window.addEventListener('scroll', throttledScroll);
 
     window.resetImageList = resetImageList;
 })(window);
