@@ -91,4 +91,4 @@
     window.addEventListener('scroll', processScroll);
 
     window.resetImageList = resetImageList;
-}(this);
+}(window);

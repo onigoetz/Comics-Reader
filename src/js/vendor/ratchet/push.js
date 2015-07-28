@@ -9,7 +9,7 @@
 
 /* global _gaq: true */
 
-window.PUSH = function () {
+(function () {
     'use strict';
 
     var noop = function () {};
@@ -225,6 +225,7 @@ window.PUSH = function () {
         xhr = new XMLHttpRequest();
         xhr.open('GET', options.url, true);
         xhr.setRequestHeader('X-PUSH', 'true');
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
         xhr.onreadystatechange = function () {
             if (options._timeout) {
@@ -443,8 +444,6 @@ window.PUSH = function () {
     };
 
     var parseXHR = function (xhr, options) {
-        var head;
-        var body;
         var data = {};
         var responseText = xhr.responseText;
 
@@ -454,24 +453,24 @@ window.PUSH = function () {
             return data;
         }
 
-        if (/<html/i.test(responseText)) {
-            head           = document.createElement('div');
-            body           = document.createElement('div');
-            head.innerHTML = responseText.match(/<head[^>]*>([\s\S.]*)<\/head>/i)[0];
-            body.innerHTML = responseText.match(/<body[^>]*>([\s\S.]*)<\/body>/i)[0];
+        var json = JSON.parse(responseText);
+
+        data.title = json.title;
+
+        var barnav = renderHeader(options.url, json);
+        var content;
+
+        if (json.book) {
+            content = renderBook(json);
         } else {
-            head           = body = document.createElement('div');
-            head.innerHTML = responseText;
+            content = renderList(json);
         }
 
-        data.title = head.querySelector('title');
-        var text = 'innerText' in data.title ? 'innerText' : 'textContent';
-        data.title = data.title && data.title[text].trim();
-
         if (options.transition) {
-            data = extendWithDom(data, '.content', body);
+            data.barnav = barnav;
+            data.contents = content;
         } else {
-            data.contents = body;
+            data.contents = React.createElement("div", {}, barnav, content);
         }
 
         return data;
@@ -480,11 +479,15 @@ window.PUSH = function () {
 
     // Attach PUSH event handlers
     // ==========================
+    if (window.touchdevice) {
+        window.addEventListener('touchstart', function () { isScrolling = false; });
+        window.addEventListener('touchmove', function () { isScrolling = true; });
+        window.addEventListener('touchend', touchend);
+        window.addEventListener('click', function (e) { if (getTarget(e)) {e.preventDefault();} });
+    } else {
+        window.addEventListener('click', touchend);
+    }
 
-    window.addEventListener('touchstart', function () { isScrolling = false; });
-    window.addEventListener('touchmove', function () { isScrolling = true; });
-    window.addEventListener('touchend', touchend);
-    window.addEventListener('click', function (e) { if (getTarget(e)) {e.preventDefault();} });
     window.addEventListener('popstate', popstate);
     window.PUSH = PUSH;
-};
+})();

@@ -1,7 +1,8 @@
 var gulp = require('gulp'),
+    plumber = require('gulp-plumber'),
     autoprefixer = require('gulp-autoprefixer'),
     minifycss = require('gulp-minify-css'),
-    jshint = require('gulp-jshint'),
+    babel = require('gulp-babel'),
     uglify = require('gulp-uglify'),
     rename = require('gulp-rename'),
     concat = require('gulp-concat'),
@@ -10,6 +11,7 @@ var gulp = require('gulp'),
 
 function styles_generator(filename, destination) {
     return gulp.src(filename)
+        .pipe(plumber())
         .pipe(rename(destination + '.css'))
         .pipe(sass())
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
@@ -37,13 +39,18 @@ gulp.task('scripts', function() {
     return gulp.src([
         'src/js/vendor/lazyload.js',
 
-        //'src/js/vendor/ratchet/push.js',
+        'src/js/vendor/ratchet/push.js',
 
         'src/js/photoswipe/photoswipe.js',
         'src/js/photoswipe/photoswipe-ui-default.js',
 
+        'src/js/dom.js',
+        'src/js/photoswipe.js',
+
         'src/js/site.js'
     ])
+        .pipe(plumber())
+        .pipe(babel())
         .pipe(concat('app.js'))
         .pipe(gulp.dest('asset/js'))
         .pipe(rename({suffix: '.min'}))

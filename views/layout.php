@@ -18,11 +18,14 @@
 
     <link rel="stylesheet" href="<?= BASE; ?>asset/css/app.min.css?<?=filemtime(ROOT.'/asset/css/app.min.css'); ?>"/>
     <link rel="stylesheet" href="<?= BASE; ?>asset/css/theme-ios.min.css?<?=filemtime(ROOT.'/asset/css/theme-ios.min.css'); ?>"/>
+
+    <script>
+        window.baseURL = <?= BASE ?>;
+    </script>
 </head>
 <body class="ui-loading">
-    <div id="content">
-        <?= $content; ?>
-    </div>
+
+    <?= $content; ?>
 
     <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="pswp__bg"></div>
@@ -55,6 +58,6 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="<?= BASE; ?>asset/js/app.js?<?=filemtime(ROOT.'/asset/js/app.js'); ?>"></script>
+    <script type="text/javascript" src="<?= BASE; ?>asset/js/app.min.js?<?=filemtime(ROOT.'/asset/js/app.min.js'); ?>"></script>
 </body>
 </html>
