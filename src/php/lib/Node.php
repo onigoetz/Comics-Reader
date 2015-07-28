@@ -66,4 +66,15 @@ class Node implements Countable {
     {
         return $this->thumb;
     }
+
+    public function toArray()
+    {
+        return [
+            'name' => $this->getName(),
+            'type' => $this->getType(),
+            'thumb' => $this->getThumb(),
+            'path' => $this->getPath(),
+            'count' => $this->count()
+        ];
+    }
 }

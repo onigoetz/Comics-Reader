@@ -20,14 +20,27 @@ class CustomView extends \Slim\View
      */
     protected function render($template, $data = null)
     {
-		$content = parent::render($template, $data);
+		$data = array_merge($this->data->all(), (array) $data);
 
 		if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == "XMLHttpRequest") {
-			return $content;
+			\Slim\Slim::getInstance()->response()->header('Content-Type', 'application/json');
+			return json_encode($this->toArray($data));
 		}
 
-		$data['content'] = $content;
+		$data['content'] = parent::render($template, $data);
 
 		return parent::render($this->over_template, $data);
     }
+
+	protected function toArray($data) {
+		foreach ($data as $key => $value) {
+			if (is_array($value)) {
+				$data[$key] = $this->toArray($value);
+			} elseif ($value instanceof Node) {
+				$data[$key] = $value->toArray();
+			}
+		}
+
+		return $data;
+	}
 }

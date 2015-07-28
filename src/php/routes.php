@@ -3,7 +3,15 @@
 $app->get(
     '/',
     function () use ($app) {
-        return $app->render('index.php', array('data' => getGallery()));
+
+        $data = getGallery();
+
+        foreach ($data as $key => $row) {
+            $names[$key] = ucfirst($row->getName());
+        }
+        array_multisort($names, SORT_ASC, $data);
+
+        return $app->render('index.php', array('title' => 'Home', 'data' => $data));
     }
 );
 
@@ -13,6 +21,11 @@ $app->get(
         $query = standardize_unicode($query);
         $data = search(getGallery(), $query);
         $parent = $data[0]->getParent()->getParent();
+
+        foreach ($data as $key => $row) {
+            $names[$key] = ucfirst($row->getName());
+        }
+        array_multisort($names, SORT_ASC, $data);
 
         $end = explode('/', $query);
         return $app->render('list.php', array('title' => end($end), 'data' => $data, 'parent' => $parent));

@@ -1,10 +1,5 @@
 <?php
 
-foreach ($data as $key => $row) {
-    $names[$key] = ucfirst($row->getName());
-}
-array_multisort($names, SORT_ASC, $data);
-
 $current_letter = '';
 
 if (!count($data)) {
