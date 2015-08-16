@@ -1,5 +1,7 @@
 <?php
 
+use Imagine\Image\Box;
+
 $app->get(
     '/',
     function () use ($app) {
@@ -41,8 +43,6 @@ $app->get(
         $pages = array();
         $path = GALLERY_ROOT . '/' . $book;
 
-        $imagine = new Imagine\Gd\Imagine();
-
         $it = new DirectoryIterator($path);
         foreach ($it as $item) {
             if (!in_array(strtolower($item->getExtension()), ['jpg', 'jpeg', 'png', 'gif']) || $item->isDir()) {
@@ -50,7 +50,16 @@ $app->get(
             }
 
             $fullPath = "$path/{$item->getFilename()}";
-            $size = $imagine->open($fullPath)->getSize()->widen(BIG_WIDTH);
+
+            // Quick size getter, instead of Imagine
+            // which does a lot of processing that
+            // is not useful for us
+            $data = getimagesize($fullPath);
+            if (false === $data) {
+                throw new RuntimeException(sprintf('Failed to get image size for %s', $fullPath));
+            }
+            $size = (new Box($data[0], $data[1]))->widen(BIG_WIDTH);
+
 
             $pages[] = [
                 'src' => str_replace(GALLERY_ROOT, '', $fullPath),
