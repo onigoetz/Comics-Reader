@@ -41,13 +41,11 @@ $app->get(
         $pages = array();
         $path = GALLERY_ROOT . '/' . $book;
 
-        $ignore = array('.', '..', 'thumbs', ".DS_Store", "Thumbs.db");
-
         $imagine = new Imagine\Gd\Imagine();
 
         $it = new DirectoryIterator($path);
         foreach ($it as $item) {
-            if (in_array($item->getFilename(), $ignore) || $item->isDir() || strpos($item, '._') === 0) {
+            if (!in_array(strtolower($item->getExtension()), ['jpg', 'jpeg', 'png', 'gif']) || $item->isDir()) {
                 continue;
             }
 
