@@ -1,45 +1,50 @@
 <?php
 
-use Imagine\Image\Box;
+use Intervention\Image\Constraint;
+use Intervention\Image\Size;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+// URL Management is done on the client side, we can simply return a notFoundHandler
+$container['notFoundHandler'] = function ($c) {
+    return function ($request, $response) use ($c) {
+        return $c['response']
+            ->withStatus(200)
+            ->withHeader('Content-Type', 'text/html')
+            ->write(file_get_contents(__DIR__ . '/../../index.html'));
+    };
+};
 
 $app->get(
     '/',
-    function () use ($app) {
-
-        $data = getGallery();
-
-        foreach ($data as $key => $row) {
-            $names[$key] = ucfirst($row->getName());
-        }
-        array_multisort($names, SORT_ASC, $data);
-
-        return $app->render('index.php', array('title' => 'Home', 'data' => $data));
+    function (ServerRequestInterface $req, ResponseInterface $res, $args = []) {
+        $res->getBody()->write(file_get_contents(__DIR__ . '/../../index.html'));
+        return $res;
     }
 );
 
 $app->get(
-    '/list/:list',
-    function ($query) use ($app) {
-        $query = standardize_unicode($query);
-        $data = search(getGallery(), $query);
-        $parent = $data[0]->getParent()->getParent();
+    '/books.json',
+    function (ServerRequestInterface $req, ResponseInterface $res, $args = []) use ($app) {
+        $cache = $app->getContainer()->get('cache');
 
-        foreach ($data as $key => $row) {
-            $names[$key] = ucfirst($row->getName());
-        }
-        array_multisort($names, SORT_ASC, $data);
+        $data = $cache->remember('GALLERY_FILES', 0, function() {
+            $indexCreator = new IndexCreator(GALLERY_ROOT);
+            return IndexCreator::toCache($indexCreator->getList());
+        });
 
-        $end = explode('/', $query);
-        return $app->render('list.php', array('title' => end($end), 'data' => $data, 'parent' => $parent));
+        $tree = new TreeWalker(IndexCreator::fromCache($data));
+
+        return $res->withJson($tree->toJson());
     }
-)->conditions(array('list' => '.*'));
+);
 
 $app->get(
-    '/book/:book',
-    function ($book) use ($app) {
-        $book = standardize_unicode($book);
+    '/books/{book:.*}.json',
+    function (ServerRequestInterface $req, ResponseInterface $res, $args = []) {
+        $book = standardize_unicode($args['book']);
 
-        //Get the pages
+        // Get the pages
         $pages = array();
         $path = GALLERY_ROOT . '/' . $book;
 
@@ -51,15 +56,16 @@ $app->get(
 
             $fullPath = "$path/{$item->getFilename()}";
 
-            // Quick size getter, instead of Imagine
-            // which does a lot of processing that
-            // is not useful for us
+            // Don't use Imaging as it does
+            // a lot of useless things in
+            // addition to getting size
             $data = getimagesize($fullPath);
             if (false === $data) {
                 throw new RuntimeException(sprintf('Failed to get image size for %s', $fullPath));
             }
-            $size = (new Box($data[0], $data[1]))->widen(BIG_WIDTH);
-
+            $size = (new Size($data[0], $data[1]))->resize(BIG_WIDTH, null, function(Constraint $constraint) {
+                $constraint->aspectRatio();
+            });
 
             $pages[] = [
                 'src' => str_replace(GALLERY_ROOT, '', $fullPath),
@@ -69,16 +75,12 @@ $app->get(
         }
 
         $ps = array();
-        foreach($pages as $key => $page) {
+        foreach ($pages as $key => $page) {
             $ps[$key] = $page['src'];
         }
         array_multisort($ps, SORT_NATURAL, $pages);
 
-        $parent_folder = search(getGallery(), dirname($book));
-        $parent = $parent_folder[0]->getParent();
-
-
         $end = explode('/', $book);
-        return $app->render('book.php', array('title' => end($end), 'book' => $pages, 'parent' => $parent));
+        return $res->withJson(['name' => end($end), 'pages' => $pages]);
     }
-)->conditions(array('book' => '.*'));
+);

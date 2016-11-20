@@ -1,0 +1,28 @@
+
+.Header {
+    height: $bar-height;
+    padding-right: 10px;
+    padding-left: 10px;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+
+    /* IOS */
+    background-color: hsla(0,0%,97%,.98);
+    border-bottom: 1px solid rgba(0,0,0,.25);
+}
+
+.Header__title {
+    position: absolute;
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0 -10px;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: $bar-height;
+    color: #000;
+    text-align: center;
+    white-space: nowrap;
+}

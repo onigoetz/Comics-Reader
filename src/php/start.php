@@ -3,33 +3,38 @@
 // Configure
 // ---------------------------------------------------------------------------------------------------------------------
 include __DIR__ . '/config.php';
-include __DIR__ . '/functions.php';
 
+// Helpers
+// ---------------------------------------------------------------------------------------------------------------------
+
+function standardize_unicode($link) {
+    $replace = [
+        urldecode("%C3%A8") => urldecode("e%CC%80"), //è
+        urldecode("%C3%A9") => urldecode("e%CC%81"), //é
+        urldecode("%C3%B4") => urldecode("o%CC%82"), //ô
+        urldecode("%C3%A0") => urldecode("a%CC%80"), //à
+        urldecode("%C3%89") => urldecode("E%CC%81"), //É
+        urldecode("%C3%BB") => urldecode("u%CC%82"), //û
+    ];
+
+    return strtr($link, $replace);
+}
 
 // Create application
 // ---------------------------------------------------------------------------------------------------------------------
-$app = new \Slim\Slim(
-    array(
-        'view' => new CustomView('layout.php'),
-        'templates.path' => 'views',
-    )
-);
+
+$container = new \Slim\Container;
+
+$container['cache'] = function () {
+    return new Cache();
+};
+
+$app = new \Slim\App($container);
 
 
 // Add Imagecache
 // ---------------------------------------------------------------------------------------------------------------------
 Onigoetz\Imagecache\Support\Slim\ImagecacheRegister::register($app, $image_config);
-
-
-// Add Cache
-// ---------------------------------------------------------------------------------------------------------------------
-$app->container->singleton(
-    'cache',
-    function () {
-        return new Cache();
-    }
-);
-
 
 // Init Routes
 // ---------------------------------------------------------------------------------------------------------------------

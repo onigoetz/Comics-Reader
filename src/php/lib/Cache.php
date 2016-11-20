@@ -62,6 +62,20 @@ class Cache
         return $data[1];
     }
 
+    function remember($key, $ttl, $callback) {
+        $data = $this->fetch($key);
+
+        if ($data) {
+            return $data;
+        }
+
+        $data = $callback();
+
+        $this->store($key, $data, $ttl);
+
+        return $data;
+    }
+
     /**
      * Delete data in the cache
      *

@@ -10,13 +10,12 @@ define('BASE', str_replace('//', '/', dirname($_SERVER['SCRIPT_NAME']) . '/'));
 define('DIR_IMAGE_FILE', '_image.jpg');
 
 define('ROOT', dirname(dirname(__DIR__)));
-define('CACHE', ROOT . '/cache');
-define('GALLERY_ROOT', ROOT . '/images');
+define('GALLERY_ROOT', '/comicsReaderImages');
 define('BIG_WIDTH', 800);
 
 $image_config = array(
-    'path_images' => 'images',
-    'path_images_root' => ROOT,
+    'path_web' => 'images',
+    'path_local' => GALLERY_ROOT,
     'path_cache' => 'cache',
     'presets' => array(
         'small' => array( //exact size
@@ -27,3 +26,5 @@ $image_config = array(
         )
     )
 );
+
+define('CACHE', $image_config['path_local'] . '/' . $image_config['path_cache']);

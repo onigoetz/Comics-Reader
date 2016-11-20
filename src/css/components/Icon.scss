@@ -1,0 +1,21 @@
+
+.Button .icon {
+    font-size: inherit;
+}
+
+.Header .icon {
+  position: relative;
+  z-index: 5;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 24px;
+}
+
+.Header .Button .icon {
+    top: 3px;
+    padding: 0;
+}
+
+.Header .Button.pull-left .icon-left-nav {
+    margin-right: -3px;
+}
