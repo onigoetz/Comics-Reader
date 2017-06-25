@@ -43,6 +43,10 @@ class IndexCreator {
 
             $directory = new DirectoryIterator(GALLERY_ROOT . '/' . $folder->getPath());
             foreach ($directory as $item){
+                if (substr($item->getFilename(), 0, 1) == ".") {
+                    continue;
+                }
+
                 if($item->isDot() || in_array($item->getFilename(), array('.', '..', 'thumbs', '.DS_Store'))) {
                     continue;
                 }

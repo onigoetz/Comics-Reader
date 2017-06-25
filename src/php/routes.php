@@ -50,6 +50,11 @@ $app->get(
 
         $it = new DirectoryIterator($path);
         foreach ($it as $item) {
+            // Ignore hidden files
+		    if (substr($item->getFilename(), 0, 1) == ".") {
+		        continue;
+		    }
+
             if (!in_array(strtolower($item->getExtension()), ['jpg', 'jpeg', 'png', 'gif']) || $item->isDir()) {
                 continue;
             }
