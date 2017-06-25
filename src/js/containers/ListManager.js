@@ -14,7 +14,7 @@ export default class ListManager extends React.Component {
     }
 
     loadData(props) {
-        getList(props.location && props.location.pathname.replace("/list/", "") || "").then(v => {
+        getList((props.location && props.location.pathname.replace("/list/", "")) || "").then(v => {
 
             if (this.unmounting) {
                 return;
@@ -44,10 +44,12 @@ export default class ListManager extends React.Component {
         }
 
         return <div>
-            <Header url={this.props.pathname} title={this.state.data.name} parent={this.state.data.parent} />
+            <Header url={this.props.location.pathname} title={this.state.data.name} parent={this.state.data.parent} />
             <div className="Content">
                 <List books={this.state.data.books}/>
             </div>
         </div>;
     }
 }
+
+ListManager.displayName = "ListManager";

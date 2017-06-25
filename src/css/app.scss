@@ -1,15 +1,14 @@
-@import "normalize";
+@import "./normalize";
 
-@import "variables.scss";
+@import "./variables.scss";
 
-@import "mixins";
-@import "base";
+@import "./mixins.scss";
+@import "./base.scss";
 
-@import "ratchet/ratchicons";
+@import "./components/Button.scss";
+@import "./components/Gallery.scss";
+@import "./components/Header.scss";
+@import "./components/Icon.scss";
+@import "./components/List.scss";
+@import "./components/Loading.scss";
 
-@import "components/Button";
-@import "components/Gallery";
-@import "components/Header";
-@import "components/Icon";
-@import "components/List";
-@import "components/Loading";

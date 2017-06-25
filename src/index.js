@@ -1,18 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Router from "react-router/BrowserRouter";
-import Match from "react-router/Match";
-import Miss from "react-router/Miss";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
 import ListManager from "./js/containers/ListManager";
 import BookManager from "./js/containers/BookManager";
 
+import "./css/app.scss";
 import "react-photoswipe/lib/photoswipe.css";
 
-ReactDOM.render(<Router basename={window.baseURL}>
+ReactDOM.render(<BrowserRouter basename={window.baseURL}>
     <div>
-        <Match pattern="/list/:path" component={ListManager}/>
-        <Match pattern="/book/" component={BookManager}/>
-        <Miss render={() => <ListManager /> }/>
+        <Switch>
+            <Route path="/list/:path" component={ListManager}/>
+            <Route path="/book/" component={BookManager}/>
+            <Route render={() => <ListManager /> }/>
+        </Switch>
     </div>
-</Router>, document.getElementById('root'));
+</BrowserRouter>, document.getElementById('root'));
 

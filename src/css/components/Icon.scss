@@ -16,6 +16,13 @@
     padding: 0;
 }
 
-.Header .Button.pull-left .icon-left-nav {
-    margin-right: -3px;
+.Header .Button.pull-left svg {
+    margin-right: 2px;
+}
+
+.Header .Button svg {
+    fill: currentColor;
+    display:inline-block;
+    height: 1.3em;
+    transform: translateY(4px);
 }

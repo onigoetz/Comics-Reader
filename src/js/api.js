@@ -1,4 +1,3 @@
-import axios from "axios";
 import Immutable from "immutable";
 import {TYPE_DIR, TYPE_BOOK} from "./types";
 
@@ -26,24 +25,21 @@ function cleanEntry(key, entry) {
 }
 
 function cleanEntries(data) {
-
     let cleanedData = Immutable.Map();
 
-    for (var i in data) {
-        if (data.hasOwnProperty(i)) {
-            cleanedData = cleanedData.set(i, cleanEntry(i, data[i]));
-        }
-    }
+    Object.keys(data).forEach(key => {
+      cleanedData = cleanedData.set(key, cleanEntry(key, data[key]));
+    });
 
     return cleanedData;
 }
 
 function onlySuccess(v) {
-    if (v.status != 200) {
+    if (v.status !== 200) {
         throw new Error("Failed with status " + v.status + " and message: " + v.statusText);
     }
 
-    return v;
+    return v.json();
 }
 
 function getAllFolders() {
@@ -51,16 +47,16 @@ function getAllFolders() {
         return Promise.resolve(books);
     }
 
-    return axios.get(window.baseURL + "/books.json").then(onlySuccess).then(v => {
-        books = cleanEntries(v.data);
+    return fetch(window.baseURL + "books.json").then(onlySuccess).then(v => {
+        books = cleanEntries(v);
 
         return books;
     });
 }
 
 function getMissingBook(id) {
-    return axios.get(window.baseURL + "/books/" + id + ".json").then(onlySuccess).then(v => {
-        books = books.set(id, cleanEntry(id, v.data));
+    return fetch(window.baseURL + "books/" + id + ".json").then(onlySuccess).then(v => {
+        books = books.set(id, cleanEntry(id, v));
 
         return books.get(id);
     });
@@ -75,7 +71,7 @@ function getMissingBook(id) {
 function prepare(source) {
     let data = source;
 
-    if (data.has("parent") && typeof data.get("parent") == "string") {
+    if (data.has("parent") && typeof data.get("parent") === "string") {
         data = data.set("parent", books.get(data.get("parent")));
     }
 

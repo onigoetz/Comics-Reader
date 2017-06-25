@@ -1,6 +1,6 @@
 import React from "react";
 import LazyLoad from 'react-lazy-load';
-import Link from "react-router/Link";
+import {Link} from "react-router-dom";
 import {isNumeric, image, toRetina, isRetina} from "../utils";
 import {TYPE_DIR} from "../types";
 
@@ -43,10 +43,10 @@ export default class List extends React.Component {
                 <Link to={url}>
                     <div className="List__cell__body">
                         <LazyLoad height={75} width={60} offsetVertical={200} className="List__cell__media pull-left" >
-                            <img src={thumb} height="75"/>
+                            <img src={thumb} height="75" alt={folder.name} />
                         </LazyLoad>
                         {folder.name}
-                        {folder.type == TYPE_DIR ? <p>{folder.books.length} Tomes</p> : ""}
+                        {folder.type === TYPE_DIR ? <p>{folder.books.length} Tomes</p> : ""}
                     </div>
                 </Link>
             </li>);
@@ -56,3 +56,5 @@ export default class List extends React.Component {
     }
 
 }
+
+List.displayName = "List";

@@ -10,7 +10,7 @@ export function image(preset, image) {
         return "";
     }
 
-    return baseURL + "/images/cache/" + preset + "/" + image.replace('#', '%23');
+    return baseURL + "images/cache/" + preset + "/" + image.replace('#', '%23');
 }
 
 const srcReplace = /(\.[A-z]{3,4}\/?(\?.*)?)$/;

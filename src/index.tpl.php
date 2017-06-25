@@ -20,29 +20,21 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/asset/images/apple-touch.png"/>
-    <link rel="apple-touch-icon" sizes="72x72" href="%PUBLIC_URL%/asset/images/apple-touch-72.png"/>
-    <link rel="apple-touch-icon" sizes="114x114" href="%PUBLIC_URL%/asset/images/apple-touch-114.png"/>
-    <link rel="apple-touch-icon" sizes="144x144" href="%PUBLIC_URL%/asset/images/apple-touch-144.png"/>
+    <link rel="apple-touch-icon" href="<?= BASE; ?>asset/images/apple-touch.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="<?= BASE; ?>asset/images/apple-touch-72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="<?= BASE; ?>asset/images/apple-touch-114.png"/>
+    <link rel="apple-touch-icon" sizes="144x144" href="<?= BASE; ?>asset/images/apple-touch-144.png"/>
 
-    <link rel="stylesheet" href="%PUBLIC_URL%/asset/css/app.min.css"/>
+    <link rel="stylesheet" href="<?= BASE . asset('main.css'); ?>"/>
 
     <script>
-        window.baseURL = "%PUBLIC_URL%";
+        window.baseURL = "<?= BASE; ?>";
     </script>
 </head>
 <body>
 <div id="root"></div>
-<!--
-  This HTML file is a template.
-  If you open it directly in the browser, you will see an empty page.
 
-  You can add webfonts, meta tags, or analytics to this file.
-  The build step will place the bundled scripts into the <body> tag.
-
-  To begin the development, run `npm start`.
-  To create a production bundle, use `npm run build`.
--->
+<script type="text/javascript" src="<?= BASE . asset('main.js'); ?>"></script>
 
 </body>
 </html>

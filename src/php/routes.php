@@ -11,14 +11,27 @@ $container['notFoundHandler'] = function ($c) {
         return $c['response']
             ->withStatus(200)
             ->withHeader('Content-Type', 'text/html')
-            ->write(file_get_contents(__DIR__ . '/../../index.html'));
+            ->write(renderLayout());
     };
 };
+
+function asset($name) {
+    return json_decode(file_get_contents(__DIR__  .  "/../../asset-manifest.json"), true)[$name];
+}
+
+function renderLayout() {
+    ob_start();
+    include __DIR__ . "/../index.tpl.php";
+    $output = ob_get_contents();
+    ob_end_clean();
+
+    return $output;
+}
 
 $app->get(
     '/',
     function (ServerRequestInterface $req, ResponseInterface $res, $args = []) {
-        $res->getBody()->write(file_get_contents(__DIR__ . '/../../index.html'));
+        $res->getBody()->write(renderLayout());
         return $res;
     }
 );
