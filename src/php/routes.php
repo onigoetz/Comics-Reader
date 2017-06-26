@@ -1,7 +1,5 @@
 <?php
 
-use Intervention\Image\Constraint;
-use Intervention\Image\Size;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -58,41 +56,11 @@ $app->get(
         $book = standardize_unicode($args['book']);
 
         // Get the pages
-        $pages = array();
         $path = GALLERY_ROOT . '/' . $book;
 
-        $it = new DirectoryIterator($path);
-        foreach ($it as $item) {
-            // Ignore hidden files
-		    if (substr($item->getFilename(), 0, 1) == ".") {
-		        continue;
-		    }
+        $pages = getPages($path);
 
-            if (!in_array(strtolower($item->getExtension()), ['jpg', 'jpeg', 'png', 'gif']) || $item->isDir()) {
-                continue;
-            }
-
-            $fullPath = "$path/{$item->getFilename()}";
-
-            // Don't use Imaging as it does
-            // a lot of useless things in
-            // addition to getting size
-            $data = getimagesize($fullPath);
-            if (false === $data) {
-                throw new RuntimeException(sprintf('Failed to get image size for %s', $fullPath));
-            }
-            $size = (new Size($data[0], $data[1]))->resize(BIG_WIDTH, null, function(Constraint $constraint) {
-                $constraint->aspectRatio();
-            });
-
-            $pages[] = [
-                'src' => str_replace(GALLERY_ROOT, '', $fullPath),
-                'width' => $size->getWidth(),
-                'height' => $size->getHeight()
-            ];
-        }
-
-        $ps = array();
+        $ps = [];
         foreach ($pages as $key => $page) {
             $ps[$key] = $page['src'];
         }

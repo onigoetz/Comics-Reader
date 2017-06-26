@@ -3,22 +3,7 @@
 // Configure
 // ---------------------------------------------------------------------------------------------------------------------
 include __DIR__ . '/config.php';
-
-// Helpers
-// ---------------------------------------------------------------------------------------------------------------------
-
-function standardize_unicode($link) {
-    $replace = [
-        urldecode("%C3%A8") => urldecode("e%CC%80"), //è
-        urldecode("%C3%A9") => urldecode("e%CC%81"), //é
-        urldecode("%C3%B4") => urldecode("o%CC%82"), //ô
-        urldecode("%C3%A0") => urldecode("a%CC%80"), //à
-        urldecode("%C3%89") => urldecode("E%CC%81"), //É
-        urldecode("%C3%BB") => urldecode("u%CC%82"), //û
-    ];
-
-    return strtr($link, $replace);
-}
+include __DIR__ . '/functions.php';
 
 // Create application
 // ---------------------------------------------------------------------------------------------------------------------
@@ -34,7 +19,15 @@ $app = new \Slim\App($container);
 
 // Add Imagecache
 // ---------------------------------------------------------------------------------------------------------------------
-Onigoetz\Imagecache\Support\Slim\ImagecacheRegister::register($app, $image_config);
+$app->getContainer()['imagecache'] = function () use ($image_config) {
+    return new ImagecacheManager($image_config);
+};
+
+$app->get(
+    "/{$image_config['path_web']}/{$image_config['path_cache']}/{preset}/{file:.*}",
+    (new Onigoetz\Imagecache\Support\Slim\ImagecacheRegister)->request()
+)
+    ->setName('onigoetz.imagecache');
 
 // Init Routes
 // ---------------------------------------------------------------------------------------------------------------------

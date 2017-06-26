@@ -52,6 +52,9 @@ class Node implements Countable {
         $this->children = $children;
     }
 
+    /**
+     * @return Node[]
+     */
     public function getChildren()
     {
         return $this->children;
@@ -62,6 +65,9 @@ class Node implements Countable {
         $this->thumb = $thumb;
     }
 
+    /**
+     * @return string|bool
+     */
     public function getThumb()
     {
         return $this->thumb;
