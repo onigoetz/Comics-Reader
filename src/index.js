@@ -12,7 +12,7 @@ ReactDOM.render(<BrowserRouter basename={window.baseURL}>
         <Switch>
             <Route path="/list/:path" component={ListManager}/>
             <Route path="/book/" component={BookManager}/>
-            <Route render={() => <ListManager /> }/>
+            <Route render={props => <ListManager {...props} /> }/>
         </Switch>
     </div>
 </BrowserRouter>, document.getElementById('root'));
