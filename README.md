@@ -1,28 +1,79 @@
 # Comics reader
 Read your comics on your tablet
 
-# What is it ?
+## What is it ?
 A nice little comic book reader for tablets and mobile phones.
 It is not intended to work on a desktop computer.
 
-# Requirements
+## Features
 
-- Some comics to read ( yeah, they're not provided, sorry ;) )
-- A PHP web server
-- A tablet
+- Watch your comic books on your phone or tablet, at home or on the go.
+- Uses your filesystem, no need for a database
+- Opens images in a folder or with CBR/CBZ files
 
-# Installing
+## Installing
+
+### Using docker
+
+```
+docker run -v /your-images-dir:/comics -p 8008:80 --rm onigoetz/comicsreader
+```
+
+Will start the comics reader using your comic books at `/your-images-dir` and be available at [http://localhost:8008]().
+
+
+### On a PHP server
 
 - Download this repository on your server in a web accessible directory
+- edit `src/php/config.php` to define the path to your images
 - make the `cache` directory writable
-- `composer install`
-- The easiest way to make it work is to make a symlink in the web folder with the name `images` that points to all your comics
-- Point your browser to the web folder. (the first page load might take some time as it caches the list of your comics)
-- Enjoy !
+- run `composer install`
+
+You should be good to go.
+
+## Indexing books
+
+To perform in the best way, the comics reader indexes your books on the first run, if your collection is big, you might want to run the indexing process from the command line.
+
+```bash
+php find_books.php
+
+# Or with docker
+docker run -v /your-images-dir:/comics --rm comicsreader php find_books.php
+```
 
 ## Tweaking the configuration
 
-If you want to let your images, out of the main folder, you can tweak the `src/php/config.php` file.
+### Images size
+
+The path to the images and the size of the generated thumbnails are available in `src/php/config.php`.
+
+### Basedir
+
+When served directly the comics reader should automatically detect the basedir it's running in.
+However if you're running it behind a reverse proxy, you can set the `X-Comics-Base` header.
+
+Here's an example with an nginx configuration.
+
+```
+location /BD/ {
+    proxy_pass http://comics/;
+    proxy_set_header X-Comics-Base "/BD/";
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Host $server_name;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+```
+
+
+## Roadmap
+
+- [known bug] Turning the device crashes photoswipe
+- [known bug] Cannot open a comic book twice (have to reload the page)
+
+- Natively support PDF files
+- Search engine
+- Docker image
 
 ## Credits and technologies
 
