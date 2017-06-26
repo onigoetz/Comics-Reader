@@ -47,7 +47,7 @@ function getAllFolders() {
         return Promise.resolve(books);
     }
 
-    return fetch(window.baseURL + "books.json").then(onlySuccess).then(v => {
+    return fetch(window.baseURL + "books.json", {credentials: "include"}).then(onlySuccess).then(v => {
         books = cleanEntries(v);
 
         return books;
@@ -55,7 +55,7 @@ function getAllFolders() {
 }
 
 function getMissingBook(id) {
-    return fetch(window.baseURL + "books/" + id + ".json").then(onlySuccess).then(v => {
+    return fetch(window.baseURL + "books/" + id + ".json", {credentials: "include"}).then(onlySuccess).then(v => {
         books = books.set(id, cleanEntry(id, v));
 
         return books.get(id);
@@ -108,13 +108,9 @@ export function getList(unescaped) {
                     reject("Failed");
                 });
             }
-
-
         }).catch((e) => {
             console.error(e);
             reject("Failed");
         })
-
     });
-
 }
