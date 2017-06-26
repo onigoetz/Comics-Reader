@@ -2,15 +2,17 @@
 
 ini_set('display_errors', 1);
 
-define('BASE', str_replace('//', '/', dirname($_SERVER['SCRIPT_NAME']) . '/'));
+$basedir = str_replace('//', '/', dirname($_SERVER['SCRIPT_NAME']) . '/');
+if (array_key_exists('HTTP_X_COMICS_BASE', $_SERVER)) {
+    $basedir = rtrim($_SERVER['HTTP_X_COMICS_BASE'], '/') . '/';
+}
+
+define('BASE', $basedir);
 
 /*
  * Others
  */
-define('DIR_IMAGE_FILE', '_image.jpg');
-
-define('ROOT', dirname(dirname(__DIR__)));
-define('GALLERY_ROOT', '/comicsReaderImages');
+define('GALLERY_ROOT', '/comics');
 define('BIG_WIDTH', 800);
 
 $image_config = array(

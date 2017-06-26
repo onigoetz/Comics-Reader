@@ -84,7 +84,10 @@ function prepare(source) {
 
 export function getList(unescaped) {
 
-    const id = decodeURIComponent(unescaped);
+    let id = decodeURIComponent(unescaped);
+    if (id === "/") {
+        id = "";
+    }
 
     return new Promise((resolve, reject) => {
         getAllFolders().then(v => {
