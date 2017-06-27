@@ -3,6 +3,7 @@ import LazyLoad from 'react-lazy-load';
 import {Link} from "react-router-dom";
 import {isNumeric, image, toRetina, isRetina} from "../utils";
 import {TYPE_DIR} from "../types";
+import {IoIosArrowForward} from "./Icons";
 
 export default class List extends React.Component {
 
@@ -11,7 +12,7 @@ export default class List extends React.Component {
         const items = [];
         let currentLetter = '', firstLetter;
 
-        for (var i in this.props.books) {
+        for (let i in this.props.books) {
             if (!this.props.books.hasOwnProperty(i)) {
                 continue;
             }
@@ -47,6 +48,7 @@ export default class List extends React.Component {
                         </LazyLoad>
                         {folder.name}
                         {folder.type === TYPE_DIR ? <p>{folder.books.length} Tomes</p> : ""}
+                        <IoIosArrowForward />
                     </div>
                 </Link>
             </li>);

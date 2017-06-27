@@ -1,15 +1,10 @@
-import Immutable from "immutable";
+/* global fetch */
 import {TYPE_DIR, TYPE_BOOK} from "./types";
 
-var books;
+let books;
 
 function dirname(path) {
-
-    if (path.indexOf("/") === -1) {
-        return "";
-    }
-
-    return path.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '')
+    return (path.indexOf("/") === -1) ? "" : path.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '');
 }
 
 function cleanEntry(key, entry) {
@@ -21,14 +16,14 @@ function cleanEntry(key, entry) {
 
     entry.type = entry.books ? TYPE_DIR : TYPE_BOOK;
 
-    return Immutable.fromJS(entry);
+    return entry;
 }
 
 function cleanEntries(data) {
-    let cleanedData = Immutable.Map();
+    let cleanedData = new Map();
 
     Object.keys(data).forEach(key => {
-      cleanedData = cleanedData.set(key, cleanEntry(key, data[key]));
+      cleanedData.set(key, cleanEntry(key, data[key]));
     });
 
     return cleanedData;
@@ -56,9 +51,11 @@ function getAllFolders() {
 
 function getMissingBook(id) {
     return fetch(window.baseURL + "books/" + id + ".json", {credentials: "include"}).then(onlySuccess).then(v => {
-        books = books.set(id, cleanEntry(id, v));
+        const book = books.get(id);
+        book.pages = v.pages;
+        book.loaded = true;
 
-        return books.get(id);
+        return book;
     });
 }
 
@@ -69,17 +66,17 @@ function getMissingBook(id) {
  * @returns {*}
  */
 function prepare(source) {
-    let data = source;
+    const data = JSON.parse(JSON.stringify(source));
 
-    if (data.has("parent") && typeof data.get("parent") === "string") {
-        data = data.set("parent", books.get(data.get("parent")));
+    if (data.parent && typeof data.parent === "string") {
+        data.parent = books.get(data.parent);
     }
 
-    if (data.has('books')) {
-        data = data.update('books', (currentBooks => currentBooks.map(element => books.get(element))));
+    if (data.books) {
+        data.books = data.books.map(book => books.get(book));
     }
 
-    return data.toJS();
+    return data;
 }
 
 export function getList(unescaped) {
@@ -98,7 +95,7 @@ export function getList(unescaped) {
 
             let data = v.get(id);
 
-            if (data.get("loaded")) {
+            if (data.loaded) {
                 resolve(prepare(data));
             } else {
                 getMissingBook(id).then(v => {

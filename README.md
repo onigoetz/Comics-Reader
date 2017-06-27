@@ -65,15 +65,11 @@ location /BD/ {
 }
 ```
 
-
 ## Roadmap
 
-- [known bug] Turning the device crashes photoswipe
-- [known bug] Cannot open a comic book twice (have to reload the page)
-
+- [known bug] Resizing window or turning the phone/table crashes photoswipe
 - Natively support PDF files
 - Search engine
-- Docker image
 
 ## Credits and technologies
 

@@ -15,7 +15,6 @@ export default class ListManager extends React.Component {
 
     loadData(props) {
         getList((props.location && props.location.pathname.replace("/list/", "")) || "").then(v => {
-
             if (this.unmounting) {
                 return;
             }

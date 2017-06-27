@@ -7,13 +7,10 @@
     font-size: $button-font-size;
     font-weight: 400;
     line-height: 1;
-    color: #333;
     text-align: center;
     white-space: nowrap;
     vertical-align: top;
     cursor: pointer;
-    background-color: #fff;
-    border: 1px solid #ccc;
     border-radius: 3px;
 
     /* IOS */
@@ -35,9 +32,6 @@
 .Button--link {
     padding-top: 6px;
     padding-bottom: 6px;
-    color: #428bca;
-    background-color: transparent;
-    border: 0;
 
     /* IOS */
     color: #007aff;

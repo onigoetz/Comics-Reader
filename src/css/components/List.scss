@@ -44,6 +44,20 @@
   p {
     margin-bottom: 0;
   }
+
+  svg {
+    position: absolute;
+    top: 50%;
+    display: inline-block;
+    line-height: 1;
+    color: #bbb;
+    text-decoration: none;
+    -webkit-font-smoothing: antialiased;
+    transform: translateY(-50%);
+
+    right: 15px;
+    height: 2em;
+  }
 }
 
 
@@ -79,23 +93,4 @@
   &.pull-right {
     margin-left: 10px;
   }
-}
-
-// Right Chevron
-// --------------------------------------------------
-
-.List__cell > a:after {
-  position: absolute;
-  top: 50%;
-  display: inline-block;
-  font-family: Ratchicons;
-  font-size: inherit;
-  line-height: 1;
-  color: #bbb;
-  text-decoration: none;
-  -webkit-font-smoothing: antialiased;
-  transform: translateY(-50%);
-
-  right: 15px;
-  content: '\e826';
 }
