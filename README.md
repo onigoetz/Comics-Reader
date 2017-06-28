@@ -67,7 +67,6 @@ location /BD/ {
 
 ## Roadmap
 
-- [known bug] Resizing window or turning the phone/tablet crashes photoswipe
 - Natively support PDF files
 - Search engine
 

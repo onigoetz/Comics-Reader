@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import debounce from "debounce";
 //import pick from 'lodash.pick';
 //import events from 'react-photoswipe/src/events';
 import classnames from "classnames";
@@ -40,8 +41,6 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
     };
 
     this.thumbnails = [];
-
-    this.handleResize = this.handleResize.bind(this);
   }
 
   componentWillReceiveProps = (nextProps) => {
@@ -80,13 +79,13 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
   };
 
   componentDidMount() {
-    this.setState({containerWidth: Math.floor(this._gallery.clientWidth)});
     window.addEventListener('resize', this.handleResize);
+    this.handleResize();
   }
 
   componentDidUpdate() {
     if (this._gallery.clientWidth !== this.state.containerWidth) {
-      this.setState({containerWidth: Math.floor(this._gallery.clientWidth)});
+      this.handleResize();
     }
   }
 
@@ -94,29 +93,27 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
     window.removeEventListener('resize', this.handleResize, false);
   }
 
-  handleResize(e) {
-    this.setState({containerWidth: Math.floor(this._gallery.clientWidth)});
-  }
+  handleResize = debounce(() => {
+    this.resizeGallery(Math.floor(this._gallery.clientWidth));
+  }, 10);
 
   handleClose = () => {
-    this.setState({
-                    isOpen: false
-                  });
+    this.setState({isOpen: false});
     this.props.onClose();
   };
 
-  renderGallery() {
+  resizeGallery(containerWidth) {
     let rowLimit = 3, photoPreviewNodes = [];
 
-    if (this.state.containerWidth >= 480) {
+    if (containerWidth >= 480) {
       rowLimit = 6;
     }
 
-    if (this.state.containerWidth >= 1024) {
+    if (containerWidth >= 1024) {
       rowLimit = 9;
     }
 
-    let contWidth = this.state.containerWidth - (rowLimit * 4);
+    let contWidth = containerWidth - (rowLimit * 4);
     /* 4px for margin around each image*/
     contWidth = Math.floor(contWidth - 2); // add some padding to prevent layout prob
     let remainder = this.props.items.length % rowLimit;
@@ -148,18 +145,9 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
         if (k === this.props.items.length) {
           break;
         }
-        const src = this.props.items[k].thumbnail;
 
-        photoPreviewNodes.push(<div key={k} className="Gallery__item"
-                                    onClick={this.showPhotoSwipe(k)} data-key={k} ref={(node) => {
-          if (node) {
-            this.thumbnails[node.getAttribute("data-key")] = node;
-          }
-
-        }}>
-          <img src={src} height={commonHeight} width={commonHeight * this.props.items[k].aspectRatio}
-               alt={`Page ${k}`}/>
-        </div>);
+        this.thumbnails[k].firstChild.height = commonHeight;
+        this.thumbnails[k].firstChild.width = commonHeight * this.props.items[k].aspectRatio;
       }
       previousHeight = commonHeight;
     }
@@ -170,12 +158,17 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
   render() {
     let {id, className, items} = this.props;
     className = classnames(['pswp-gallery', className]).trim();
-    //let eventProps = pick(other, events);
     let {isOpen, options} = this.state;
     return (
       <div id={id} className={className}>
         <div className="Gallery" ref={(c) => this._gallery = c}>
-          {this.renderGallery()}
+          {this.props.items.map((item, k) => {
+            return <div key={k} className="Gallery__item" onClick={this.showPhotoSwipe(k)} data-key={k} ref={node => {
+              if (node) this.thumbnails[node.getAttribute("data-key")] = node;
+            }}>
+              <img src={item.thumbnail} alt={`Page ${k}`}/>
+            </div>;
+          })}
         </div>
         <Portal>
           <PhotoSwipe /*{...eventProps}*/
