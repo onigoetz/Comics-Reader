@@ -22,6 +22,13 @@ const publicUrl = '';
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl);
 
+const browsers = [
+  '>1%',
+  'last 4 versions',
+  'Firefox ESR',
+  'not ie < 9', // React doesn't support IE8 anyway
+];
+
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
@@ -136,7 +143,7 @@ module.exports = {
         exclude: [
           /\.html$/,
           /\.(js|jsx)$/,
-          /\.css$/,
+          /\.s?css$/,
           /\.json$/,
           /\.bmp$/,
           /\.gif$/,
@@ -178,7 +185,7 @@ module.exports = {
       // In production, we use a plugin to extract that CSS to a file, but
       // in development "style" loader enables hot editing of CSS.
       {
-        test: /\.css$/,
+        test: /\.s?css$/,
         use: [
           require.resolve('style-loader'),
           {
@@ -191,17 +198,26 @@ module.exports = {
             loader: require.resolve('postcss-loader'),
             options: {
               ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
+              parser: "postcss-scss",
               plugins: () => [
+                require('postcss-import')(),
+                require('postcss-url')({url: "rebase"}),
+                require('postcss-sassy-mixins')(),
+                require('postcss-advanced-variables')(),
+                require('postcss-conditionals')(),
+                require('postcss-cssnext')({
+                                             browsers: browsers,
+                                             features: {
+                                               pseudoClassAnyLink: false, // TODO :: Wait for https://github.com/jonathantneal/postcss-pseudo-class-any-link/pull/5 to be released
+                                               autoprefixer: false // Disable autoprefixer, will be done by cssnano
+                                             }
+                                           }),
+                require("postcss-nested")(),
                 require('postcss-flexbugs-fixes'),
                 autoprefixer({
-                  browsers: [
-                    '>1%',
-                    'last 4 versions',
-                    'Firefox ESR',
-                    'not ie < 9', // React doesn't support IE8 anyway
-                  ],
-                  flexbox: 'no-2009',
-                }),
+                               browsers: browsers,
+                               flexbox: 'no-2009',
+                             }),
               ],
             },
           },
@@ -216,12 +232,12 @@ module.exports = {
     // The public URL is available as %PUBLIC_URL% in index.html, e.g.:
     // <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
     // In development, this will be an empty string.
-    //new InterpolateHtmlPlugin(env.raw),
+    new InterpolateHtmlPlugin(env.raw),
     // Generates an `index.html` file with the <script> injected.
-    //new HtmlWebpackPlugin({
-    //  inject: true,
-    //  template: paths.appHtml,
-    //}),
+    new HtmlWebpackPlugin({
+      inject: true,
+      template: paths.appHtml,
+    }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `./env.js`.
     new webpack.DefinePlugin(env.stringified),

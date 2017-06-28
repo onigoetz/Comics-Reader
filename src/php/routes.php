@@ -35,7 +35,7 @@ $app->get(
 );
 
 $app->get(
-    '/books.json',
+    '/api/books.json',
     function (ServerRequestInterface $req, ResponseInterface $res, $args = []) use ($app) {
         $cache = $app->getContainer()->get('cache');
 
@@ -51,7 +51,7 @@ $app->get(
 );
 
 $app->get(
-    '/books/{book:.*}.json',
+    '/api/books/{book:.*}.json',
     function (ServerRequestInterface $req, ResponseInterface $res, $args = []) {
         $book = standardize_unicode($args['book']);
 

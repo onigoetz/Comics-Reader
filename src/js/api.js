@@ -4,7 +4,7 @@ import {TYPE_DIR, TYPE_BOOK} from "./types";
 let books;
 
 function dirname(path) {
-    return (path.indexOf("/") === -1) ? "" : path.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '');
+    return (path.indexOf("/") === -1) ? "" : path.replace(/\\/g, '/').replace(/\/[^/]*\/?$/, '');
 }
 
 function cleanEntry(key, entry) {
@@ -42,7 +42,7 @@ function getAllFolders() {
         return Promise.resolve(books);
     }
 
-    return fetch(window.baseURL + "books.json", {credentials: "include"}).then(onlySuccess).then(v => {
+    return fetch(window.baseURL + "api/books.json", {credentials: "include"}).then(onlySuccess).then(v => {
         books = cleanEntries(v);
 
         return books;
@@ -50,7 +50,7 @@ function getAllFolders() {
 }
 
 function getMissingBook(id) {
-    return fetch(window.baseURL + "books/" + id + ".json", {credentials: "include"}).then(onlySuccess).then(v => {
+    return fetch(window.baseURL + "api/books/" + id + ".json", {credentials: "include"}).then(onlySuccess).then(v => {
         const book = books.get(id);
         book.pages = v.pages;
         book.loaded = true;

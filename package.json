@@ -47,14 +47,15 @@
     "extract-text-webpack-plugin": "2.1.2",
     "file-loader": "0.11.2",
     "fs-extra": "3.0.1",
+    "html-webpack-plugin": "^2.29.0",
     "jest": "20.0.4",
     "object-assign": "4.1.1",
-    "postcss-flexbugs-fixes": "3.0.0",
-    "postcss-loader": "2.0.6",
     "postcss-advanced-variables": "^1.2.2",
     "postcss-conditionals": "^2.1.0",
     "postcss-cssnext": "^2.11.0",
+    "postcss-flexbugs-fixes": "3.0.0",
     "postcss-import": "^10.0.0",
+    "postcss-loader": "2.0.6",
     "postcss-nested": "^2.0.2",
     "postcss-sassy-mixins": "^2.1.0",
     "postcss-scss": "^1.0.2",
@@ -85,6 +86,11 @@
     "presets": [
       "react-app"
     ]
+  },
+  "proxy": {
+    "/api": {
+      "target": "http://localhost:8000"
+    }
   },
   "jest": {
     "collectCoverageFrom": [
