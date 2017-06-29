@@ -74,6 +74,7 @@
   "dependencies": {
     "debounce": "^1.0.2",
     "react": "^15.6.1",
+    "react-code-splitting": "^1.1.1",
     "react-dom": "^15.6.1",
     "react-headroom": "^2.1.5",
     "react-icons": "^2.2.5",
