@@ -52,19 +52,25 @@ $app->get(
 
 $app->get(
     '/api/books/{book:.*}.json',
-    function (ServerRequestInterface $req, ResponseInterface $res, $args = []) {
+    function (ServerRequestInterface $req, ResponseInterface $res, $args = []) use ($app) {
         $book = standardize_unicode($args['book']);
 
         // Get the pages
         $path = GALLERY_ROOT . '/' . $book;
 
-        $pages = getPages($path);
+        $cache = $app->getContainer()->get('cache');
 
-        $ps = [];
-        foreach ($pages as $key => $page) {
-            $ps[$key] = $page['src'];
-        }
-        array_multisort($ps, SORT_NATURAL, $pages);
+        $pages = $cache->remember("BOOK_$path", 0, function() use ($path) {
+            $pages = getPages($path);
+
+            $ps = [];
+            foreach ($pages as $key => $page) {
+                $ps[$key] = $page['src'];
+            }
+            array_multisort($ps, SORT_NATURAL, $pages);
+
+            return $pages;
+        });
 
         $end = explode('/', $book);
         return $res->withJson(['name' => end($end), 'pages' => $pages]);
