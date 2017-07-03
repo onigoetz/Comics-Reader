@@ -4,7 +4,7 @@
   RewriteEngine on
 
   # if your app is in a subfolder
-  # RewriteBase /my_app/ 
+  # RewriteBase /my_app/
 
   # test string is a valid files
   RewriteCond %{SCRIPT_FILENAME} !-f
@@ -15,4 +15,32 @@
   # with QSA flag (query string append),
   # forces the rewrite engine to append a query string part of the
   # substitution string to the existing string, instead of replacing it.
+</IfModule>
+
+<IfModule mod_deflate.c>
+    SetOutputFilter DEFLATE
+
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 day"
+
+    ExpiresByType text/css "access 10 days"
+    ExpiresByType text/javascript "access plus 10 days"
+    ExpiresByType application/javascript "access plus 10 days"
+    ExpiresByType application/x-javascript "access plus 10 days"
+    ExpiresByType image/x-icon "access plus 10 days"
+    ExpiresByType image/icon "access plus 10 days"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType application/x-ico "access plus 10 days"
+    ExpiresByType application/ico "access plus 10 days"
 </IfModule>

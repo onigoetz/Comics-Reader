@@ -4,7 +4,7 @@ FROM php:5.6-apache
 WORKDIR /var/www/html
 
 # enable mod_rewrite
-RUN a2enmod rewrite
+RUN a2enmod rewrite && a2enmod expires && a2enmod headers && a2enmod deflate
 
 # Install extensions : iconv, mcrypt, gd, zip, rar, imagick
 RUN apt-get update && apt-get install -y \
