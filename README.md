@@ -9,7 +9,9 @@ It is not intended to work on a desktop computer.
 
 - Watch your comic books on your phone or tablet, at home or on the go.
 - Uses your filesystem, no need for a database
-- Opens images in a folder or with CBR/CBZ files
+- Read images from a folder
+- CBZ/CBR Files Support
+- PDF Support
 
 ## Installing
 
@@ -23,6 +25,11 @@ Will start the comics reader using your comic books at `/your-images-dir` and be
 
 
 ### On a PHP server
+
+First, you need
+- PHP with the following extensions: gd, zip, rar
+- Imagemagick installed on the machine. (for PDF support)
+- Access to `popen` and `shell_exec` (for PDF support)
 
 - Download this repository on your server in a web accessible directory
 - edit `src/php/config.php` to define the path to your images
@@ -67,7 +74,6 @@ location /BD/ {
 
 ## Roadmap
 
-- Natively support PDF files
 - Search engine
 
 ## Credits and technologies

@@ -42,7 +42,7 @@ class IndexCreator {
             }
 
             // A zip / rar archive
-            if (in_array($item->getExtension(), ['cbr', 'cbz', 'zip', 'rar'])) {
+            if (in_array(strtolower($item->getExtension()), ['cbr', 'cbz', 'zip', 'rar'])) {
                 try {
                     $this->log("  Found compressed book: " . $item->getFilename());
                     $node = new Node($item->getFilename(), $parent);
@@ -53,7 +53,14 @@ class IndexCreator {
                 } catch (Exception $e) {
                     $this->log("Could not open archive: " . $item->getFilename());
                 }
+            }
 
+            // a PDF file
+            if (strtolower($item->getExtension()) == 'pdf') {
+                $this->log("  Found pdf: " . $item->getFilename());
+                $node = new Node($item->getFilename(), $parent);
+                $node->setThumb($node->getPath() . '/1.png');
+                $directories[] = $node;
             }
         }
 
@@ -134,7 +141,7 @@ class IndexCreator {
             return $this->getThumbFromArchive($folder);
         }
 
-        // If we're in a directory, get it's
+        // If we're in a directory, get its
         // own children to give the thumbnail
         foreach ($folder->getChildren() as $subfolder) {
             if ($subfolder->getThumb()) {

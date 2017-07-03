@@ -11,7 +11,8 @@ class ImagecacheManager extends \Onigoetz\Imagecache\Manager
         $file = dirname($file);
 
         do {
-            if (is_file($file) && in_array(pathinfo($file, PATHINFO_EXTENSION), ["cbr", "cbz", "rar", "zip"])) {
+            $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+            if (is_file($file) && in_array($extension, ["cbr", "cbz", "rar", "zip", "pdf"])) {
                 return $file;
             }
 
@@ -20,6 +21,35 @@ class ImagecacheManager extends \Onigoetz\Imagecache\Manager
         } while ($file != $previous);
 
         return false;
+    }
+
+    public function extractFromArchive($source_file, $valid) {
+        $archive = openArchive($valid);
+        if (!$archive) {
+            throw new RuntimeException("Could not open archive '$valid'");
+        }
+
+        $file_in_archive = str_replace("$valid/", "", $this->options['path_local'] . '/' . $source_file);
+
+        $file = tempnam(sys_get_temp_dir(), "imagecache_archive");
+        file_put_contents($file, $archive->getFileContent($file_in_archive));
+
+        return $file;
+    }
+
+    public function extractFromPDF($source_file, $valid) {
+        $archive = new PDFTools($valid);
+        if (!$archive) {
+            throw new RuntimeException("Could not open PDF '$valid'");
+        }
+
+        $file_in_archive = str_replace("$valid/", "", $this->options['path_local'] . '/' . $source_file);
+        $page = explode(".png", $file_in_archive)[0] -1;
+
+        $file = secure_tmpname(".png", "imagecache_archive", sys_get_temp_dir());
+        $archive->savePage($page, $file);
+
+        return $file;
     }
 
     public function getOriginalFile($source_file)
@@ -32,17 +62,12 @@ class ImagecacheManager extends \Onigoetz\Imagecache\Manager
                 throw $e;
             }
 
-            $archive = openArchive($valid);
-            if (!$archive) {
-                throw $e;
+            if (strtolower(pathinfo($valid, PATHINFO_EXTENSION)) == "pdf") {
+                return $this->extractFromPDF($source_file, $valid);
             }
 
-            $file_in_archive = str_replace("$valid/", "", $this->options['path_local'] . '/' . $source_file);
+            return $this->extractFromArchive($source_file, $valid);
 
-            $tempfile = tempnam(sys_get_temp_dir(), "imagecache_archive");
-            file_put_contents($tempfile, $archive->getFileContent($file_in_archive));
-
-            return $tempfile;
         }
     }
 }
