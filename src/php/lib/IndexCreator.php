@@ -87,7 +87,7 @@ class IndexCreator {
 
         natsort($images);
 
-        return $folder->getPath() . '/' . $images[0];
+        return $folder->getPath() . '/' . array_values($images)[0];
     }
 
     /**
