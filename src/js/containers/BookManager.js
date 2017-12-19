@@ -2,7 +2,7 @@ import React from "react";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 import Book from "../components/Book";
-import {getList} from "../api";
+import {getList, markRead} from "../api";
 
 export default class BookManager extends React.Component {
     constructor(props) {
@@ -21,6 +21,14 @@ export default class BookManager extends React.Component {
 
             this.setState({data: v});
         })
+    }
+
+    handleRead = () => {
+        markRead(this.state.data.path).then(v => {
+            const data = this.state.data;
+            data.read = true;
+            this.setState({data});
+        })     
     }
 
     componentDidMount() {
@@ -45,7 +53,7 @@ export default class BookManager extends React.Component {
         return <div>
             <Header url={this.props.location.pathname} title={this.state.data.name} parent={this.state.data.parent} />
             <div className="Content Content--gallery">
-                <Book book={this.state.data}/>
+                <Book book={this.state.data} onRead={this.handleRead}/>
             </div>
         </div>;
     }

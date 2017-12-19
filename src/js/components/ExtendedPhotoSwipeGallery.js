@@ -16,7 +16,8 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
     id: PropTypes.string,
     className: PropTypes.string,
     isOpen: PropTypes.bool,
-    onClose: PropTypes.func
+    onClose: PropTypes.func,
+    afterChange: PropTypes.func,
   };
 
   static defaultProps = {
@@ -28,6 +29,8 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
     className: '',
     isOpen: false,
     onClose: () => {
+    },
+    afterChange: () => {
     }
   };
 
@@ -175,7 +178,9 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
             isOpen={isOpen}
             items={items}
             options={options}
-            onClose={this.handleClose}/>
+            onClose={this.handleClose}
+            afterChange={this.props.afterChange}
+            />
         </Portal>
       </div>
     );

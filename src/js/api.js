@@ -2,6 +2,8 @@
 import {TYPE_DIR, TYPE_BOOK} from "./types";
 
 let books;
+let readList = [];
+let readListFetched = false;
 
 function dirname(path) {
     return (path.indexOf("/") === -1) ? "" : path.replace(/\\/g, '/').replace(/\/[^/]*\/?$/, '');
@@ -59,6 +61,36 @@ function getMissingBook(id) {
     });
 }
 
+function getRead() {
+    if (readListFetched) {
+        return Promise.resolve(readList);
+    }
+
+    return fetch(window.baseURL + "api/read", {credentials: "include"})
+        .then(onlySuccess)
+        .then(v => {
+            readList = v;
+
+            readListFetched = true;
+
+            return readList;
+        });
+}
+
+export function markRead(id) {
+    return fetch(window.baseURL + "api/read/" + id, {credentials: "include", method: "POST"})
+        .then(onlySuccess)
+        .then(v => {
+            readList = v;
+
+            readListFetched = true;
+        });
+}
+
+function isRead(id) {
+    return readList.indexOf(id) > -1;
+}
+
 /**
  * Replace the books with the instances form the saved tree
  *
@@ -72,42 +104,51 @@ function prepare(source) {
         data.parent = books.get(data.parent);
     }
 
+    data.read = isRead(data.path);
+
     if (data.books) {
-        data.books = data.books.map(book => books.get(book));
+        data.books = data.books
+            .map(book => books.get(book))
+            .map(book => { 
+                book.read = isRead(book.path);
+                return book;
+            });
     }
 
     return data;
 }
 
-export function getList(unescaped) {
-
+export async function getList(unescaped) {
     let id = decodeURIComponent(unescaped);
     if (id === "/") {
         id = "";
     }
 
-    return new Promise((resolve, reject) => {
-        getAllFolders().then(v => {
-            if (!v.has(id)) {
-                console.error("Could not find book");
-                reject("could not find book");
-            }
+    try {
+        await getRead();
+    } catch(e) {
+        console.error("Can't get read list");
+        readList = [];
+    }
 
-            let data = v.get(id);
+    try {
+        const folders = await getAllFolders();
 
-            if (data.loaded) {
-                resolve(prepare(data));
-            } else {
-                getMissingBook(id).then(v => {
-                    resolve(prepare(v));
-                }).catch((e) => {
-                    console.error(e);
-                    reject("Failed");
-                });
-            }
-        }).catch((e) => {
-            console.error(e);
-            reject("Failed");
-        })
-    });
+        if (!folders.has(id)) {
+            console.error("Could not find book");
+            throw new Error("could not find book");
+        }
+
+        const data = folders.get(id);
+        if (data.loaded) {
+            return prepare(data);
+        }
+
+        const missingBook = await getMissingBook(id);
+
+        return prepare(missingBook);
+    } catch (e) {
+        console.error(e);
+        throw new Error("Failed")
+    }
 }

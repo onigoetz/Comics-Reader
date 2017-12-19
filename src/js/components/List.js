@@ -47,6 +47,7 @@ export default class List extends React.Component {
                             <img src={thumb} height="75" alt={folder.name} />
                         </LazyLoad>
                         {folder.name}
+                        {folder.read && <p><small>Read</small></p>}
                         {folder.type === TYPE_DIR ? <p>{folder.books.length} Tomes</p> : ""}
                         <IoIosArrowForward />
                     </div>

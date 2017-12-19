@@ -26,6 +26,14 @@ function renderLayout() {
     return $output;
 }
 
+function getUser($serverParams) {
+    if (array_key_exists('PHP_AUTH_USER', $serverParams)) {
+        return $serverParams['PHP_AUTH_USER'];    
+    }   
+
+    return 'anonymous';
+}
+
 $app->get(
     '/',
     function (ServerRequestInterface $req, ResponseInterface $res, $args = []) {
@@ -47,6 +55,49 @@ $app->get(
         $tree = new TreeWalker(IndexCreator::fromCache($data));
 
         return $res->withJson($tree->toJson());
+    }
+);
+
+$app->get(
+    '/api/read',
+    function (ServerRequestInterface $req, ResponseInterface $res, $args = []) use ($app) {
+        $cache = $app->getContainer()->get('cache');
+
+        $user = getUser($req->getServerParams());
+
+        $key = 'READ::' . $user;
+        $read = $cache->fetch($key);
+
+        if ($read === false) {
+            $read = [];
+        }
+
+
+        return $res->withHeader('Cache-Control', 'no-cache')->withJson($read);
+    }
+);
+
+$app->post(
+    '/api/read/{book:.*}',
+    function (ServerRequestInterface $req, ResponseInterface $res, $args = []) use ($app) {
+        $book = standardize_unicode($args['book']);
+        $cache = $app->getContainer()->get('cache');
+        
+        $user = getUser($req->getServerParams());
+
+        $key = 'READ::' . $user;
+        $read = $cache->fetch($key);
+
+        if (!$read) {
+            $read = [];
+        }
+
+        if (!in_array($book, $read)) {
+            $read[] = $book;
+            $cache->store($key, $read, 0);
+        }
+
+        return $res->withJson($read);
     }
 );
 

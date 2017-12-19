@@ -1,5 +1,3 @@
-/* global __webpack_public_path__ */
-
 import Async from 'react-code-splitting';
 import React from "react";
 import ReactDOM from "react-dom";
@@ -9,7 +7,7 @@ import ListManager from "./js/containers/ListManager";
 import "./css/app.scss";
 import "react-photoswipe/lib/photoswipe.css";
 
-//eslint-disable-next-line
+// eslint-disable-next-line
 __webpack_public_path__ = window.baseURL;
 
 const BookManager = (props) => <Async componentProps={props} load={import("./js/containers/BookManager")} />;
