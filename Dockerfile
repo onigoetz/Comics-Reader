@@ -25,6 +25,22 @@ RUN apt-get update && apt-get install -y \
 VOLUME /comics
 RUN ln -s /comics /var/www/html/images
 
+ENV COMPOSER_HOME /composer
+ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV PATH /composer/vendor/bin:$PATH
+
+RUN curl -o /tmp/composer-setup.php https://getcomposer.org/installer \
+  && curl -o /tmp/composer-setup.sig https://composer.github.io/installer.sig \
+  && php -r "if (hash('SHA384', file_get_contents('/tmp/composer-setup.php')) !== trim(file_get_contents('/tmp/composer-setup.sig'))) { unlink('/tmp/composer-setup.php'); echo 'Invalid installer' . PHP_EOL; exit(1); }" \
+  && php /tmp/composer-setup.php \
+  && rm /tmp/composer-setup.php
+
+COPY composer.json /var/www/html/composer.json
+
+RUN php composer.phar install --prefer-dist --no-ansi --no-dev --no-interaction --no-progress --no-scripts --no-autoloader
+
+RUN echo "memory_limit=512M" > /usr/local/etc/php/php.ini
+
 # Copy files
 COPY static/ /var/www/html/static/
 COPY asset/ /var/www/html/asset/
@@ -32,13 +48,7 @@ COPY src/ /var/www/html/src/
 COPY index.php /var/www/html/index.php
 COPY asset-manifest.json /var/www/html/asset-manifest.json
 COPY find_books.php /var/www/html/find_books.php
-COPY composer.json /var/www/html/composer.json
 COPY .htaccess /var/www/html/.htaccess
 
 # Composer install
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
- && php -r "if (hash_file('SHA384', 'composer-setup.php') === '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
- && php composer-setup.php \
- && rm composer-setup.php \
- && php composer.phar install --prefer-dist --no-ansi --no-dev --no-interaction --no-progress --no-scripts --optimize-autoloader \
- && rm composer.phar
+RUN php composer.phar install --optimize-autoloader
