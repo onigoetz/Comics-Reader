@@ -12,7 +12,11 @@ class PDFTools {
 
     public function savePage($page, $to) {
         $command = "convert " . escapeshellarg("$this->file[$page]") . " " . escapeshellarg($to);
-        shell_exec($command);
+        exec($command, $output, $code);
+
+        if ($code != 0) {
+            throw new RuntimeException("Wasn't able to execute \"$command\": \n" . implode("\n", $output));
+        }
     }
 
     public function getImageSizes() {

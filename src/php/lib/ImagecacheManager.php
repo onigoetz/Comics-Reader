@@ -6,8 +6,8 @@ class ImagecacheManager extends \Onigoetz\Imagecache\Manager
 {
     public function findValidFile($file) {
 
-        // Obviously it didn't work the first time,
-        // so we'll already jump a first time
+        // If we're here it didn't work the first time,
+        // so we'll already jump up one level
         $file = dirname($file);
 
         do {
@@ -67,7 +67,6 @@ class ImagecacheManager extends \Onigoetz\Imagecache\Manager
             }
 
             return $this->extractFromArchive($source_file, $valid);
-
         }
     }
 }
