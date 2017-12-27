@@ -1,27 +1,26 @@
 import React from "react";
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
+
 const Icon = ({ children, color, style, ...props }) => {
   return (
     <svg
-      children={children}
       fill="currentColor"
       preserveAspectRatio="xMidYMid meet"
       {...props}
       style={{
         verticalAlign: "middle",
-        color: color,
+        color,
         ...style
       }}
-    />
-  )
+    >
+      {children}
+    </svg>
+  );
 };
 
 Icon.propTypes = {
+  children: PropTypes.node,
   color: PropTypes.string,
-  size: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
   style: PropTypes.object
 };
 

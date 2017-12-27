@@ -1,10 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import debounce from "debounce";
-//import pick from 'lodash.pick';
-//import events from 'react-photoswipe/src/events';
 import classnames from "classnames";
-
 import Portal from "react-overlays/lib/Portal";
 import {PhotoSwipe} from "react-photoswipe";
 
@@ -17,16 +14,16 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
     className: PropTypes.string,
     isOpen: PropTypes.bool,
     onClose: PropTypes.func,
-    afterChange: PropTypes.func,
+    afterChange: PropTypes.func
   };
 
   static defaultProps = {
     options: {},
-    thumbnailContent: item => (
+    thumbnailContent: item =>
       <img src={item.src} width="100" height="100" alt=""/>
-    ),
-    id: '',
-    className: '',
+    ,
+    id: "",
+    className: "",
     isOpen: false,
     onClose: () => {
     },
@@ -61,9 +58,9 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
   showPhotoSwipe = itemIndex => (e) => {
     e.preventDefault();
     const _this = this;
-    const getThumbBoundsFn = ((index) => {
+    const getThumbBoundsFn = (index) => {
       const thumbnail = _this.thumbnails[index];
-      const img = thumbnail.getElementsByTagName('img')[0];
+      const img = thumbnail.getElementsByTagName("img")[0];
       const pageYScroll = window.pageYOffset || document.documentElement.scrollTop;
       const rect = img.getBoundingClientRect();
       return {
@@ -71,18 +68,18 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
         y: rect.top + pageYScroll,
         w: rect.width
       };
-    });
+    };
     const {options} = this.state;
     options.index = itemIndex;
     options.getThumbBoundsFn = options.getThumbBoundsFn || getThumbBoundsFn;
     this.setState({
-                    isOpen: true,
-                    options
-                  });
+      isOpen: true,
+      options
+    });
   };
 
   componentDidMount() {
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener("resize", this.handleResize);
     this.handleResize();
   }
 
@@ -93,7 +90,7 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize, false);
+    window.removeEventListener("resize", this.handleResize, false);
   }
 
   handleResize = debounce(() => {
@@ -106,7 +103,8 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
   };
 
   resizeGallery(containerWidth) {
-    let rowLimit = 3, photoPreviewNodes = [];
+    const photoPreviewNodes = [];
+    let rowLimit = 3;
 
     if (containerWidth >= 480) {
       rowLimit = 6;
@@ -119,7 +117,7 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
     let contWidth = containerWidth - (rowLimit * 4);
     /* 4px for margin around each image*/
     contWidth = Math.floor(contWidth - 2); // add some padding to prevent layout prob
-    let remainder = this.props.items.length % rowLimit;
+    const remainder = this.props.items.length % rowLimit;
     let lastRowWidth, lastRowIndex;
     if (remainder) { // there are fewer than rowLimit photos in last row
       lastRowWidth = Math.floor(this.state.containerWidth - (remainder * 4) - 2);
@@ -160,18 +158,22 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
 
   render() {
     let {id, className, items} = this.props;
-    className = classnames(['pswp-gallery', className]).trim();
-    let {isOpen, options} = this.state;
+    className = classnames(["pswp-gallery", className]).trim();
+    const {isOpen, options} = this.state;
     return (
       <div id={id} className={className}>
-        <div className="Gallery" ref={(c) => this._gallery = c}>
-          {this.props.items.map((item, k) => {
-            return <div key={k} className="Gallery__item" onClick={this.showPhotoSwipe(k)} data-key={k} ref={node => {
-              if (node) this.thumbnails[node.getAttribute("data-key")] = node;
+        <div className="Gallery" ref={(c) => {
+          this._gallery = c;
+        }}>
+          {this.props.items.map((item, k) => (
+            <div key={k} className="Gallery__item" onClick={this.showPhotoSwipe(k)} data-key={k} ref={node => {
+              if (node) {
+                this.thumbnails[node.getAttribute("data-key")] = node;
+              }
             }}>
               <img src={item.thumbnail} alt={`Page ${k}`}/>
-            </div>;
-          })}
+            </div>
+          ))}
         </div>
         <Portal>
           <PhotoSwipe /*{...eventProps}*/
@@ -180,7 +182,7 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
             options={options}
             onClose={this.handleClose}
             afterChange={this.props.afterChange}
-            />
+          />
         </Portal>
       </div>
     );

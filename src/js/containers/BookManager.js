@@ -1,61 +1,62 @@
 import React from "react";
+
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 import Book from "../components/Book";
 import {getList, markRead} from "../api";
 
 export default class BookManager extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {data: null};
-        this.unmounting = false;
-    }
+    this.state = {data: null};
+    this.unmounting = false;
+  }
 
-    loadData(props) {
-        getList((props.location && props.location.pathname.replace("/book/", "")) || "").then(v => {
+  loadData(props) {
+    getList((props.location && props.location.pathname.replace("/book/", "")) || "").then(v => {
 
-            if (this.unmounting) {
-                return;
-            }
+      if (this.unmounting) {
+        return;
+      }
 
-            this.setState({data: v});
-        })
-    }
+      this.setState({data: v});
+    });
+  }
 
     handleRead = () => {
-        markRead(this.state.data.path).then(v => {
-            const data = this.state.data;
-            data.read = true;
-            this.setState({data});
-        })     
+      markRead(this.state.data.path).then(() => {
+        const data = this.state.data;
+        data.read = true;
+        this.setState({data});
+      });
     }
 
     componentDidMount() {
-        this.loadData(this.props);
+      this.loadData(this.props);
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({data: null});
+      this.setState({data: null});
 
-        this.loadData(nextProps);
+      this.loadData(nextProps);
     }
 
     componentWillUnmount() {
-        this.unmounting = true;
+      this.unmounting = true;
     }
 
     render() {
-        if (!this.state.data) {
-            return <Loading />;
-        }
+      if (!this.state.data) {
+        return <Loading />;
+      }
 
-        return <div>
-            <Header url={this.props.location.pathname} title={this.state.data.name} parent={this.state.data.parent} />
-            <div className="Content Content--gallery">
-                <Book book={this.state.data} onRead={this.handleRead}/>
-            </div>
-        </div>;
+      return <div>
+        <Header url={this.props.location.pathname} title={this.state.data.name} parent={this.state.data.parent} />
+        <div className="Content Content--gallery">
+          <Book book={this.state.data} onRead={this.handleRead}/>
+        </div>
+      </div>;
     }
 }
 

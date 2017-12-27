@@ -14,7 +14,7 @@ $container['notFoundHandler'] = function ($c) {
 };
 
 function asset($name) {
-    return json_decode(file_get_contents(__DIR__  .  "/../../asset-manifest.json"), true)[$name];
+    return json_decode(file_get_contents(__DIR__  .  "/../../static/asset-manifest.json"), true)[$name];
 }
 
 function renderLayout() {

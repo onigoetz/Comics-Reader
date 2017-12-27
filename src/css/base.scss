@@ -28,7 +28,7 @@ a {
     -webkit-tap-highlight-color: rgba(0,0,0,0); // Removes the dark touch outlines on links in webkit browsers.
 
     &:active {
-        color: darken($primary-color, 10%);
+        color: color($primary-color blackness(10%));
     }
 }
 

@@ -25,7 +25,7 @@
     <link rel="apple-touch-icon" sizes="114x114" href="<?= BASE; ?>asset/images/apple-touch-114.png"/>
     <link rel="apple-touch-icon" sizes="144x144" href="<?= BASE; ?>asset/images/apple-touch-144.png"/>
 
-    <link rel="stylesheet" href="<?= BASE . asset('main.css'); ?>"/>
+    <link rel="stylesheet" href="<?= BASE; ?>static/css/app.min.css"/>
 
     <script>
         window.baseURL = "<?= BASE; ?>";
@@ -34,7 +34,7 @@
 <body>
 <div id="root"></div>
 
-<script type="text/javascript" src="<?= BASE . asset('main.js'); ?>"></script>
+<script type="text/javascript" src="<?= BASE . "static/js/" . asset('default.js'); ?>"></script>
 
 </body>
 </html>
