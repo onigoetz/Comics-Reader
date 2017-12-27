@@ -22,7 +22,7 @@
   "homepage": "http://home.onigoetz.ch/BD",
   "scripts": {
     "watch": "crafty watch",
-    "build": "crafty run"
+    "build": "rm -rf static && crafty run"
   },
   "devDependencies": {
     "@swissquote/crafty": "^1.0.0",
@@ -31,9 +31,7 @@
     "@swissquote/crafty-runner-gulp": "^1.0.0",
     "@swissquote/crafty-runner-webpack": "^1.0.0",
     "file-loader": "^1.1.6",
-    "promise": "8.0.0",
-    "react-dev-utils": "^3.1.1",
-    "react-error-overlay": "^1.0.10",
+    "promise": "8.0.1",
     "webpack-manifest-plugin": "^1.3.2",
     "whatwg-fetch": "2.0.3"
   },
