@@ -56,7 +56,6 @@ COPY static/ /var/www/html/static/
 COPY asset/ /var/www/html/asset/
 COPY src/ /var/www/html/src/
 COPY index.php /var/www/html/index.php
-COPY asset-manifest.json /var/www/html/asset-manifest.json
 COPY find_books.php /var/www/html/find_books.php
 COPY .htaccess /var/www/html/.htaccess
 
