@@ -32,6 +32,12 @@ export function loadBooks() {
   };
 }
 
+export function listBooksInside(allBooks, path) {
+  return Object.keys(allBooks)
+    .filter(key => key.indexOf(path) === 0 )
+    .filter(key => allBooks[key].type === TYPE_BOOK);
+}
+
 const defaultState = {
   loading: false,
   error: false,

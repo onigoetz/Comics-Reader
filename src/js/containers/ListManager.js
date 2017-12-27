@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import Header from "../components/Header";
 import List from "../components/List";
 import { isRead } from "../reducers/read";
+import { listBooksInside } from "../reducers/books";
 
 function ListManager({ location, dir, parent, books }) {
   return (
@@ -16,19 +17,21 @@ function ListManager({ location, dir, parent, books }) {
   );
 }
 
-ListManager.displayName = "ListManager";
-
 const mapStateToProps = (state, ownProps) => {
-  const path =
+  let path =
     (ownProps.location && ownProps.location.pathname.replace("/list/", "")) ||
     "";
+
+  if (path === "/") {
+    path = "";
+  }
 
   const allBooks = state.books.books;
 
   const dir = allBooks[path] || {};
 
   let parent = {};
-  if (dir.parent) {
+  if (dir.parent !== undefined) {
     parent = allBooks[dir.parent] || {};
   }
 
@@ -38,6 +41,9 @@ const mapStateToProps = (state, ownProps) => {
       .map(book => allBooks[book] || {})
       .map(book => {
         book.read = isRead(state.read.read, book.path);
+        const booksInside = listBooksInside(allBooks, book.path);
+        book.booksInsideRead = booksInside.filter(innerBook => isRead(state.read.read, innerBook)).length;
+        book.booksInside = booksInside.length;
         return book;
       });
   }

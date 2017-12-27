@@ -39,6 +39,15 @@ export default function List({ books }) {
 
     const thumb = isRetina ? toRetina(image("small", folder.thumb)) : image("big", folder.thumb);
 
+    let readCount = null;
+    if (folder.type === TYPE_DIR && folder.booksInsideRead) {
+      if (folder.booksInside === folder.booksInsideRead) {
+        readCount = <small>(All Read)</small>;
+      } else {
+        readCount = <small>({folder.booksInsideRead} Read)</small>;
+      }
+    }
+
     items.push(<li className="List__cell" key={folder.name}>
       <Link to={url}>
         <div className="List__cell__body">
@@ -47,7 +56,7 @@ export default function List({ books }) {
           </LazyLoad>
           {folder.name}
           {folder.read && <p><small>Read</small></p>}
-          {folder.type === TYPE_DIR ? <p>{folder.books.length} Tomes</p> : ""}
+          {folder.type === TYPE_DIR ? <p>{folder.booksInside} Books {readCount}</p> : ""}
           <IoIosArrowForward />
         </div>
       </Link>
