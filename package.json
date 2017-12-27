@@ -31,9 +31,9 @@
     "@swissquote/crafty-runner-gulp": "^1.0.0",
     "@swissquote/crafty-runner-webpack": "^1.0.0",
     "file-loader": "^1.1.6",
-    "promise": "8.0.1",
-    "webpack-manifest-plugin": "^1.3.2",
-    "whatwg-fetch": "2.0.3"
+    "redux-logger": "^3.0.6",
+    "unfetch": "^3.0.0",
+    "webpack-manifest-plugin": "^1.3.2"
   },
   "dependencies": {
     "debounce": "^1.1.0",
@@ -46,8 +46,11 @@
     "react-lazy-load": "^3.0.13",
     "react-overlays": "^0.8.3",
     "react-photoswipe": "^1.3.0",
+    "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
-    "react-router-dom": "^4.2.2"
+    "react-router-dom": "^4.2.2",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0"
   },
   "proxy": {
     "/api": {

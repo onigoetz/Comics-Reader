@@ -1,63 +1,84 @@
 import React from "react";
+import { connect } from "react-redux";
 
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 import Book from "../components/Book";
-import {getList, markRead} from "../api";
+import { loadPages } from "../reducers/pages";
+import { markRead, isRead } from "../reducers/read";
 
-export default class BookManager extends React.Component {
-  constructor(props) {
-    super(props);
+class BookManager extends React.Component {
+  handleRead = () => {
+    this.props.dispatch(markRead(this.props.path));
+  };
 
-    this.state = {data: null};
-    this.unmounting = false;
+  componentDidMount() {
+    if (!this.props.pages.length) {
+      this.props.dispatch(loadPages(this.props.path));
+    }
   }
 
-  loadData(props) {
-    getList((props.location && props.location.pathname.replace("/book/", "")) || "").then(v => {
-
-      if (this.unmounting) {
-        return;
-      }
-
-      this.setState({data: v});
-    });
+  componentWillUnmount() {
+    this.unmounting = true;
   }
 
-    handleRead = () => {
-      markRead(this.state.data.path).then(() => {
-        const data = this.state.data;
-        data.read = true;
-        this.setState({data});
-      });
-    }
+  render() {
+    /*if (!this.state.data) {
+        return ;
+      }*/
 
-    componentDidMount() {
-      this.loadData(this.props);
-    }
-
-    componentWillReceiveProps(nextProps) {
-      this.setState({data: null});
-
-      this.loadData(nextProps);
-    }
-
-    componentWillUnmount() {
-      this.unmounting = true;
-    }
-
-    render() {
-      if (!this.state.data) {
-        return <Loading />;
-      }
-
-      return <div>
-        <Header url={this.props.location.pathname} title={this.state.data.name} parent={this.state.data.parent} />
-        <div className="Content Content--gallery">
-          <Book book={this.state.data} onRead={this.handleRead}/>
-        </div>
-      </div>;
-    }
+    return (
+      <div>
+        <Header
+          url={this.props.location.pathname}
+          title={this.props.book.name}
+          parent={this.props.parent}
+        />
+        {this.props.pages.length ? (
+          <div className="Content Content--gallery">
+            <Book
+              pages={this.props.pages}
+              read={this.props.read}
+              onRead={this.handleRead}
+            />
+          </div>
+        ) : (
+          <Loading />
+        )}
+      </div>
+    );
+  }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  // We need to lower case the login due to the way GitHub's API behaves.
+  // Have a look at ../middleware/api.js for more details.
+  const path =
+    (ownProps.location && ownProps.location.pathname.replace("/book/", "")) ||
+    "";
+
+  const allBooks = state.books.books;
+
+  const book = allBooks[path] || {};
+
+  let parent = {};
+  if (book.parent) {
+    parent = allBooks[book.parent] || {};
+  }
+
+  const pages = state.pages.books[path] || [];
+
+  const read = isRead(state.read.read, path);
+
+  return {
+    path,
+    book,
+    parent,
+    pages,
+    read
+  };
+};
+
+export default connect(mapStateToProps)(BookManager);
 
 BookManager.displayName = "BookManager";

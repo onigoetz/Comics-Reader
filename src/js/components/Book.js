@@ -15,19 +15,19 @@ export default class Book extends React.Component {
     }
 
     handleClose = () => {
-      const count = this.props.book.pages.length;
+      const count = this.props.pages.length;
 
       // Add + 1 for the 0-indexed list
       // The -3 is to count for the last pages that are generally the
       // back cover, that is often skipped
-      if (this.currentPage + 1 > count - 3 && !this.props.book.read) {
+      if (this.currentPage + 1 > count - 3 && !this.props.read) {
         this.props.onRead();
       }
     }
 
     render() {
 
-      const items = this.props.book.pages.map(page => {
+      const items = this.props.pages.map(page => {
         return {
           src: isRetina ? toRetina(image("big", page.src)) : image("big", page.src),
           thumbnail: image("small", page.src),
@@ -44,8 +44,8 @@ export default class Book extends React.Component {
 
       return <div>
         <div className="BookInfo">
-          {this.props.book.read && "You read this book"}
-          {this.props.book.read || <div>You did not read this book <button className="Button" onClick={this.props.onRead}>Mark as read</button></div>}
+          {this.props.read && "You read this book"}
+          {this.props.read || <div>You did not read this book <button className="Button" onClick={this.props.onRead}>Mark as read</button></div>}
         </div>
         <ExtendedPhotoSwipeGallery items={items} options={options} thumbnailContent={this.renderThumbnail} afterChange={this.afterChange} onClose={this.handleClose} />
       </div>;
