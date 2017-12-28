@@ -20,7 +20,7 @@ export default class Header extends React.Component {
   }
 
   renderHome() {
-    return <Link to="" className="Button Button--link pull-right">
+    return <Link to="" className="Button Button--link pull-right" title="Back to Home">
       <IoIosHome />
     </Link>;
   }
@@ -33,7 +33,7 @@ export default class Header extends React.Component {
     const url = `/list/${this.props.parent.path}`;
     const title = this.props.parent.name;
 
-    return <Link to={url} className="Button Button--link pull-left">
+    return <Link to={url} className="Button Button--link pull-left" title={`Back to ${title}`}>
       <IoIosArrowBack />{title}
     </Link>;
   }

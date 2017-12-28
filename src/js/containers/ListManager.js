@@ -6,15 +6,23 @@ import List from "../components/List";
 import { isRead } from "../reducers/read";
 import { listBooksInside } from "../reducers/books";
 
-function ListManager({ location, dir, parent, books }) {
-  return (
-    <div>
-      <Header url={location.pathname} title={dir.name} parent={parent} />
-      <div className="Content">
-        <List books={books} />
+class ListManager extends React.Component {
+
+  componentDidMount() {
+    document.title = this.props.dir.name;
+  }
+
+  render() {
+    const { location, dir, parent, books } = this.props;
+    return (
+      <div>
+        <Header url={location.pathname} title={dir.name} parent={parent} />
+        <div className="Content">
+          <List books={books} />
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 const mapStateToProps = (state, ownProps) => {

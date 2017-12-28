@@ -14,16 +14,20 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>Comics Reader</title>
 
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="theme-color" content="#000000"/>
 
+    <link rel="manifest" href="<?= BASE; ?>manifest.json">
     <link rel="apple-touch-icon" href="<?= BASE; ?>asset/images/apple-touch.png"/>
     <link rel="apple-touch-icon" sizes="72x72" href="<?= BASE; ?>asset/images/apple-touch-72.png"/>
     <link rel="apple-touch-icon" sizes="114x114" href="<?= BASE; ?>asset/images/apple-touch-114.png"/>
     <link rel="apple-touch-icon" sizes="144x144" href="<?= BASE; ?>asset/images/apple-touch-144.png"/>
+    <link rel="apple-touch-icon" sizes="256x156" href="<?= BASE; ?>asset/images/apple-touch-256.png"/>
+    <link rel="apple-touch-icon" sizes="512x512" href="<?= BASE; ?>asset/images/apple-touch-512.png"/>
 
     <link rel="stylesheet" href="<?= BASE; ?>static/css/app.min.css"/>
 

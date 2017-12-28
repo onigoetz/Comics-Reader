@@ -13,6 +13,9 @@ class BookManager extends React.Component {
   };
 
   componentDidMount() {
+
+    document.title = this.props.book.name;
+
     if (!this.props.pages.length) {
       this.props.dispatch(loadPages(this.props.path));
     }

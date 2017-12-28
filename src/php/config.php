@@ -20,10 +20,10 @@ $image_config = array(
     'path_local' => GALLERY_ROOT,
     'path_cache' => 'cache',
     'presets' => array(
-        'small' => array( //exact size
-            array('action' => 'scale', 'width' => 200)
+        'small' => array(
+            array('action' => 'scale', 'height' => 75)
         ),
-        'big' => array( //fixed height
+        'big' => array(
             array('action' => 'scale', 'width' => BIG_WIDTH)
         )
     )

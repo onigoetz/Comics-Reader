@@ -43,6 +43,47 @@ $app->get(
 );
 
 $app->get(
+    '/manifest.json',
+    function (ServerRequestInterface $req, ResponseInterface $res, $args = []) {
+        return $res->withJson([
+            "short_name" => "Comics",
+            "name" => "Comics Reader",
+            "start_url" => BASE,
+            "display" => "standalone",
+            "theme_color" => "#000000",
+            "background_color" => "#999999",
+            "icons" => [
+                [
+                    "src" => BASE . "asset/images/apple-touch-72.png",
+                    "type" => "image/png",
+                    "sizes" => "72x72"   
+                ],
+                [
+                    "src" => BASE . "asset/images/apple-touch-114.png",
+                    "type" => "image/png",
+                    "sizes" => "114x114"   
+                ],
+                [
+                    "src" => BASE . "asset/images/apple-touch-144.png",
+                    "type" => "image/png",
+                    "sizes" => "144x144"   
+                ],
+                [
+                    "src" => BASE . "asset/images/apple-touch-256.png",
+                    "type" => "image/png",
+                    "sizes" => "256x256"   
+                ],
+                [
+                    "src" => BASE . "asset/images/apple-touch-512.png",
+                    "type" => "image/png",
+                    "sizes" => "512x512"   
+                ]
+            ]
+        ]);
+    }
+);
+
+$app->get(
     '/api/books.json',
     function (ServerRequestInterface $req, ResponseInterface $res, $args = []) use ($app) {
         $cache = $app->getContainer()->get('cache');
