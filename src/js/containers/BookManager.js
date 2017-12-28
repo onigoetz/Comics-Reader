@@ -13,7 +13,6 @@ class BookManager extends React.Component {
   };
 
   componentDidMount() {
-
     document.title = this.props.book.name;
 
     if (!this.props.pages.length) {
@@ -26,10 +25,6 @@ class BookManager extends React.Component {
   }
 
   render() {
-    /*if (!this.state.data) {
-        return ;
-      }*/
-
     return (
       <div>
         <Header

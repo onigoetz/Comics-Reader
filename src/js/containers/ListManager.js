@@ -12,6 +12,10 @@ class ListManager extends React.Component {
     document.title = this.props.dir.name;
   }
 
+  componentWillReceiveProps(nextProps) {
+    document.title = nextProps.dir.name;
+  }
+
   render() {
     const { location, dir, parent, books } = this.props;
     return (
