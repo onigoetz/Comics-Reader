@@ -20,8 +20,11 @@ $image_config = array(
     'path_local' => GALLERY_ROOT,
     'path_cache' => 'cache',
     'presets' => array(
-        'small' => array(
+        'thumb' => array(
             array('action' => 'scale', 'height' => 75)
+        ),
+        'small' => array(
+            array('action' => 'scale', 'width' => 200)
         ),
         'big' => array(
             array('action' => 'scale', 'width' => BIG_WIDTH)
