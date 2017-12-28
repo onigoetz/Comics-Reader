@@ -37,7 +37,7 @@ export default function List({ books }) {
 
     const url = (folder.type === TYPE_DIR ? "/list/" : "/book/") + folder.path;
 
-    const thumb = isRetina ? toRetina(image("small", folder.thumb)) : image("big", folder.thumb);
+    const thumb = isRetina ? toRetina(image("small", folder.thumb)) : image("small", folder.thumb);
 
     let readCount = null;
     if (folder.type === TYPE_DIR && folder.booksInsideRead) {
