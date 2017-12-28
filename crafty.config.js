@@ -1,4 +1,5 @@
 module.exports = {
+    browsers: "Safari >= 9, iOS >= 9, Chrome >= 33, Firefox >= 29, Edge >= 13",
     presets: [
       "@swissquote/crafty-preset-babel",
       "@swissquote/crafty-preset-postcss",
