@@ -1,6 +1,6 @@
 import fetch from "../fetch";
 import {TYPE_DIR, TYPE_BOOK} from "../types";
-import { dirname } from "../utils";
+import { dirname, basename } from "../utils";
 
 export const BOOK_LOAD_START = "BOOK_LOAD_START";
 export const BOOK_LOAD_DONE = "BOOK_LOAD_DONE";
@@ -46,6 +46,15 @@ const defaultState = {
 
 function cleanBook(key, entry) {
   entry.parent = dirname(key);
+  entry.path = key;
+  if (!entry.name) {
+    entry.name = basename(key);
+  }
+
+  if (entry.books) {
+    entry.loaded = true;
+    entry.books = entry.books.map(book => key ? `${key}/${book}` : book);
+  }
 
   if (!entry.loaded) {
     entry.loaded = !!entry.books;

@@ -1,7 +1,13 @@
 /* global baseURL */
 
+const isRetina = ((window.matchMedia && (window.matchMedia("only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx), only screen and (min-resolution: 75.6dpcm)").matches || window.matchMedia("only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (min--moz-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2)").matches)) || (window.devicePixelRatio && window.devicePixelRatio >= 2)) && /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+
 export function dirname(path) {
   return path.indexOf("/") === -1 ? "" : path.replace(/\\/g, "/").replace(/\/[^/]*\/?$/, "");
+}
+
+export function basename(path) {
+  return path.indexOf("/") === -1 ? path : `${path}`.substring(path.lastIndexOf("/") + 1);
 }
 
 export function isNumeric(mixedVar) {
@@ -14,13 +20,14 @@ export function image(preset, img) {
     return "";
   }
 
-  return `${baseURL}images/cache/${preset}/${img.replace("#", "%23")}`;
+  let imageUrl = img.replace("#", "%23");
+  if (isRetina) {
+    imageUrl = img.replace(/(\.[A-z]{3,4}\/?(\?.*)?)$/, "@2x$1");
+  }
+
+  return `${baseURL}images/cache/${preset}/${imageUrl}`;
 }
 
-const srcReplace = /(\.[A-z]{3,4}\/?(\?.*)?)$/;
-
-export function toRetina(src) {
-  return src.replace(srcReplace, "@2x$1");
+export function thumb(path) {
+  return `${baseURL}thumb/${isRetina ? 2 : 1}/${path}`;
 }
-
-export const isRetina = ((window.matchMedia && (window.matchMedia("only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx), only screen and (min-resolution: 75.6dpcm)").matches || window.matchMedia("only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (min--moz-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2)").matches)) || (window.devicePixelRatio && window.devicePixelRatio >= 2)) && /(iPad|iPhone|iPod)/g.test(navigator.userAgent);

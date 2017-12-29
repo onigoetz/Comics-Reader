@@ -35,6 +35,20 @@ function openArchive($path)
     return UnifiedArchive::open($path);
 }
 
+function getIndex($app) {
+    $cache = $app->getContainer()->get('cache');
+    
+    $data = $cache->remember('GALLERY_FILES', 0, function() {
+        $indexCreator = new IndexCreator(GALLERY_ROOT);
+        return IndexCreator::toCache($indexCreator->getList());
+    });
+
+    $root = new RootNode("Home");
+    $root->setChildren(IndexCreator::fromCache($data));
+    
+    return $root;
+}
+
 function getValidImages($files)
 {
     $images = [];

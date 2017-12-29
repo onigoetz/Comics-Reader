@@ -6,7 +6,7 @@ class TreeWalker
 
     protected $routes = [];
 
-    public function __construct($tree)
+    public function __construct(RootNode $tree)
     {
         $this->tree = $tree;
     }
@@ -14,11 +14,8 @@ class TreeWalker
     public function toJson()
     {
         $this->routes[''] = [
-            'name' => 'Home',
-            'thumb' => '',
-            'type' => 'dir',
-            'path' => '',
-            'books' => $this->iterate($this->tree)
+            'name' => $this->tree->getName(),
+            'books' => $this->iterate($this->tree->getChildren())
         ];
 
         return $this->routes;
@@ -37,25 +34,19 @@ class TreeWalker
          * @var Node $row
          */
         foreach ($entries as $key => $row) {
-            $data = [
-                'name' => $row->getName(),
-                'thumb' => $row->getThumb(),
-                'path' => $row->getPath(),
-            ];
-
-            // Dirs without thumbs are probably folders with PDF's or zip files.
-            if (!$data['thumb']) {
-                continue;
-            }
+            $data = new StdClass();
+            //$data->thumb = $row->getThumb();
+            //$data->name = $row->getName();
+            //$data->path = $row->getPath();
 
             // The books props differentiates dirs and books
             if ($row->getType() == 'dir') {
-                $data['books'] = $this->iterate($row->getChildren());
+                $data->books = $this->iterate($row->getChildren());
             }
 
             $this->routes[$row->getPath()] = $data;
 
-            $content[] = $row->getPath();
+            $content[] = $row->getName();
             $names[$key] = ucfirst($row->getName());
         }
         array_multisort($content, SORT_ASC|SORT_NATURAL|SORT_FLAG_CASE, $names);

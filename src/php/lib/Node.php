@@ -1,13 +1,7 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: onigoetz
- * Date: 28.06.14
- * Time: 22:00
- */
 
 class Node implements Countable {
-    protected $children = array();
+    protected $children = [];
     protected $parent;
     protected $name;
     protected $thumb;
@@ -71,6 +65,16 @@ class Node implements Countable {
     public function getThumb()
     {
         return $this->thumb;
+    }
+
+    public function getChild($key) {
+        foreach ($this->children as $child) {
+            if ($child->getName() == $key) {
+                return $child;
+            }
+        }
+
+        return null;
     }
 
     public function toArray()

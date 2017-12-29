@@ -84,16 +84,36 @@ $app->get(
 );
 
 $app->get(
+    '/thumb/{ratio}/{book:.*}',
+    function (ServerRequestInterface $req, ResponseInterface $res, $args = []) use ($app) {
+        $book = standardize_unicode($args['book']);
+        $ratio = $args['ratio'];
+
+        $node = getIndex($app)->getNode($book);
+
+        if (!$node) {
+            return $res->withStatus(404)->write('Image not found');;
+        }
+
+        $image = $node->getThumb();
+
+        if ($ratio != 1) {
+            $re = '/(\.[A-z]{3,4}\/?(\?.*)?)$/';
+            $subst = "@${ratio}x$1";
+            
+            $image = preg_replace($re, $subst, $image);
+            
+        }
+
+        return $res->withRedirect(BASE . "images/cache/thumb/" . $node->getThumb(), 302);
+    }
+);
+
+
+$app->get(
     '/api/books.json',
     function (ServerRequestInterface $req, ResponseInterface $res, $args = []) use ($app) {
-        $cache = $app->getContainer()->get('cache');
-
-        $data = $cache->remember('GALLERY_FILES', 0, function() {
-            $indexCreator = new IndexCreator(GALLERY_ROOT);
-            return IndexCreator::toCache($indexCreator->getList());
-        });
-
-        $tree = new TreeWalker(IndexCreator::fromCache($data));
+        $tree = new TreeWalker(getIndex($app));
 
         return $res->withJson($tree->toJson());
     }

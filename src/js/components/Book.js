@@ -1,7 +1,7 @@
 import React from "react";
 
 import ExtendedPhotoSwipeGallery from "./ExtendedPhotoSwipeGallery";
-import {image, toRetina, isRetina} from "../utils";
+import {image} from "../utils";
 
 export default class Book extends React.Component {
     currentPage = -1;
@@ -29,7 +29,7 @@ export default class Book extends React.Component {
 
       const items = this.props.pages.map(page => {
         return {
-          src: isRetina ? toRetina(image("big", page.src)) : image("big", page.src),
+          src: image("big", page.src),
           thumbnail: image("small", page.src),
           w: page.width,
           h: page.height,

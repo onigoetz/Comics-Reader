@@ -2,7 +2,7 @@ import React from "react";
 import LazyLoad from "react-lazy-load";
 import {Link} from "react-router-dom";
 
-import {isNumeric, image, toRetina, isRetina} from "../utils";
+import {isNumeric, thumb} from "../utils";
 import {TYPE_DIR} from "../types";
 import {IoIosArrowForward} from "./Icons";
 
@@ -37,8 +37,6 @@ export default function List({ books }) {
 
     const url = (folder.type === TYPE_DIR ? "/list/" : "/book/") + folder.path;
 
-    const thumb = isRetina ? toRetina(image("thumb", folder.thumb)) : image("thumb", folder.thumb);
-
     let readCount = null;
     if (folder.type === TYPE_DIR && folder.booksInsideRead) {
       if (folder.booksInside === folder.booksInsideRead) {
@@ -52,7 +50,7 @@ export default function List({ books }) {
       <Link to={url}>
         <div className="List__cell__body">
           <LazyLoad height={75} width={60} offsetVertical={200} className="List__cell__media pull-left" >
-            <img src={thumb} height="75" alt={folder.name} />
+            <img src={thumb(folder.path)} height="75" alt={folder.name} />
           </LazyLoad>
           {folder.name}
           {folder.read && <p><small>Read</small></p>}
