@@ -29,5 +29,5 @@ export function image(preset, img) {
 }
 
 export function thumb(path) {
-  return `${baseURL}thumb/${isRetina ? 2 : 1}/${path}`;
+  return `${baseURL}thumb/${isRetina ? 2 : 1}/${path.replace("#", "%23")}`;
 }

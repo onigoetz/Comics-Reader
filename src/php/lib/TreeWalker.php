@@ -39,6 +39,11 @@ class TreeWalker
             //$data->name = $row->getName();
             //$data->path = $row->getPath();
 
+            // Dirs without thumbs have no content worth displaying
+            if (!$row->getThumb()) {
+                continue;
+            }
+
             // The books props differentiates dirs and books
             if ($row->getType() == 'dir') {
                 $data->books = $this->iterate($row->getChildren());

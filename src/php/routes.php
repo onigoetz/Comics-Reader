@@ -2,6 +2,8 @@
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use GuzzleHttp\Psr7\LazyOpenStream;
+use Onigoetz\Imagecache\Transfer;
 
 // URL Management is done on the client side, we can simply return a notFoundHandler
 $container['notFoundHandler'] = function ($c) {
@@ -101,11 +103,20 @@ $app->get(
             $re = '/(\.[A-z]{3,4}\/?(\?.*)?)$/';
             $subst = "@${ratio}x$1";
             
-            $image = preg_replace($re, $subst, $image);
-            
+            $image = preg_replace($re, $subst, $image);   
         }
 
-        return $res->withRedirect(BASE . "images/cache/thumb/" . $node->getThumb(), 302);
+        $file = "images/cache/thumb/" . $node->getThumb();
+        if (file_exists($file)) {
+            $transfer = new Transfer($file);
+            foreach ($transfer->getHeaders() as $key => $value) {
+                $res = $res->withHeader($key, $value);
+            }
+    
+            return $res->withStatus($transfer->getStatus())->withBody(new LazyOpenStream($file, 'r'));
+        }
+
+        return $res->withRedirect(BASE . str_replace("#", "%23", $file), 302);
     }
 );
 
