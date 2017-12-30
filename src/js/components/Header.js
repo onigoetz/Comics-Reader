@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
-import Headroom from "react-headroom";
+//import Headroom from "react-headroom";
 
 import {IoIosHome, IoIosArrowBack} from "./Icons";
 
@@ -12,11 +12,11 @@ export default class Header extends React.Component {
   }
 
   render() {
-    return <Headroom><header className="Header">
+    return <header className="Header">
       {this.isNotHome() ? this.renderHome() : null}
       {this.isNotHome() ? this.renderPrevious() : null}
       <h1 className="Header__title">{this.props.title}</h1>
-    </header></Headroom>;
+    </header>;
   }
 
   renderHome() {

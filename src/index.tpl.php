@@ -29,7 +29,16 @@
     <link rel="apple-touch-icon" sizes="256x156" href="<?= BASE; ?>asset/images/apple-touch-256.png"/>
     <link rel="apple-touch-icon" sizes="512x512" href="<?= BASE; ?>asset/images/apple-touch-512.png"/>
 
-    <link rel="stylesheet" href="<?= BASE; ?>static/css/app.min.css"/>
+    <!--<link rel="stylesheet" href="<?= BASE; ?>static/css/app.min.css"/>-->
+    <style>
+        <?php
+            echo str_replace(
+                "/*# sourceMappingURL=app.min.css.map */",
+                "/*# sourceMappingURL=".BASE."static/css/app.min.css.map */",
+                file_get_contents("static/css/app.min.css")
+            );
+        ?>
+    </style>
 
     <script>
         window.baseURL = "<?= BASE; ?>";
@@ -38,6 +47,7 @@
 <body>
 <div id="root"></div>
 
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,Array.prototype.includes,fetch"></script>
 <script type="text/javascript" src="<?= BASE . "static/js/" . asset('default.js'); ?>"></script>
 
 </body>

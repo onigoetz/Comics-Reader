@@ -1,5 +1,5 @@
 import React from "react";
-import LazyLoad from "react-lazy-load";
+import LazyLoad from "react-lazyload";
 import {Link} from "react-router-dom";
 
 import {isNumeric, thumb} from "../utils";
@@ -49,9 +49,11 @@ export default function List({ books }) {
     items.push(<li className="List__cell" key={folder.name}>
       <Link to={url}>
         <div className="List__cell__body">
-          <LazyLoad height={75} width={60} offsetVertical={200} className="List__cell__media pull-left" >
-            <img src={thumb(folder.path)} height="75" alt={folder.name} />
-          </LazyLoad>
+          <div className="List__cell__media pull-left">
+            <LazyLoad height={75} width={60} offset={200}>
+              <img src={thumb(folder.path)} height="75" alt={folder.name} />
+            </LazyLoad>
+          </div>
           {folder.name}
           {folder.read && <p><small>Read</small></p>}
           {folder.type === TYPE_DIR ? <p>{folder.booksInside} Books {readCount}</p> : ""}

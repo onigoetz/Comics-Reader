@@ -2,8 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import debounce from "debounce";
 import classnames from "classnames";
-import Portal from "react-overlays/lib/Portal";
-import {PhotoSwipe} from "react-photoswipe";
+import Portal from "react-portal/es/Portal";
+import PhotoSwipe from "react-photoswipe/lib/PhotoSwipe";
+import "react-photoswipe/lib/photoswipe.css";
 
 export default class ExtendedPhotoSwipeGallery extends React.Component {
   static propTypes = {

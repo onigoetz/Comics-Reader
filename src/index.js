@@ -4,7 +4,6 @@ import { Provider } from "react-redux";
 
 import Router from "./js/containers/Router";
 import store from "./js/store";
-import "./js/polyfills";
 
 // eslint-disable-next-line
 __webpack_public_path__ = window.baseURL + "static/js/";
