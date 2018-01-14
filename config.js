@@ -5,7 +5,7 @@ module.exports = {
     comics: path.join(__dirname, 'images'),
     // Not recommended to changes those sizes
     sizes: {
-        thumb: {height: 75},
+        thumb: {height: 140},
         small: {width: 200},
         big: {width: 800}
     }

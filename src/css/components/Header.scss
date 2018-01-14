@@ -1,16 +1,13 @@
 
-.Header {
+.Header, .BookInfo {
     height: $bar-height;
     padding-right: 1rem;
     padding-left: 1rem;
-    background-color: #fff;
-    border-bottom: 1px solid #ddd;
+    background-color: $background-color;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 
-    /* IOS */
-    background-color: hsla(0,0%,97%,.98);
-    border-bottom: 1px solid rgba(0,0,0,.25);
+    @include hairline(single, #bbb, 0);
 }
 
 .Header__title {
@@ -23,7 +20,7 @@
     font-weight: 500;
     line-height: $bar-height;
     left: 0;
-    color: #000;
+    color: $text-color;
     text-align: center;
     white-space: nowrap;
 }

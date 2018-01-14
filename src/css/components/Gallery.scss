@@ -1,13 +1,9 @@
-
-.Content--gallery {
-    background: #222;
-}
-
 .Gallery__item {
     display: block;
-    margin: 2px;
-    background-color: #e3e3e3;
+    margin: 3px;
+    margin-bottom: 1em;
     float: left;
+    text-align: center;
 }
 
 .Gallery__item img {
@@ -15,34 +11,9 @@
     border: none;
 }
 
-/*
- * Page numbers
- */
-.Gallery {
-    counter-reset: listnumbering;
-}
-
-.Gallery__item {
-    position:relative;
-    margin-bottom: 2em;
-
-    &:after {
-        counter-increment:listnumbering;
-        content:counter(listnumbering);
-
-        display:block;
-        position:absolute;
-        bottom: -2em;
-        left:0;
-        width: 100%;
-
-        font-weight: lighter;
-        padding:0 5px;
-        line-height:1.2em;
-        height:2em;
-
-        color:#ddd;
-        text-align:center;
-        text-shadow: 1px 1px 2px #bbb;
-    }
+.Gallery__page {
+    
+    padding:0 5px;
+    line-height:1.2em;
+    height:2em;
 }

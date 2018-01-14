@@ -4,39 +4,26 @@
 
 .List {
   padding-left: 0;
-  margin-top: 0;
-  margin-bottom: 15px;
+  margin: 1rem;
   list-style: none; // Remove usual bullet styles from table view
-  background-color: #fff;
-  @include hairline(double, #c8c7cc, 0); // Double grey border.
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* see notes below */
+  grid-gap: 1rem;
 }
 
 // Pad each table view item and add dividers
 .List__cell {
-  position: relative;
-  padding: 11px 65px 11px 15px;
-  overflow: hidden;
-
-  // Single grey border with 15px offset.
-  @include hairline(single, #c8c7cc, 15px);
-
-  // Remove the border from the last table view item
-  &:last-child {
-    background-image: none;
-  }
+  padding: 0;
+  text-align: center;
 
   // If it's a table view of links, make sure the child <a>
   // takes up full table view item tap area (want to avoid selecting child buttons though)
-  > a:not(.Button) {
-    position: relative;
+  > a {
     display: block;
-    padding: inherit;
-    margin: -11px -65px -11px -15px; // Make the entire list item tappable.
-    overflow: hidden;
     color: inherit;
 
     &:active {
-      background-color: #eee;
       color: inherit;
     }
   }
@@ -44,55 +31,8 @@
   p {
     margin-bottom: 0;
   }
-
-  svg {
-    position: absolute;
-    top: 50%;
-    display: inline-block;
-    line-height: 1;
-    color: #bbb;
-    text-decoration: none;
-    -webkit-font-smoothing: antialiased;
-    transform: translateY(-50%);
-
-    right: 15px;
-    height: 2em;
-  }
 }
 
-
-// Table view dividers
-// --------------------------------------------------
-
-.List__divider {
-  padding-top: 6px;
-  padding-bottom: 6px;
-  padding-left: 15px;
-  margin-top: -1px; // Hides the border of the previous list item
-  margin-left: 0;
-  font-weight: $font-weight;
-  color: #999;
-  background-color: #fafafa;
-  @include hairline(double, #c8c7cc, 0);  // Double (top and bottom) grey border with no offset.
-}
-
-// Table-views with media (images,avatars, icons)
-// --------------------------------------------------
-
-.List__cell,
-.List__cell__body {
-  overflow: hidden;
-}
-
-.List__cell__media {
-  height: 75px;
-  width: 60px;
-  overflow: hidden;
-
-  &.pull-left {
-    margin-right: 10px;
-  }
-  &.pull-right {
-    margin-left: 10px;
-  }
+.List__cell__name {
+  display: block;
 }

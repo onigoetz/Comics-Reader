@@ -14,9 +14,9 @@
     border-radius: 3px;
 
     /* IOS */
-    color: $default-color;
-    background-color: $chrome-color;
-    border: 1px solid $default-color;
+    color: $primary-color;
+    background-color: #222;
+    border: 1px solid $primary-color;
     transition: all;
     transition-duration: .2s;
     transition-timing-function: linear;
@@ -25,7 +25,7 @@
     &:active,
     &.active {
         color: #fff;
-        background-color: $default-color;
+        background-color: #555;
     }
 }
 

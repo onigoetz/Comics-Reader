@@ -6,6 +6,18 @@ import Portal from "react-portal/es/Portal";
 import PhotoSwipe from "react-photoswipe/lib/PhotoSwipe";
 import "react-photoswipe/lib/photoswipe.css";
 
+function getRowLimit(containerWidth) {
+  if (containerWidth >= 1024) {
+    return 9;
+  }
+
+  if (containerWidth >= 480) {
+    return 6;
+  }
+
+  return 3;
+}
+
 export default class ExtendedPhotoSwipeGallery extends React.Component {
   static propTypes = {
     items: PropTypes.array.isRequired,
@@ -105,23 +117,14 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
 
   resizeGallery(containerWidth) {
     const photoPreviewNodes = [];
-    let rowLimit = 3;
+    const rowLimit = getRowLimit(containerWidth);
 
-    if (containerWidth >= 480) {
-      rowLimit = 6;
-    }
-
-    if (containerWidth >= 1024) {
-      rowLimit = 9;
-    }
-
-    let contWidth = containerWidth - (rowLimit * 4);
+    let contWidth = containerWidth - (rowLimit * 6);
     /* 4px for margin around each image*/
     contWidth = Math.floor(contWidth - 2); // add some padding to prevent layout prob
     const remainder = this.props.items.length % rowLimit;
-    let lastRowWidth, lastRowIndex;
+    let lastRowIndex;
     if (remainder) { // there are fewer than rowLimit photos in last row
-      lastRowWidth = Math.floor(this.state.containerWidth - (remainder * 4) - 2);
       lastRowIndex = this.props.items.length - remainder;
     }
 
@@ -137,7 +140,7 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
         totalAr += this.props.items[j].aspectRatio;
       }
       if (i === lastRowIndex) {
-        commonHeight = previousHeight || lastRowWidth / totalAr;
+        commonHeight = previousHeight || Math.min(200, contWidth / totalAr);
       } else {
         commonHeight = contWidth / totalAr;
       }
@@ -173,6 +176,7 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
               }
             }}>
               <img src={item.thumbnail} alt={`Page ${k}`}/>
+              <span className="Gallery__page">{k + 1}</span>
             </div>
           ))}
         </div>
