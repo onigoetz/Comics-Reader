@@ -10,7 +10,7 @@ const production = process.env.NODE_ENV === "production";
 
 function getManifest() {
   if (!production) {
-    delete require.cache[require.resolve("../../static/asset-manifest.json")]
+    delete require.cache[require.resolve("../../static/asset-manifest.json")];
   }
 
   return require("../../static/asset-manifest.json");
@@ -21,12 +21,17 @@ function render(BASE, style) {
     BASE,
     CSS: style,
     JS: `${BASE}static/js/${getManifest()["default.js"]}`
-  })
+  });
 }
 
 module.exports = function generateLayout(BASE) {
   if (!production) {
-    return Promise.resolve(render(BASE, `<link rel="stylesheet" href="${BASE}static/css/app.min.css"/>`));
+    return Promise.resolve(
+      render(
+        BASE,
+        `<link rel="stylesheet" href="${BASE}static/css/app.min.css"/>`
+      )
+    );
   }
 
   return new Promise((resolve, reject) => {
@@ -42,10 +47,12 @@ module.exports = function generateLayout(BASE) {
 
         resolve(
           render(
-            BASE, "<style>" + style.replace(
+            BASE,
+            `<style>${style.replace(
               "/*# sourceMappingURL=app.min.css.map */",
-              `/*# sourceMappingURL=${BASE}static/css/app.min.css.map */`
-            )) + "</style>"
+              ""
+            )}</style>`
+          )
         );
       }
     );
