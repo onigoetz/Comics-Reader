@@ -1,29 +1,27 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import Header from "../components/Header";
 import List from "../components/List";
 import { isRead } from "../reducers/read";
 import { listBooksInside } from "../reducers/books";
+import { navigate } from "../reducers/route";
 
 class ListManager extends React.Component {
 
   componentDidMount() {
-    document.title = this.props.dir.name;
+    this.props.dispatch(navigate(this.props.dir.name, this.props.location.pathname, this.props.parent));
   }
 
   componentWillReceiveProps(nextProps) {
-    document.title = nextProps.dir.name;
+    if (nextProps.dir.name !== this.props.dir.name) {
+      this.props.dispatch(navigate(nextProps.dir.name, nextProps.location.pathname, nextProps.parent));
+    }
   }
 
   render() {
-    const { location, dir, parent, books } = this.props;
     return (
-      <div>
-        <Header url={location.pathname} title={dir.name} parent={parent} />
-        <div className="Content">
-          <List books={books} />
-        </div>
+      <div className="Content">
+        <List books={this.props.books} />
       </div>
     );
   }

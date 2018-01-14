@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+import Header from "./Header";
 import Loading from "../components/Loading";
 import ListManager from "./ListManager";
 import { loadBooks } from "../reducers/books";
@@ -35,13 +36,14 @@ class Router extends Component {
 
     return (
       <BrowserRouter basename={window.baseURL}>
-        <div>
+        <React.Fragment>
+          <Header />
           <Switch>
             <Route path="/list/:path" component={ListManager} />
             <Route path="/book/" component={BookManager} />
             <Route render={props => <ListManager {...props} />} />
           </Switch>
-        </div>
+        </React.Fragment>
       </BrowserRouter>
     );
   }

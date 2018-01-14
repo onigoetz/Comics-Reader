@@ -1,0 +1,54 @@
+.Input {
+    position: relative;
+    top: 7px;
+    z-index: 5;
+    padding: 6px 30px 7px 12px;
+    margin-top: 1px;
+    margin-right: .4em;
+    font-weight: 400;
+
+    border-width: 0;
+    border-radius: 4px;
+}
+
+.Search {
+    position: relative;
+
+    display:inline-block;
+
+    height: calc($bar-height - 1px);
+    min-width: 30px;
+
+    .Button {
+        position:absolute;
+        right: 0;
+        top: 0;
+        z-index: 6;
+    }
+}
+
+.SearchResult {
+    position: absolute;
+    top: $bar-height;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    overflow-y: auto;
+    
+    width: 70%;
+    min-width: 500px;
+    margin: 0 auto;
+
+    background: $background-color;
+
+    box-shadow: black 0 4px 10px;
+}
+
+.SearchResult__item {
+    display: block;
+
+    border-bottom: 1px solid #aaa;
+
+    padding: .4em;
+}

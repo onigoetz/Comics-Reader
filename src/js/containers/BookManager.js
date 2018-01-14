@@ -1,11 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import Header from "../components/Header";
 import Loading from "../components/Loading";
 import Book from "../components/Book";
 import { loadPages } from "../reducers/pages";
 import { markRead, isRead } from "../reducers/read";
+import { navigate } from "../reducers/route";
 
 class BookManager extends React.Component {
   handleRead = () => {
@@ -13,10 +13,20 @@ class BookManager extends React.Component {
   };
 
   componentDidMount() {
-    document.title = this.props.book.name;
-
     if (!this.props.pages.length) {
       this.props.dispatch(loadPages(this.props.path));
+    }
+
+    this.props.dispatch(navigate(this.props.book.name, this.props.location.pathname, this.props.parent));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.book.name !== this.props.book.name) {
+      this.props.dispatch(navigate(nextProps.book.name, nextProps.location.pathname, nextProps.parent));
+
+      if (!nextProps.pages.length) {
+        this.props.dispatch(loadPages(nextProps.path));
+      }
     }
   }
 
@@ -25,26 +35,17 @@ class BookManager extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        <Header
-          url={this.props.location.pathname}
-          title={this.props.book.name}
-          parent={this.props.parent}
-        />
-        {this.props.pages.length ? (
-          <div className="Content Content--gallery">
-            <Book
-              pages={this.props.pages}
-              read={this.props.read}
-              onRead={this.handleRead}
-            />
-          </div>
-        ) : (
-          <Loading />
-        )}
-      </div>
-    );
+    if (!this.props.pages.length) {
+      return <Loading />;
+    }
+
+    return <div className="Content Content--gallery">
+      <Book
+        pages={this.props.pages}
+        read={this.props.read}
+        onRead={this.handleRead}
+      />
+    </div>;
   }
 }
 
