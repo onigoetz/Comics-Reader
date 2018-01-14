@@ -1,9 +1,7 @@
 
 # project
 images
-
-# composer
-/vendor/*
+store.json
 
 # npm
 node_modules

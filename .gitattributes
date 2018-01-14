@@ -1,7 +1,0 @@
-/config              export-ignore
-/scripts             export-ignore
-/docker              export-ignore
-/.gitattributes      export-ignore
-/.gitignore          export-ignore
-/package.json        export-ignore
-/package-lock.json   export-ignore

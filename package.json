@@ -21,22 +21,20 @@
   "license": "MIT",
   "homepage": "http://home.onigoetz.ch/BD",
   "scripts": {
+    "start": "node src/server/index.js",
     "watch": "crafty watch",
-    "build": "rm -rf static && crafty run"
+    "build": "rm -rf static && crafty run",
+    "lint": "crafty jsLint src/server/** --preset recommended --preset node --fix"
   },
   "devDependencies": {
     "@swissquote/crafty": "^1.0.0",
     "@swissquote/crafty-preset-babel": "^1.0.0",
+    "@swissquote/crafty-preset-images-simple": "^1.0.0",
     "@swissquote/crafty-preset-postcss": "^1.0.0",
     "@swissquote/crafty-runner-gulp": "^1.0.0",
     "@swissquote/crafty-runner-webpack": "^1.0.0",
-    "file-loader": "^1.1.6",
-    "redux-logger": "^3.0.6",
-    "unfetch": "^3.0.0",
-    "webpack-manifest-plugin": "^1.3.2"
-  },
-  "dependencies": {
     "debounce": "^1.1.0",
+    "file-loader": "^1.1.6",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
     "react-code-splitting": "^1.2.1",
@@ -50,6 +48,26 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0"
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0",
+    "unfetch": "^3.0.0",
+    "webpack-manifest-plugin": "^1.3.2"
+  },
+  "dependencies": {
+    "archive-type": "^4.0.0",
+    "basic-auth": "^2.0.0",
+    "better-sqlite3": "^4.0.3",
+    "compression": "^1.7.1",
+    "express": "^4.16.2",
+    "hogan.js": "^3.0.2",
+    "image-size": "^0.6.2",
+    "node-file-cache": "^1.0.2",
+    "node-natural-sort": "^0.8.6",
+    "pdf.js-extract": "^0.0.7",
+    "read-chunk": "^2.1.0",
+    "rimraf": "^2.6.2",
+    "sharp": "^0.18.4",
+    "shell-escape": "^0.2.0",
+    "tmp": "^0.0.33"
   }
 }

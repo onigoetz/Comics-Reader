@@ -22,7 +22,7 @@ export function loadBooks() {
   return dispatch => {
     dispatch(booksLoadStart());
 
-    return fetch("books.json")
+    return fetch("books")
       .then(response => {
         dispatch(booksLoaded(response));
       })

@@ -18,54 +18,45 @@ It is not intended to work on a desktop computer.
 ### Using docker
 
 ```
-docker run -v /your-images-dir:/comics -p 8008:80 --rm onigoetz/comicsreader
+docker run -v /your-images-dir:/comics -p 8080:8080 --rm onigoetz/comicsreader
 ```
 
-Will start the comics reader using your comic books at `/your-images-dir` and be available at [http://localhost:8008]().
+Will start the comics reader using your comic books at `/your-images-dir` and be available at [http://localhost:8080]().
 
 
-### On a PHP server
+### With Node
 
 First, you need
-- PHP with the following extensions: gd, zip, rar
+- Nodejs
 - Imagemagick installed on the machine. (for PDF support)
-- Access to `popen` and `shell_exec` (for PDF support)
+- `unrar` and `unzip` commands installed (for CBR and CBZ support)
 
-- Download this repository on your server in a web accessible directory
-- edit `src/php/config.php` to define the path to your images
-- make the `cache` directory writable
-- run `composer install`
+- Download/clone this repository on your server
+- Edit `config.js` to define the path to your images, defaults to `images` in the root directory
+- Make the `images/cache` directory writable
+- Run `yarn install`
 
-You should be good to go.
+You can then start the server with `yarn start`.
 
-## Indexing books
-
-To perform in the best way, the comics reader indexes your books on the first run, if your collection is big, you might want to run the indexing process from the command line.
-
-```bash
-php find_books.php
-
-# Or with docker
-docker run -v /your-images-dir:/comics --rm comicsreader php find_books.php
-```
+This will index the books and start the server.
 
 ## Tweaking the configuration
 
-### Images size
-
-The path to the images and the size of the generated thumbnails are available in `src/php/config.php`.
-
 ### Basedir
 
-When served directly the comics reader should automatically detect the basedir it's running in.
-However if you're running it behind a reverse proxy, you can set the `X-Comics-Base` header.
+Basedir has to be specified as an environment variable when starting the server.
 
-Here's an example with an nginx configuration.
+```
+COMICS_BASE="comics" yarn start
+# OR
+docker run -e "COMICS_BASE=comics" ...
+```
+
+## Reverse proxy through nginx
 
 ```
 location /BD/ {
-    proxy_pass http://comics/;
-    proxy_set_header X-Comics-Base "/BD/";
+    proxy_pass http://comics:8080/;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Host $server_name;
     proxy_set_header X-Forwarded-Proto $scheme;
@@ -80,5 +71,5 @@ location /BD/ {
 
 - The web interface is made with [React](https://facebook.github.io/react/).
 - The photo viewer is made with [PhotoSwipe](http://photoswipe.com/).
-- [Slim framework 3](http://www.slimframework.com/) powers the server side.
-- [Imagecache](https://github.com/onigoetz/imagecache) generates the thumbnails. 
+- [Express](http://expressjs.com/) powers the server side.
+- [Sharp](http://sharp.pixelplumbing.com/en/stable/) is used to generate the thumbnails. 

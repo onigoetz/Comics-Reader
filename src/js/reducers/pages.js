@@ -13,9 +13,9 @@ export function pagesLoadError(error) {
 
 export function loadPages(id) {
   return dispatch => {
-    return fetch(`books/${id}.json`)
+    return fetch(`books/${id}`)
       .then(response => {
-        dispatch(pagesLoaded(id, response.pages));
+        dispatch(pagesLoaded(id, response));
       })
       .catch(error => {
         dispatch(pagesLoadError(error.message));

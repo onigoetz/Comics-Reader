@@ -4,13 +4,15 @@ module.exports = {
       "@swissquote/crafty-preset-babel",
       "@swissquote/crafty-preset-postcss",
       "@swissquote/crafty-runner-webpack",
-      "@swissquote/crafty-runner-gulp"
+      "@swissquote/crafty-runner-gulp",
+      "@swissquote/crafty-preset-images-simple"
     ],
+    img_basedir: "src/images",
     destination: "static",
     js: {
       app: {
         runner: "webpack",
-        source: "src/index.js",
+        source: "src/js/index.js",
         libraryTarget: "umd"
       }
     },
