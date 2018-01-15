@@ -32,16 +32,14 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
 
   static defaultProps = {
     options: {},
-    thumbnailContent: item =>
-      <img src={item.src} width="100" height="100" alt=""/>
-    ,
+    thumbnailContent: item => (
+      <img src={item.src} width="100" height="100" alt="" />
+    ),
     id: "",
     className: "",
     isOpen: false,
-    onClose: () => {
-    },
-    afterChange: () => {
-    }
+    onClose: () => {},
+    afterChange: () => {}
   };
 
   constructor(props) {
@@ -56,25 +54,25 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
     this.thumbnails = [];
   }
 
-  componentWillReceiveProps = (nextProps) => {
-    const {isOpen} = this.state;
+  componentWillReceiveProps = nextProps => {
+    const { isOpen } = this.state;
     if (nextProps.isOpen) {
       if (!isOpen) {
-        this.setState({isOpen: true});
+        this.setState({ isOpen: true });
       }
     } else if (isOpen) {
-      this.setState({isOpen: false});
+      this.setState({ isOpen: false });
     }
   };
 
-
-  showPhotoSwipe = itemIndex => (e) => {
+  showPhotoSwipe = itemIndex => e => {
     e.preventDefault();
     const _this = this;
-    const getThumbBoundsFn = (index) => {
+    const getThumbBoundsFn = index => {
       const thumbnail = _this.thumbnails[index];
       const img = thumbnail.getElementsByTagName("img")[0];
-      const pageYScroll = window.pageYOffset || document.documentElement.scrollTop;
+      const pageYScroll =
+        window.pageYOffset || document.documentElement.scrollTop;
       const rect = img.getBoundingClientRect();
       return {
         x: rect.left,
@@ -82,7 +80,7 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
         w: rect.width
       };
     };
-    const {options} = this.state;
+    const { options } = this.state;
     options.index = itemIndex;
     options.getThumbBoundsFn = options.getThumbBoundsFn || getThumbBoundsFn;
     this.setState({
@@ -111,7 +109,7 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
   }, 10);
 
   handleClose = () => {
-    this.setState({isOpen: false});
+    this.setState({ isOpen: false });
     this.props.onClose();
   };
 
@@ -119,12 +117,13 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
     const photoPreviewNodes = [];
     const rowLimit = getRowLimit(containerWidth);
 
-    let contWidth = containerWidth - (rowLimit * 6);
+    let contWidth = containerWidth - rowLimit * 6;
     /* 4px for margin around each image*/
     contWidth = Math.floor(contWidth - 2); // add some padding to prevent layout prob
     const remainder = this.props.items.length % rowLimit;
     let lastRowIndex;
-    if (remainder) { // there are fewer than rowLimit photos in last row
+    if (remainder) {
+      // there are fewer than rowLimit photos in last row
       lastRowIndex = this.props.items.length - remainder;
     }
 
@@ -132,7 +131,8 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
     for (let i = 0; i < this.props.items.length; i += rowLimit) {
       // loop thru each set of rowLimit num
       // eg. if rowLimit is 3 it will  loop thru 0,1,2, then 3,4,5 to perform calculations for the particular set
-      let totalAr = 0, commonHeight = 0;
+      let totalAr = 0,
+        commonHeight = 0;
       for (let j = i; j < i + rowLimit; j++) {
         if (j === this.props.items.length) {
           break;
@@ -152,7 +152,8 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
         }
 
         this.thumbnails[k].firstChild.height = commonHeight;
-        this.thumbnails[k].firstChild.width = commonHeight * this.props.items[k].aspectRatio;
+        this.thumbnails[k].firstChild.width =
+          commonHeight * this.props.items[k].aspectRatio;
       }
       previousHeight = commonHeight;
     }
@@ -161,21 +162,30 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
   }
 
   render() {
-    let {id, className, items} = this.props;
+    let { id, className, items } = this.props;
     className = classnames(["pswp-gallery", className]).trim();
-    const {isOpen, options} = this.state;
+    const { isOpen, options } = this.state;
     return (
       <div id={id} className={className}>
-        <div className="Gallery" ref={(c) => {
-          this._gallery = c;
-        }}>
+        <div
+          className="Gallery"
+          ref={c => {
+            this._gallery = c;
+          }}
+        >
           {this.props.items.map((item, k) => (
-            <div key={k} className="Gallery__item" onClick={this.showPhotoSwipe(k)} data-key={k} ref={node => {
-              if (node) {
-                this.thumbnails[node.getAttribute("data-key")] = node;
-              }
-            }}>
-              <img src={item.thumbnail} alt={`Page ${k}`}/>
+            <div
+              key={k}
+              className="Gallery__item"
+              onClick={this.showPhotoSwipe(k)}
+              data-key={k}
+              ref={node => {
+                if (node) {
+                  this.thumbnails[node.getAttribute("data-key")] = node;
+                }
+              }}
+            >
+              <img src={item.thumbnail} alt={`Page ${k}`} />
               <span className="Gallery__page">{k + 1}</span>
             </div>
           ))}
@@ -195,4 +205,3 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
 }
 
 ExtendedPhotoSwipeGallery.displayName = "PhotoSwipe";
-

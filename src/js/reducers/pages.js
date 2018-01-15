@@ -32,7 +32,11 @@ const defaultState = {
 export default function pagesReducer(state = defaultState, action) {
   switch (action.type) {
     case PAGES_LOAD_DONE:
-      return { ...state, error: false, books: { ...state.books, [action.id]: action.pages } };
+      return {
+        ...state,
+        error: false,
+        books: { ...state.books, [action.id]: action.pages }
+      };
     case PAGES_LOAD_ERROR:
       return { ...state, error: action.error };
     default:

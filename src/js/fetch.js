@@ -1,7 +1,9 @@
 /* global fetch */
 function onlySuccess(v) {
   if (v.status !== 200) {
-    throw new Error(`Failed with status ${v.status} and message: ${v.statusText}`);
+    throw new Error(
+      `Failed with status ${v.status} and message: ${v.statusText}`
+    );
   }
 
   return v.json();

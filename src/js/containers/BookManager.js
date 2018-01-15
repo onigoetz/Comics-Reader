@@ -17,12 +17,24 @@ class BookManager extends React.Component {
       this.props.dispatch(loadPages(this.props.path));
     }
 
-    this.props.dispatch(navigate(this.props.book.name, this.props.location.pathname, this.props.parent));
+    this.props.dispatch(
+      navigate(
+        this.props.book.name,
+        this.props.location.pathname,
+        this.props.parent
+      )
+    );
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.book.name !== this.props.book.name) {
-      this.props.dispatch(navigate(nextProps.book.name, nextProps.location.pathname, nextProps.parent));
+      this.props.dispatch(
+        navigate(
+          nextProps.book.name,
+          nextProps.location.pathname,
+          nextProps.parent
+        )
+      );
 
       if (!nextProps.pages.length) {
         this.props.dispatch(loadPages(nextProps.path));
@@ -39,13 +51,15 @@ class BookManager extends React.Component {
       return <Loading />;
     }
 
-    return <div className="Content Content--gallery">
-      <Book
-        pages={this.props.pages}
-        read={this.props.read}
-        onRead={this.handleRead}
-      />
-    </div>;
+    return (
+      <div className="Content Content--gallery">
+        <Book
+          pages={this.props.pages}
+          read={this.props.read}
+          onRead={this.handleRead}
+        />
+      </div>
+    );
   }
 }
 

@@ -7,14 +7,25 @@ import { listBooksInside } from "../reducers/books";
 import { navigate } from "../reducers/route";
 
 class ListManager extends React.Component {
-
   componentDidMount() {
-    this.props.dispatch(navigate(this.props.dir.name, this.props.location.pathname, this.props.parent));
+    this.props.dispatch(
+      navigate(
+        this.props.dir.name,
+        this.props.location.pathname,
+        this.props.parent
+      )
+    );
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.dir.name !== this.props.dir.name) {
-      this.props.dispatch(navigate(nextProps.dir.name, nextProps.location.pathname, nextProps.parent));
+      this.props.dispatch(
+        navigate(
+          nextProps.dir.name,
+          nextProps.location.pathname,
+          nextProps.parent
+        )
+      );
     }
   }
 
@@ -47,15 +58,15 @@ const mapStateToProps = (state, ownProps) => {
 
   let books = [];
   if (dir.books) {
-    books = dir.books
-      .map(book => allBooks[book] || {})
-      .map(book => {
-        book.read = isRead(state.read.read, book.path);
-        const booksInside = listBooksInside(allBooks, book.path);
-        book.booksInsideRead = booksInside.filter(innerBook => isRead(state.read.read, innerBook)).length;
-        book.booksInside = booksInside.length;
-        return book;
-      });
+    books = dir.books.map(book => allBooks[book] || {}).map(book => {
+      book.read = isRead(state.read.read, book.path);
+      const booksInside = listBooksInside(allBooks, book.path);
+      book.booksInsideRead = booksInside.filter(innerBook =>
+        isRead(state.read.read, innerBook)
+      ).length;
+      book.booksInside = booksInside.length;
+      return book;
+    });
   }
 
   return {

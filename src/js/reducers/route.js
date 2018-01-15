@@ -13,7 +13,12 @@ export default function booksReducer(state = defaultState, action) {
     case NAVIGATE:
       document.title = action.title;
 
-      return { ...state, title: action.title, url: action.url, parent: action.parent };
+      return {
+        ...state,
+        title: action.title,
+        url: action.url,
+        parent: action.parent
+      };
     default:
       return state;
   }

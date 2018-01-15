@@ -11,5 +11,6 @@ __webpack_public_path__ = window.baseURL + "static/js/";
 ReactDOM.render(
   <Provider store={store}>
     <Router />
-  </Provider>, document.getElementById("root"));
-
+  </Provider>,
+  document.getElementById("root")
+);

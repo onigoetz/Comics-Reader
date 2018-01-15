@@ -1,5 +1,5 @@
 import fetch from "../fetch";
-import {TYPE_DIR, TYPE_BOOK} from "../types";
+import { TYPE_DIR, TYPE_BOOK } from "../types";
 import { dirname, basename } from "../utils";
 
 export const BOOK_LOAD_START = "BOOK_LOAD_START";
@@ -34,7 +34,7 @@ export function loadBooks() {
 
 export function listBooksInside(allBooks, path) {
   return Object.keys(allBooks)
-    .filter(key => key.indexOf(`${path}/`) === 0 )
+    .filter(key => key.indexOf(`${path}/`) === 0)
     .filter(key => allBooks[key].type === TYPE_BOOK);
 }
 
@@ -53,7 +53,7 @@ function cleanBook(key, entry) {
 
   if (entry.books) {
     entry.loaded = true;
-    entry.books = entry.books.map(book => key ? `${key}/${book}` : book);
+    entry.books = entry.books.map(book => (key ? `${key}/${book}` : book));
   }
 
   if (!entry.loaded) {
@@ -80,7 +80,12 @@ export default function booksReducer(state = defaultState, action) {
     case BOOK_LOAD_START:
       return { ...state, loading: true, error: false };
     case BOOK_LOAD_DONE:
-      return { ...state, loading: false, error: false, books: cleanBooks(action.books) };
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        books: cleanBooks(action.books)
+      };
     case BOOK_LOAD_ERROR:
       return { ...state, loading: false, error: action.error };
     default:
