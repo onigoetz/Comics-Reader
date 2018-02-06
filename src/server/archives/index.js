@@ -4,6 +4,7 @@ const readChunk = require("read-chunk");
 const Zip = require("./Zip");
 const Rar = require("./Rar");
 
+// TODO :: make async
 module.exports = function open(path) {
   // Check with mime type, people tend to misname cbr/cbz files
   const buffer = readChunk.sync(path, 0, 262);

@@ -4,10 +4,25 @@ const PDFExtract = require("pdf.js-extract").PDFExtract;
 const shellEscape = require("shell-escape");
 const tmp = require("tmp");
 
-const exec = childProcess.execSync;
-
 function escape(input) {
   return shellEscape([input]);
+}
+
+const commandOptions = {
+  encoding: "utf8"
+};
+
+function getTempFile() {
+  return new Promise((resolve, reject) => {
+    tmp.file({ postfix: ".png" }, (fileErr, file, fd, cleanup) => {
+      if (fileErr) {
+        reject(`Failed creating temp file: ${fileErr}`);
+        return;
+      }
+
+      resolve({ file, cleanup });
+    });
+  });
 }
 
 module.exports = class PDFTools {
@@ -16,18 +31,39 @@ module.exports = class PDFTools {
   }
 
   extractPage(page) {
-    const to = tmp.fileSync({ postfix: ".png" });
+    return new Promise((resolve, reject) => {
+      getTempFile().then(
+        file => {
+          const command = `convert ${escape(`${this.file}[${page}]`)} ${escape(
+            file.file
+          )}`;
+          childProcess.exec(
+            command,
+            commandOptions,
+            (error, stdout, stderr) => {
+              if (error) {
+                console.log(
+                  "Failed extracting image:",
+                  error,
+                  "stderr",
+                  stderr,
+                  "stdout",
+                  stdout
+                );
+                reject();
+                return;
+              }
 
-    exec(`convert ${escape(`${this.file}[${page}]`)} ${escape(to.name)}`, {
-      encoding: "utf8"
+              resolve(file);
+            }
+          );
+        },
+        fileError => {
+          console.log(fileError);
+          reject();
+        }
+      );
     });
-
-    return {
-      file: to.name,
-      cleanup: () => {
-        to.removeCallback();
-      }
-    };
   }
 
   getImageSizes() {

@@ -4,7 +4,6 @@ const path = require("path");
 const shellEscape = require("shell-escape");
 const tmp = require("tmp");
 
-const exec = childProcess.execSync;
 const options = { encoding: "utf8" };
 
 function escape(input) {
@@ -21,13 +20,16 @@ module.exports = class Rar {
   }
 
   extractTo(destination) {
-    return exec(`unrar x ${escape(this.path)} ${escape(destination)}`, options);
+    return childProcess.execSync(
+      `unrar x ${escape(this.path)} ${escape(destination)}`,
+      options
+    );
   }
 
   extractFile(file) {
     const to = tmp.fileSync({ postfix: path.extname(file).toLowerCase() });
 
-    exec(
+    childProcess.execSync(
       `unrar p -idq ${escape(this.path)} ${escape(file)} > ${escape(to.name)}`,
       options
     );
@@ -41,6 +43,8 @@ module.exports = class Rar {
   }
 
   getFileNames() {
-    return exec(`unrar lb ${escape(this.path)}`, options).split("\n");
+    return childProcess
+      .execSync(`unrar lb ${escape(this.path)}`, options)
+      .split("\n");
   }
 };

@@ -73,30 +73,32 @@ app.get(/\/thumb\/([0-9])\/(.*)/, (req, res) => {
   const book = req.params[1];
   const node = comicsIndex.getList().getNode(book);
 
-  if (!node) {
-    res.status(404).send("Book not found");
-    return;
-  }
+  comicsIndex.getNode(book).then(
+    node => {
+      let image = node.getThumb();
 
-  let image = node.getThumb();
+      if (!image) {
+        res.status(404).send("Thumb not found");
+        return;
+      }
 
-  if (!image) {
-    res.status(404).send("Thumb not found");
-    return;
-  }
+      if (ratio !== 1) {
+        image = image.replace(/(\.[A-z]{3,4}\/?(\?.*)?)$/, `@${ratio}x$1`);
+      }
 
-  if (ratio !== 1) {
-    image = image.replace(/(\.[A-z]{3,4}\/?(\?.*)?)$/, `@${ratio}x$1`);
-  }
+      const file = `cache/thumb/${node.getThumb()}`;
+      const storedFile = path.join(config.comics, file);
 
-  const file = `cache/thumb/${node.getThumb()}`;
-  const storedFile = path.join(config.comics, file);
-
-  if (fs.existsSync(storedFile)) {
-    res.sendFile(storedFile);
-  } else {
-    res.redirect(`${BASE}images/${file.replace("#", "%23")}`);
-  }
+      fs.exists(storedFile, exists => {
+        if (exists) {
+          res.sendFile(storedFile);
+        } else {
+          res.redirect(`${BASE}images/${file.replace("#", "%23")}`);
+        }
+      });
+    },
+    () => res.status(404).send("Book not found")
+  );
 });
 
 app.get("/api/books", (req, res) => {
@@ -171,27 +173,25 @@ app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, (req, res) => {
   );
   ensureDir(path.dirname(destination));
 
-  const file = getFile(path.join(config.comics, sourceFile));
-
-  if (!file) {
-    res.status(404).send("Could not find image");
-    return;
-  }
-
-  sharp(file.file)
-    .resize(preset.width || null, preset.height || null)
-    .toFile(destination)
-    .then(
-      () => {
-        file.cleanup();
-        res.sendFile(destination);
-      },
-      e => {
-        console.log("Failed compression", e);
-        file.cleanup();
-        res.status(500).send("Could not compress image");
-      }
-    );
+  const file = getFile(path.join(config.comics, sourceFile)).then(
+    file => {
+      sharp(file.file)
+        .resize(preset.width || null, preset.height || null)
+        .toFile(destination)
+        .then(
+          () => {
+            file.cleanup();
+            res.sendFile(destination);
+          },
+          e => {
+            console.log("Failed compression", e);
+            file.cleanup();
+            res.status(500).send("Could not compress image");
+          }
+        );
+    },
+    () => res.status(404).send("Could not find image")
+  );
 });
 
 if (BASE === "/") {

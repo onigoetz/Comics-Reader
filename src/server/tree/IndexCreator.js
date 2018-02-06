@@ -75,6 +75,16 @@ module.exports = class IndexCreator {
     return root;
   }
 
+  getNode(node) {
+    const foundNode = this.getList().getNode(node);
+
+    if (!foundNode) {
+      return Promise.reject(foundNode);
+    }
+
+    return Promise.resolve(foundNode);
+  }
+
   /**
    * From a list of files, take the best suited to be the thumbnail
    *

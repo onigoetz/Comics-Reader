@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { promisify } = require("util");
 
 const sizeOf = require("image-size");
 const tmp = require("tmp");
@@ -11,30 +12,17 @@ const openArchive = require("./archives/index");
 const PDFTools = require("./PDFTools");
 const config = require("../../config");
 
+const readdir = promisify(fs.readdir);
+
 const archives = [".cbr", ".cbz", ".zip", ".rar"];
 const packagedFormats = [".pdf"].concat(archives);
 
-class Size {
-  constructor(width, height) {
-    this.width = width;
-    this.height = height;
-  }
-
-  getRatio() {
-    return this.width / this.height;
-  }
-
-  resizeWidth(width) {
-    const ratio = this.getRatio();
-    this.width = width;
-    this.height = parseInt(Math.round(this.width / ratio), 0);
-  }
-}
-
+// TODO :: make async
 function isFile(dirPath) {
   return fs.statSync(dirPath).isFile();
 }
 
+// TODO :: make async
 function isDirectory(dirPath) {
   return fs.statSync(dirPath).isDirectory();
 }
@@ -52,42 +40,49 @@ function getValidImages(files) {
 }
 
 function getBigatureSize(data) {
-  const size = new Size(data.width, data.height);
-  size.resizeWidth(config.sizes.big.width);
-  return size;
+  const newWidth = config.sizes.big.width;
+  const ratio = data.width / data.height;
+
+  return {
+    width: newWidth,
+    height: parseInt(Math.round(newWidth / ratio), 0)
+  };
 }
 
 function getPagesFromDir(dirPath) {
-  const pages = fs
-    .readdirSync(dirPath)
-    .filter(
-      item => validImageFilter(item) && !isDirectory(path.join(dirPath, item))
-    )
-    .sort(naturalSort)
-    .map(item => {
-      const fullPath = path.join(dirPath, item);
-      const data = sizeOf(fullPath);
-      const size = getBigatureSize(data);
+  return readdir(dirPath).then(files => {
+    return files
+      .filter(
+        item => validImageFilter(item) && !isDirectory(path.join(dirPath, item))
+      )
+      .sort(naturalSort)
+      .map(item => {
+        const fullPath = path.join(dirPath, item);
+        const data = sizeOf(fullPath);
+        const size = getBigatureSize(data);
 
-      return {
-        src: fullPath.replace(config.comics, ""),
-        width: size.width,
-        height: size.height
-      };
-    });
-
-  return Promise.resolve(pages);
+        return {
+          src: fullPath.replace(config.comics, ""),
+          width: size.width,
+          height: size.height
+        };
+      });
+  });
 }
 
 function getPagesFromArchive(dirPath) {
+  // TODO :: make async
   const archive = openArchive(dirPath);
+  // TODO :: make async
   const images = getValidImages(archive.getFileNames());
 
+  // TODO :: make async
   const tmpdir = tmp.dirSync();
   archive.extractTo(tmpdir.name);
 
   const pages = images
     .map(image => {
+      // TODO :: make async
       const data = sizeOf(path.join(tmpdir.name, image));
       const size = getBigatureSize(data);
 
@@ -137,7 +132,7 @@ function getPages(dirPath) {
     return getPagesFromPdf(dirPath);
   }
 
-  return [];
+  return Promise.reject();
 }
 
 function getSourceFile(file) {
@@ -172,12 +167,10 @@ function getFile(file) {
   }
 
   if (file === sourceFile) {
-    return { file: sourceFile, cleanup: () => {} };
+    return Promise.resolve({ file: sourceFile, cleanup: () => {} });
   }
 
   const fileInside = file.replace(`${sourceFile}/`, "");
-
-  //console.log("Got", sourceFile, "for", file, "extracting", fileInside);
 
   if (getExtension(sourceFile) === ".pdf") {
     const pdf = new PDFTools(sourceFile);
@@ -185,12 +178,13 @@ function getFile(file) {
   }
 
   if (archives.indexOf(getExtension(sourceFile)) !== -1) {
-    return openArchive(sourceFile).extractFile(fileInside);
+    return Promise.resolve(openArchive(sourceFile).extractFile(fileInside));
   }
 
-  return false;
+  return Promise.reject();
 }
 
+// TODO :: make async
 function ensureDir(pathToCreate) {
   pathToCreate.split(path.sep).reduce((thisPath, folder) => {
     const currentPath = thisPath + folder + path.sep;

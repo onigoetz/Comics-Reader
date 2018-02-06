@@ -4,7 +4,6 @@ const childProcess = require("child_process");
 const shellEscape = require("shell-escape");
 const tmp = require("tmp");
 
-const exec = childProcess.execSync;
 const options = { encoding: "utf8" };
 
 function escape(input) {
@@ -17,13 +16,15 @@ module.exports = class Zip {
   }
 
   getFileNames() {
-    return exec(`zipinfo -1 ${escape(this.path)}`, options).split("\n");
+    return childProcess
+      .execSync(`zipinfo -1 ${escape(this.path)}`, options)
+      .split("\n");
   }
 
   extractFile(file) {
     const to = tmp.fileSync({ postfix: path.extname(file).toLowerCase() });
 
-    exec(
+    childProcess.execSync(
       `unzip -p ${escape(this.path)} ${escape(file)} > ${escape(to.name)}`,
       options
     );
@@ -37,7 +38,7 @@ module.exports = class Zip {
   }
 
   extractTo(destination) {
-    return exec(
+    return childProcess.execSync(
       `unzip ${escape(this.path)} -d ${escape(destination)}`,
       options
     );
