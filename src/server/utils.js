@@ -81,6 +81,7 @@ function getPagesFromArchive(dirPath) {
   archive.extractTo(tmpdir.name);
 
   const pages = images
+    .sort(naturalSort)
     .map(image => {
       // TODO :: make async
       const data = sizeOf(path.join(tmpdir.name, image));
