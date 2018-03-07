@@ -21,7 +21,7 @@ module.exports = class RootNode extends Node {
         node = node.getChild(segment);
 
         if (!node) {
-          return undefined;
+          throw new Error("Node not found");
         }
       }
     }

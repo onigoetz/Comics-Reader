@@ -1,9 +1,11 @@
 const path = require("path");
 const fs = require("fs");
 
+const chalk = require("chalk");
 const express = require("express");
 const sharp = require("sharp");
 const compression = require("compression");
+const morgan = require("morgan");
 const cache = require("node-file-cache").create();
 
 const IndexCreator = require("./tree/IndexCreator");
@@ -20,17 +22,15 @@ const {
 const layout = require("./template");
 const db = require("./db");
 
-console.log("Generating index");
+const error = chalk.red;
+const title = chalk.underline.bold;
 
-const comicsIndex = new IndexCreator(config.comics, true);
-
-console.log("Starting server");
-
+const comicsIndex = new IndexCreator(config.comics);
 const BASE = sanitizeBaseUrl(process.env.COMICS_BASE);
 const app = express();
 
-// Enable Gzip
-app.use(compression());
+app.use(compression()); // Enable Gzip
+app.use(morgan("tiny")); // Access logs
 
 // Static assets
 app.use("/static", express.static("static"));
@@ -68,41 +68,43 @@ app.get("/manifest.json", (req, res) => {
   res.json(manifest);
 });
 
-app.get(/\/thumb\/([0-9])\/(.*)/, (req, res) => {
+app.get(/\/thumb\/([0-9])\/(.*)/, async (req, res) => {
   const ratio = req.param[0];
   const book = req.params[1];
-  const node = comicsIndex.getList().getNode(book);
 
-  comicsIndex.getNode(book).then(
-    node => {
-      let image = node.getThumb();
+  let node;
+  try {
+    node = await comicsIndex.getNode(book);
+  } catch (e) {
+    res.status(404).send("Book not found");
+    return;
+  }
 
-      if (!image) {
-        res.status(404).send("Thumb not found");
-        return;
-      }
+  let image = node.getThumb();
 
-      if (ratio !== 1) {
-        image = image.replace(/(\.[A-z]{3,4}\/?(\?.*)?)$/, `@${ratio}x$1`);
-      }
+  if (!image) {
+    res.status(404).send("Thumb not found");
+    return;
+  }
 
-      const file = `cache/thumb/${node.getThumb()}`;
-      const storedFile = path.join(config.comics, file);
+  if (ratio !== 1) {
+    image = image.replace(/(\.[A-z]{3,4}\/?(\?.*)?)$/, `@${ratio}x$1`);
+  }
 
-      fs.exists(storedFile, exists => {
-        if (exists) {
-          res.sendFile(storedFile);
-        } else {
-          res.redirect(`${BASE}images/${file.replace("#", "%23")}`);
-        }
-      });
-    },
-    () => res.status(404).send("Book not found")
-  );
+  const file = `cache/thumb/${node.getThumb()}`;
+  const storedFile = path.join(config.comics, file);
+
+  fs.exists(storedFile, exists => {
+    if (exists) {
+      res.sendFile(storedFile);
+    } else {
+      res.redirect(`${BASE}images/${file.replace("#", "%23")}`);
+    }
+  });
 });
 
-app.get("/api/books", (req, res) => {
-  const walker = new Walker(comicsIndex.getList());
+app.get("/api/books", async (req, res) => {
+  const walker = new Walker(await comicsIndex.getList());
 
   res.json(walker.toJson());
 });
@@ -122,31 +124,30 @@ app.post(/\/api\/read\/(.*)/, (req, res) => {
   returnJsonNoCache(res, read);
 });
 
-app.get(/\/api\/books\/(.*)/, (req, res) => {
+app.get(/\/api\/books\/(.*)/, async (req, res) => {
   const book = req.params[0];
   const dirPath = path.join(config.comics, book);
   const key = `BOOK_${dirPath}`;
 
-  const pages = cache.get(key);
+  const pagesFromCache = cache.get(key);
 
-  if (pages) {
-    returnJsonNoCache(res, pages);
+  if (pagesFromCache) {
+    returnJsonNoCache(res, pagesFromCache);
     return;
   }
 
-  getPages(dirPath).then(result => {
-    cache.set(key, result);
-    returnJsonNoCache(res, result);
-  });
+  const pages = await getPages(dirPath);
+  cache.set(key, pages);
+  returnJsonNoCache(res, pages);
 });
 
-app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, (req, res) => {
+app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, async (req, res) => {
   const retinaRegex = /(.*)@2x\.(jpe?g|png|webp|gif)/;
   const presetName = req.params[0];
   const requestedFile = req.params[1];
   let sourceFile = requestedFile;
 
-  console.log("Generating Image", req.params[0], req.params[1]);
+  console.log(title("Generating Image"), req.params[0], req.params[1]);
 
   if (!config.sizes.hasOwnProperty(presetName)) {
     res.status(404).send("Preset not found");
@@ -171,37 +172,55 @@ app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, (req, res) => {
     presetName,
     requestedFile
   );
-  ensureDir(path.dirname(destination));
 
-  const file = getFile(path.join(config.comics, sourceFile)).then(
-    file => {
-      sharp(file.file)
-        .resize(preset.width || null, preset.height || null)
-        .toFile(destination)
-        .then(
-          () => {
-            file.cleanup();
-            res.sendFile(destination);
-          },
-          e => {
-            console.log("Failed compression", e);
-            file.cleanup();
-            res.status(500).send("Could not compress image");
-          }
-        );
-    },
-    () => res.status(404).send("Could not find image")
-  );
+  await ensureDir(path.dirname(destination));
+
+  let file;
+  try {
+    file = await getFile(path.join(config.comics, sourceFile));
+  } catch (e) {
+    console.error(error("Cannot find image"), e);
+    res.status(404).send("Could not find image");
+    return;
+  }
+
+  try {
+    await sharp(file.path)
+      .resize(preset.width || null, preset.height || null)
+      .toFile(destination);
+
+    file.cleanup();
+    res.sendFile(destination);
+  } catch (e) {
+    console.error(error("Failed compression"), e);
+    file.cleanup();
+    res.status(500).send("Could not compress image");
+  }
 });
 
-if (BASE === "/") {
-  app.listen(config.port);
-} else {
-  // If we have a custom basepath, wrap our application as a
-  // sub application with the basepath set to the main route.
-  const outerApp = express();
-  outerApp.use(BASE.replace(/\/+$/, ""), app);
-  outerApp.listen(config.port);
-}
+console.log(title("Generating index"));
+comicsIndex.getList().then(
+  () => {
+    console.log(title("Starting server"));
+    if (BASE === "/") {
+      app.listen(config.port);
+    } else {
+      // If we have a custom basepath, wrap our application as a
+      // sub application with the basepath set to the main route.
+      const outerApp = express();
+      outerApp.use(BASE.replace(/\/+$/, ""), app);
+      outerApp.listen(config.port);
+    }
 
-console.log("Started server on port", config.port, "with baseurl", BASE);
+    console.log(
+      title(`Started server on port ${config.port} with baseurl ${BASE}`)
+    );
+  },
+  e => {
+    console.error(error("Could not create index"), e);
+  }
+);
+
+process.on("unhandledRejection", e => {
+  console.error(error("unhandledRejection"), e.message, e.stack);
+});

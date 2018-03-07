@@ -1,4 +1,4 @@
-const naturalSort = require("node-natural-sort")();
+const naturalSort = require("natural-sort")();
 
 module.exports = class TreeWalker {
   constructor(tree) {

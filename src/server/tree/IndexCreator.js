@@ -1,46 +1,44 @@
 const fs = require("fs");
 const path = require("path");
+const { promisify } = require("util");
 
-const naturalSort = require("node-natural-sort")();
+const naturalSort = require("natural-sort")();
 
 const Node = require("./Node");
 const RootNode = require("./RootNode");
 const openArchive = require("../archives");
-const { getValidImages, isDirectory } = require("../utils");
+const { getValidImages, isDirectorySync, isDirectory } = require("../utils");
 const GALLERY_ROOT = require("../../../config.js").comics;
 
+const readdir = promisify(fs.readdir);
+
 module.exports = class IndexCreator {
-  constructor(dirPath, verbose = false) {
-    this.verbose = verbose;
-    this.list = this.generateList(dirPath);
+  constructor(dirPath) {
+    this.dirPath = dirPath;
   }
 
-  log(text) {
-    if (this.verbose) {
-      console.log(text);
-    }
-  }
-
-  generateList(dirPath = ".", parent = null) {
-    this.log(`Looking for books in '${dirPath}'`);
+  async generateList(dirPath = ".", parent = null) {
+    console.log(`Scanning '${dirPath.replace(this.dirPath, "")}'`);
     const directories = [];
 
     // Directories to ignore when listing output.
     const ignore = ["cgi-bin", ".", "..", "cache"];
     const archives = [".cbr", ".cbz", ".zip", ".rar"];
 
-    fs.readdirSync(dirPath).forEach(item => {
+    const files = await readdir(dirPath);
+
+    const promises = files.map(async item => {
       const itemPath = path.join(dirPath, item);
       if (ignore.indexOf(item) !== -1) {
         return;
       }
 
       // A normal directory
-      if (isDirectory(itemPath)) {
-        this.log(`  Found book or directory: ${item}`);
+      if (await isDirectory(itemPath)) {
         const node = new Node(item, parent);
-        node.setChildren(this.generateList(itemPath, node));
-        node.setThumb(this.getThumb(node));
+        console.log(`Found book or directory: ${node.getPath()}`);
+        node.setChildren(await this.generateList(itemPath, node));
+        node.setThumb(await this.getThumb(node));
         directories.push(node);
         return;
       }
@@ -48,41 +46,43 @@ module.exports = class IndexCreator {
       // A zip / rar archive
       if (archives.indexOf(path.extname(item)) !== -1) {
         try {
-          this.log(`  Found compressed book: ${item}`);
           const node = new Node(item, parent);
-          node.setThumb(this.getThumb(node));
+          console.log(`Found book: ${node.getPath()}`);
+          node.setThumb(await this.getThumb(node));
           directories.push(node);
         } catch ($e) {
-          this.log("Could not open archive: ".item);
+          console.log("Could not open archive: ".item);
         }
       }
 
       // a PDF file
       if (path.extname(item).toLowerCase() === ".pdf") {
-        this.log(`  Found pdf: ${item}`);
         const node = new Node(item, parent);
+        console.log(`Found book: ${node.getPath()}`);
         node.setThumb(`${node.getPath()}/1.png`);
         directories.push(node);
       }
     });
 
+    await Promise.all(promises);
+
     return directories;
   }
 
-  getList() {
+  async getList() {
+    // TODO :: ensure the list isn't generated mutliple times
+    if (!this.list) {
+      this.list = await this.generateList(this.dirPath);
+    }
+
     const root = new RootNode("Home");
     root.setChildren(this.list);
     return root;
   }
 
-  getNode(node) {
-    const foundNode = this.getList().getNode(node);
-
-    if (!foundNode) {
-      return Promise.reject(foundNode);
-    }
-
-    return Promise.resolve(foundNode);
+  async getNode(node) {
+    const list = await this.getList();
+    return list.getNode(node);
   }
 
   /**
@@ -114,7 +114,7 @@ module.exports = class IndexCreator {
       .filter(
         item =>
           item.substring(0, 1) !== "." &&
-          !isDirectory(`${GALLERY_ROOT}/${folder.getPath()}/${item}`)
+          !isDirectorySync(`${GALLERY_ROOT}/${folder.getPath()}/${item}`)
       );
 
     return this.getBestThumbnail(folder, files);
@@ -126,26 +126,26 @@ module.exports = class IndexCreator {
    * @param {Node} node The node to get the thumbnail from
    * @return {bool|string} The path to a thumbnail or false
    */
-  getThumbFromArchive(node) {
+  async getThumbFromArchive(node) {
     try {
-      const archive = openArchive(`${GALLERY_ROOT}/${node.getPath()}`);
+      const archive = await openArchive(`${GALLERY_ROOT}/${node.getPath()}`);
 
       if (archive) {
-        return this.getBestThumbnail(node, archive.getFileNames());
+        return this.getBestThumbnail(node, await archive.getFileNames());
       } else {
-        this.log("    could not open archive");
+        console.log("    could not open archive");
       }
     } catch (e) {
-      this.log(e.message);
+      console.error(e.message);
     }
 
-    this.log(`Failed on ${node.getPath()}`);
+    console.log(`Failed on ${node.getPath()}`);
     return false;
   }
 
-  getThumb(folder) {
+  async getThumb(folder) {
     if (folder.getType() === "tome") {
-      if (isDirectory(`${GALLERY_ROOT}/${folder.getPath()}`)) {
+      if (await isDirectory(`${GALLERY_ROOT}/${folder.getPath()}`)) {
         return this.getThumbFromDirectory(folder);
       }
 
@@ -157,22 +157,11 @@ module.exports = class IndexCreator {
     const item = folder.getChildren().find(child => child.getThumb());
 
     if (!item) {
-      this.log(`Could not find thumb for ${folder.getName()}`);
+      console.log(`Could not find thumb for ${folder.getName()}`);
       return false;
     }
 
     return item.getThumb();
-  }
-
-  // TODO :: remove ?
-  static unserialize(cache, parent = null) {
-    return cache.map(item => {
-      const node = new Node(item.name, parent);
-      node.setThumb(item.thumb);
-      node.setChildren(IndexCreator.fromCache(item.children, node));
-
-      return node;
-    });
   }
 
   static serialize(nodes) {

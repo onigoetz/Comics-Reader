@@ -1,93 +1,58 @@
-const childProcess = require("child_process");
+const fs = require("fs");
 
-const PDFExtract = require("pdf.js-extract").PDFExtract;
-const shellEscape = require("shell-escape");
-const tmp = require("tmp");
+const tmp = require("tmp-promise");
+const { promisify } = require("util");
 
-function escape(input) {
-  return shellEscape([input]);
-}
+const { exec, escape } = require("./exec");
 
-const commandOptions = {
-  encoding: "utf8"
-};
+const readFileAsync = promisify(fs.readFile);
 
-function getTempFile() {
-  return new Promise((resolve, reject) => {
-    tmp.file({ postfix: ".png" }, (fileErr, file, fd, cleanup) => {
-      if (fileErr) {
-        reject(`Failed creating temp file: ${fileErr}`);
-        return;
-      }
-
-      resolve({ file, cleanup });
-    });
-  });
-}
+// HACK few hacks to let PDF.js be loaded not as a module in global space.
+require("pdf.js-extract/lib/pdfjs/domstubs.js").setStubs(global);
+var pdfjsLib = require("pdf.js-extract/lib/pdfjs/pdf.combined");
 
 module.exports = class PDFTools {
   constructor(file) {
     this.file = file;
   }
 
-  extractPage(page) {
-    return new Promise((resolve, reject) => {
-      getTempFile().then(
-        file => {
-          const command = `convert ${escape(`${this.file}[${page}]`)} ${escape(
-            file.file
-          )}`;
-          childProcess.exec(
-            command,
-            commandOptions,
-            (error, stdout, stderr) => {
-              if (error) {
-                console.log(
-                  "Failed extracting image:",
-                  error,
-                  "stderr",
-                  stderr,
-                  "stdout",
-                  stdout
-                );
-                reject();
-                return;
-              }
+  async extractPage(page) {
+    const file = await tmp.file({ postfix: ".png" });
 
-              resolve(file);
-            }
-          );
-        },
-        fileError => {
-          console.log(fileError);
-          reject();
-        }
-      );
-    });
+    const command = `convert -density 400 ${escape(
+      `${this.file}[${page}]`
+    )} ${escape(file.path)} `;
+
+    try {
+      await exec(command);
+    } catch (e) {
+      console.log("Failed extracting image", e);
+      throw e;
+    }
+
+    return file;
   }
 
-  getImageSizes() {
-    return new Promise((resolve, reject) => {
-      var pdfExtract = new PDFExtract();
-      pdfExtract.extract(
-        this.file,
-        {} /* options, currently nothing available*/,
-        (err, data) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-
-          const pages = data.pages.map(page => {
-            return {
-              width: page.pageInfo.width,
-              height: page.pageInfo.height
-            };
-          });
-
-          resolve(pages);
-        }
-      );
+  async getImageSizes() {
+    const doc = await pdfjsLib.getDocument({
+      verbosity: -1,
+      data: new Uint8Array(await readFileAsync(this.file))
     });
+
+    var loadPage = function(pageNum) {
+      return doc
+        .getPage(pageNum)
+        .then(page => page.getViewport(1.0 /* scale */));
+    };
+
+    const promises = [];
+    var numPages = doc.numPages;
+    for (var i = 1; i <= numPages; i++) {
+      promises.push(loadPage(i));
+    }
+
+    return await Promise.all(promises);
+
+    //return await getInfo(this.file, {});
   }
 };

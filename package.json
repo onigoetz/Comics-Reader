@@ -57,17 +57,19 @@
     "archive-type": "^4.0.0",
     "basic-auth": "^2.0.0",
     "better-sqlite3": "^4.0.3",
+    "chalk": "^2.3.2",
     "compression": "^1.7.1",
     "express": "^4.16.2",
     "hogan.js": "^3.0.2",
     "image-size": "^0.6.2",
+    "morgan": "^1.9.0",
+    "natural-sort": "^1.0.0",
     "node-file-cache": "^1.0.2",
-    "node-natural-sort": "^0.8.6",
     "pdf.js-extract": "^0.0.7",
     "read-chunk": "^2.1.0",
     "rimraf": "^2.6.2",
     "sharp": "^0.18.4",
     "shell-escape": "^0.2.0",
-    "tmp": "^0.0.33"
+    "tmp-promise": "^1.0.4"
   }
 }

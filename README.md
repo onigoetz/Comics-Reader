@@ -12,6 +12,7 @@ It is not intended to work on a desktop computer.
 - Read images from a folder
 - CBZ/CBR Files Support
 - PDF Support
+- Internal search engine to find your comics easily
 
 ## Installing
 
@@ -56,16 +57,16 @@ docker run -e "COMICS_BASE=comics" ...
 
 ```
 location /BD/ {
-    proxy_pass http://comics:8080/;
+    proxy_pass http://comics:8080/BD/;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Host $server_name;
     proxy_set_header X-Forwarded-Proto $scheme;
 }
 ```
 
-## Roadmap
+## Known issues
 
-- Search engine
+- Files with accents in zip (cbz) files don't work.
 
 ## Credits and technologies
 

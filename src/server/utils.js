@@ -2,29 +2,40 @@ const fs = require("fs");
 const path = require("path");
 const { promisify } = require("util");
 
-const sizeOf = require("image-size");
-const tmp = require("tmp");
+const sizeOf = promisify(require("image-size"));
+const tmp = require("tmp-promise");
 const rimraf = require("rimraf");
 const auth = require("basic-auth");
-const naturalSort = require("node-natural-sort")();
+const naturalSort = require("natural-sort")();
 
 const openArchive = require("./archives/index");
 const PDFTools = require("./PDFTools");
 const config = require("../../config");
 
 const readdir = promisify(fs.readdir);
+const mkdirAsync = promisify(fs.mkdir);
 
 const archives = [".cbr", ".cbz", ".zip", ".rar"];
 const packagedFormats = [".pdf"].concat(archives);
 
-// TODO :: make async
-function isFile(dirPath) {
-  return fs.statSync(dirPath).isFile();
+function isFile(fullPath) {
+  return new Promise((resolve, reject) => {
+    fs.stat(fullPath, (err, stat) => {
+      err ? resolve(false) : resolve(stat.isFile());
+    });
+  });
 }
 
-// TODO :: make async
-function isDirectory(dirPath) {
+function isDirectorySync(dirPath) {
   return fs.statSync(dirPath).isDirectory();
+}
+
+function isDirectory(fullPath) {
+  return new Promise((resolve, reject) => {
+    fs.stat(fullPath, (err, stat) => {
+      err ? resolve(false) : resolve(stat.isDirectory());
+    });
+  });
 }
 
 function getExtension(file) {
@@ -49,79 +60,82 @@ function getBigatureSize(data) {
   };
 }
 
-function getPagesFromDir(dirPath) {
-  return readdir(dirPath).then(files => {
-    return files
-      .filter(
-        item => validImageFilter(item) && !isDirectory(path.join(dirPath, item))
-      )
-      .sort(naturalSort)
-      .map(item => {
-        const fullPath = path.join(dirPath, item);
-        const data = sizeOf(fullPath);
-        const size = getBigatureSize(data);
+async function getPagesFromDir(dirPath) {
+  const files = await readdir(dirPath);
 
-        return {
-          src: fullPath.replace(config.comics, ""),
-          width: size.width,
-          height: size.height
-        };
-      });
-  });
-}
-
-function getPagesFromArchive(dirPath) {
-  // TODO :: make async
-  const archive = openArchive(dirPath);
-  // TODO :: make async
-  const images = getValidImages(archive.getFileNames());
-
-  // TODO :: make async
-  const tmpdir = tmp.dirSync();
-  archive.extractTo(tmpdir.name);
-
-  const pages = images
+  const promises = files
+    .filter(
+      item =>
+        validImageFilter(item) && !isDirectorySync(path.join(dirPath, item))
+    )
     .sort(naturalSort)
-    .map(image => {
-      // TODO :: make async
-      const data = sizeOf(path.join(tmpdir.name, image));
+    .map(async item => {
+      const fullPath = path.join(dirPath, item);
+      const data = await sizeOf(fullPath);
       const size = getBigatureSize(data);
 
       return {
-        src: `${dirPath}/${image}`.replace(config.comics, ""),
+        src: fullPath.replace(config.comics, ""),
         width: size.width,
         height: size.height
       };
-    })
-    .filter(item => item);
+    });
 
-  rimraf(path.join(tmpdir.name, "*"), () => {
-    tmpdir.removeCallback();
-  });
-
-  return Promise.resolve(pages);
+  return await Promise.all(promises);
 }
 
-function getPagesFromPdf(file) {
+async function getPagesFromArchive(dirPath) {
+  const archive = await openArchive(dirPath);
+  const images = getValidImages(await archive.getFileNames());
+
+  const tmpdir = await tmp.dir();
+
+  await archive.extractTo(tmpdir.path);
+
+  const promises = images.sort(naturalSort).map(async image => {
+    const data = await sizeOf(path.join(tmpdir.path, image));
+    const size = getBigatureSize(data);
+
+    return {
+      src: `${dirPath}/${image}`.replace(config.comics, ""),
+      width: size.width,
+      height: size.height
+    };
+  });
+
+  const pages = await Promise.all(promises);
+
+  rimraf(path.join(tmpdir.path, "*"), err => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    tmpdir.cleanup();
+  });
+
+  return pages.filter(item => item);
+}
+
+async function getPagesFromPdf(file) {
   let i = 0;
   const pdf = new PDFTools(file);
 
-  return pdf.getImageSizes().then(pages =>
-    pages.map(image => {
-      i++;
-      const size = getBigatureSize(image);
+  const pages = await pdf.getImageSizes();
 
-      return {
-        src: `${file}/${i}.png`.replace(config.comics, ""),
-        width: size.width,
-        height: size.height
-      };
-    })
-  );
+  return pages.map(image => {
+    i++;
+    const size = getBigatureSize(image);
+
+    return {
+      src: `${file}/${i}.png`.replace(config.comics, ""),
+      width: size.width,
+      height: size.height
+    };
+  });
 }
 
-function getPages(dirPath) {
-  if (isDirectory(dirPath)) {
+async function getPages(dirPath) {
+  if (await isDirectory(dirPath)) {
     return getPagesFromDir(dirPath);
   }
 
@@ -133,10 +147,10 @@ function getPages(dirPath) {
     return getPagesFromPdf(dirPath);
   }
 
-  return Promise.reject();
+  throw new Error("Unknown format");
 }
 
-function getSourceFile(file) {
+async function getSourceFile(file) {
   // it's a regular file
   if (fs.existsSync(file)) {
     return file;
@@ -149,7 +163,7 @@ function getSourceFile(file) {
 
   do {
     const extension = getExtension(fileDir);
-    if (packagedFormats.indexOf(extension) !== -1 && isFile(fileDir)) {
+    if (packagedFormats.indexOf(extension) !== -1 && (await isFile(fileDir))) {
       return fileDir;
     }
 
@@ -160,15 +174,15 @@ function getSourceFile(file) {
   return false;
 }
 
-function getFile(file) {
-  const sourceFile = getSourceFile(file);
+async function getFile(file) {
+  const sourceFile = await getSourceFile(file);
 
   if (!sourceFile) {
-    return false;
+    throw new Error("No file found");
   }
 
   if (file === sourceFile) {
-    return Promise.resolve({ file: sourceFile, cleanup: () => {} });
+    return { path: sourceFile, cleanup: () => {} };
   }
 
   const fileInside = file.replace(`${sourceFile}/`, "");
@@ -179,21 +193,23 @@ function getFile(file) {
   }
 
   if (archives.indexOf(getExtension(sourceFile)) !== -1) {
-    return Promise.resolve(openArchive(sourceFile).extractFile(fileInside));
+    const archive = await openArchive(sourceFile);
+    return archive.extractFile(fileInside);
   }
 
-  return Promise.reject();
+  throw new Error("Could not get file");
 }
 
-// TODO :: make async
-function ensureDir(pathToCreate) {
-  pathToCreate.split(path.sep).reduce((thisPath, folder) => {
-    const currentPath = thisPath + folder + path.sep;
-    if (!fs.existsSync(currentPath)) {
-      fs.mkdirSync(currentPath);
+async function ensureDir(pathToCreate) {
+  const parts = pathToCreate.split(path.sep);
+
+  let fullPath = "";
+  for (var i in parts) {
+    fullPath = fullPath + parts[i] + path.sep;
+    if (!await isDirectory(fullPath)) {
+      await mkdirAsync(fullPath);
     }
-    return currentPath;
-  }, "");
+  }
 }
 
 function sanitizeBaseUrl(base) {
@@ -217,6 +233,7 @@ function getUser(req) {
 module.exports = {
   getValidImages,
   isDirectory,
+  isDirectorySync,
   getPages,
   getFile,
   ensureDir,

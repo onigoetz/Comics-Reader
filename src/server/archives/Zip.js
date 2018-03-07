@@ -1,44 +1,41 @@
-const path = require("path");
-const childProcess = require("child_process");
+const pathLib = require("path");
+const tmp = require("tmp-promise");
 
-const shellEscape = require("shell-escape");
-const tmp = require("tmp");
+const { exec, escape } = require("../exec");
 
 const options = { encoding: "utf8" };
-
-function escape(input) {
-  return shellEscape([input]);
-}
 
 module.exports = class Zip {
   constructor(filePath) {
     this.path = filePath;
   }
 
-  getFileNames() {
-    return childProcess
-      .execSync(`zipinfo -1 ${escape(this.path)}`, options)
-      .split("\n");
+  async getFileNames() {
+    const { stdout: filenames } = await exec(
+      `zipinfo -1 ${escape(this.path)}`,
+      options
+    );
+    return filenames.split("\n");
   }
 
-  extractFile(file) {
-    const to = tmp.fileSync({ postfix: path.extname(file).toLowerCase() });
+  async extractFile(file) {
+    const { path, cleanup } = await tmp.file({
+      postfix: pathLib.extname(file).toLowerCase()
+    });
 
-    childProcess.execSync(
-      `unzip -p ${escape(this.path)} ${escape(file)} > ${escape(to.name)}`,
+    await exec(
+      `unzip -p ${escape(this.path)} ${escape(file)} > ${escape(path)}`,
       options
     );
 
     return {
-      file: to.name,
-      cleanup: () => {
-        to.removeCallback();
-      }
+      path,
+      cleanup
     };
   }
 
-  extractTo(destination) {
-    return childProcess.execSync(
+  async extractTo(destination) {
+    return exec(
       `unzip ${escape(this.path)} -d ${escape(destination)}`,
       options
     );

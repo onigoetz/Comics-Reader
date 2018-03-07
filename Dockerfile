@@ -1,5 +1,4 @@
-# We use php 5.6 because the rar extension doesn't work in PHP 7
-FROM node:8
+FROM node:9
 
 # Install extensions : zip, rar, imagick
 RUN (echo "deb http://deb.debian.org/debian jessie main contrib non-free" > /etc/apt/sources.list) && \ 

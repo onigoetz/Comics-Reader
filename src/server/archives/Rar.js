@@ -1,14 +1,7 @@
-const childProcess = require("child_process");
-const path = require("path");
+const pathLib = require("path");
+const tmp = require("tmp-promise");
 
-const shellEscape = require("shell-escape");
-const tmp = require("tmp");
-
-const options = { encoding: "utf8" };
-
-function escape(input) {
-  return shellEscape([input]);
-}
+const { exec, escape } = require("../exec");
 
 /**
  * Documentation of the unrar command :
@@ -19,32 +12,28 @@ module.exports = class Rar {
     this.path = filePath;
   }
 
-  extractTo(destination) {
-    return childProcess.execSync(
-      `unrar x ${escape(this.path)} ${escape(destination)}`,
-      options
-    );
+  async getFileNames() {
+    const { stdout: filenames } = await exec(`unrar lb ${escape(this.path)}`);
+
+    return filenames.split("\n");
   }
 
-  extractFile(file) {
-    const to = tmp.fileSync({ postfix: path.extname(file).toLowerCase() });
+  async extractFile(file) {
+    const { path, cleanup } = await tmp.file({
+      postfix: pathLib.extname(file).toLowerCase()
+    });
 
-    childProcess.execSync(
-      `unrar p -idq ${escape(this.path)} ${escape(file)} > ${escape(to.name)}`,
-      options
+    await exec(
+      `unrar p -idq ${escape(this.path)} ${escape(file)} > ${escape(path)}`
     );
 
     return {
-      file: to.name,
-      cleanup: () => {
-        to.removeCallback();
-      }
+      path,
+      cleanup
     };
   }
 
-  getFileNames() {
-    return childProcess
-      .execSync(`unrar lb ${escape(this.path)}`, options)
-      .split("\n");
+  async extractTo(destination) {
+    return exec(`unrar x ${escape(this.path)} ${escape(destination)}`);
   }
 };
