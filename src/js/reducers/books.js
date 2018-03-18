@@ -38,6 +38,22 @@ export function listBooksInside(allBooks, path) {
     .filter(key => allBooks[key].type === TYPE_BOOK);
 }
 
+export function selectBook(state, path) {
+
+  const allBooks = state.books.books;
+
+  const book = allBooks[path] || {};
+
+  let parent = {};
+  if (book.parent) {
+    parent = allBooks[book.parent] || {};
+  }
+
+  const pages = state.pages.books[path] || [];
+
+  return {book, parent, pages};
+}
+
 const defaultState = {
   loading: false,
   error: false,

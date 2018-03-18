@@ -6,6 +6,7 @@ import Book from "../components/Book";
 import { loadPages } from "../reducers/pages";
 import { markRead, isRead } from "../reducers/read";
 import { navigate } from "../reducers/route";
+import { selectBook } from "../reducers/books";
 
 class BookManager extends React.Component {
   handleRead = () => {
@@ -70,16 +71,7 @@ const mapStateToProps = (state, ownProps) => {
     (ownProps.location && ownProps.location.pathname.replace("/book/", "")) ||
     "";
 
-  const allBooks = state.books.books;
-
-  const book = allBooks[path] || {};
-
-  let parent = {};
-  if (book.parent) {
-    parent = allBooks[book.parent] || {};
-  }
-
-  const pages = state.pages.books[path] || [];
+  const { book, parent, pages } = selectBook(state, path);
 
   const read = isRead(state.read.read, path);
 

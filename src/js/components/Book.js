@@ -6,10 +6,6 @@ import { image } from "../utils";
 export default class Book extends React.Component {
   currentPage = -1;
 
-  renderThumbnail(item) {
-    return <img src={item.thumbnail} alt="Book Page" />;
-  }
-
   afterChange = instance => {
     this.currentPage = instance.items.indexOf(instance.currItem);
   };
@@ -57,7 +53,6 @@ export default class Book extends React.Component {
         <ExtendedPhotoSwipeGallery
           items={items}
           options={options}
-          thumbnailContent={this.renderThumbnail}
           afterChange={this.afterChange}
           onClose={this.handleClose}
         />
