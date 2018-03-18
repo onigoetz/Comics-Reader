@@ -43,7 +43,8 @@ function getExtension(file) {
 }
 
 function validImageFilter(item) {
-  return /\.(jpe?g|png|gif)$/i.test(item) && item.substring(0, 1) !== ".";
+  const filename = item.replace(/^.*[\\\/]/, '');
+  return filename.substring(0, 1) !== "." && /\.(jpe?g|png|gif)$/i.test(item) && item.indexOf("__MACOSX") === -1;
 }
 
 function getValidImages(files) {
