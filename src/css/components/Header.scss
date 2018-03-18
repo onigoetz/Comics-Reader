@@ -2,15 +2,15 @@
 .Header, .BookInfo {
     height: $bar-height;
     padding: 0 .5rem;
-    background-color: $background-color;
+    background-color: $header-background-color;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 
-    border-bottom: 1px solid #aaa;
+    border-bottom: 1px solid #888;
 }
 
 .Header__Section {
-    background-color: $background-color;
+    background-color: $header-background-color;
     padding:0 .5rem;
 
     position: relative;
