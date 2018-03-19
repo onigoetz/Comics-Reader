@@ -1,12 +1,15 @@
 const pathLib = require("path");
+
 const tmp = require("tmp-promise");
 
+const Compressed = require("./Compressed");
 const { exec, escape } = require("../exec");
 
 const options = { encoding: "utf8" };
 
-module.exports = class Zip {
+module.exports = class Zip extends Compressed {
   constructor(filePath) {
+    super();
     this.path = filePath;
   }
 
@@ -34,7 +37,7 @@ module.exports = class Zip {
     };
   }
 
-  async extractTo(destination) {
+  async extractAll(destination) {
     return exec(
       `unzip ${escape(this.path)} -d ${escape(destination)}`,
       options

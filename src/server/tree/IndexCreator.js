@@ -6,7 +6,7 @@ const naturalSort = require("natural-sort")();
 
 const Node = require("./Node");
 const RootNode = require("./RootNode");
-const openArchive = require("../archives");
+const { getFileNames } = require("../books");
 const { getValidImages, isDirectorySync, isDirectory } = require("../utils");
 const GALLERY_ROOT = require("../../../config.js").comics;
 
@@ -43,6 +43,15 @@ module.exports = class IndexCreator {
         return;
       }
 
+      // a PDF file
+      if (path.extname(item).toLowerCase() === ".pdf") {
+        const node = new Node(item, parent);
+        console.log(`Found book: ${node.getPath()}`);
+        node.setThumb(`${node.getPath()}/1.png`);
+        directories.push(node);
+        return;
+      }
+
       // A zip / rar archive
       if (archives.indexOf(path.extname(item)) !== -1) {
         try {
@@ -53,14 +62,6 @@ module.exports = class IndexCreator {
         } catch ($e) {
           console.log("Could not open archive: ".item);
         }
-      }
-
-      // a PDF file
-      if (path.extname(item).toLowerCase() === ".pdf") {
-        const node = new Node(item, parent);
-        console.log(`Found book: ${node.getPath()}`);
-        node.setThumb(`${node.getPath()}/1.png`);
-        directories.push(node);
       }
     });
 
@@ -128,10 +129,10 @@ module.exports = class IndexCreator {
    */
   async getThumbFromArchive(node) {
     try {
-      const archive = await openArchive(`${GALLERY_ROOT}/${node.getPath()}`);
+      const fileNames = await getFileNames(`${GALLERY_ROOT}/${node.getPath()}`);
 
-      if (archive) {
-        return this.getBestThumbnail(node, await archive.getFileNames());
+      if (fileNames) {
+        return this.getBestThumbnail(node, fileNames);
       } else {
         console.log("    could not open archive");
       }

@@ -1,19 +1,23 @@
 const fs = require("fs");
-
-const tmp = require("tmp-promise");
 const { promisify } = require("util");
 
-const { exec, escape } = require("./exec");
+const tmp = require("tmp-promise");
+require("pdf.js-extract/lib/pdfjs/domstubs.js").setStubs(global);
+const pdfjsLib = require("pdf.js-extract/lib/pdfjs/pdf.combined");
+
+const { exec, escape } = require("../exec");
+const { getBigatureSize } = require("../utils");
+const config = require("../../../config");
 
 const readFileAsync = promisify(fs.readFile);
 
-// HACK few hacks to let PDF.js be loaded not as a module in global space.
-require("pdf.js-extract/lib/pdfjs/domstubs.js").setStubs(global);
-var pdfjsLib = require("pdf.js-extract/lib/pdfjs/pdf.combined");
-
-module.exports = class PDFTools {
+module.exports = class PDF {
   constructor(file) {
     this.file = file;
+  }
+
+  async extractFile(file) {
+    return this.extractPage(file.replace(".png", "") - 1);
   }
 
   async extractPage(page) {
@@ -51,8 +55,23 @@ module.exports = class PDFTools {
       promises.push(loadPage(i));
     }
 
-    return await Promise.all(promises);
+    return Promise.all(promises);
+  }
 
-    //return await getInfo(this.file, {});
+  async getPages() {
+    let i = 0;
+
+    const pages = await this.getImageSizes();
+
+    return pages.map(image => {
+      i++;
+      const size = getBigatureSize(image);
+
+      return {
+        src: `${this.file}/${i}.png`.replace(config.comics, ""),
+        width: size.width,
+        height: size.height
+      };
+    });
   }
 };

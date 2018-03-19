@@ -1,14 +1,17 @@
 const pathLib = require("path");
+
 const tmp = require("tmp-promise");
 
+const Compressed = require("./Compressed");
 const { exec, escape } = require("../exec");
 
 /**
  * Documentation of the unrar command :
  * http://acritum.com/winrar/console-rar-manual
  */
-module.exports = class Rar {
+module.exports = class Rar extends Compressed {
   constructor(filePath) {
+    super();
     this.path = filePath;
   }
 
@@ -33,7 +36,7 @@ module.exports = class Rar {
     };
   }
 
-  async extractTo(destination) {
+  async extractAll(destination) {
     return exec(`unrar x ${escape(this.path)} ${escape(destination)}`);
   }
 };

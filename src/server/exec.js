@@ -1,19 +1,20 @@
 const childProcess = require("child_process");
+
 const shellEscape = require("shell-escape");
 
 function exec(cmd, opts) {
-  opts || (opts = {});
+  const options = opts || {};
   return new Promise((resolve, reject) => {
-    const child = childProcess.exec(
+    childProcess.exec(
       cmd,
-      opts,
+      options,
       (err, stdout, stderr) =>
         err
           ? reject(err)
           : resolve({
-              stdout: stdout.toString("utf8"),
-              stderr: stderr.toString("utf8")
-            })
+            stdout: stdout.toString("utf8"),
+            stderr: stderr.toString("utf8")
+          })
     );
   });
 }

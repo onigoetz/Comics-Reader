@@ -8,17 +8,16 @@ const compression = require("compression");
 const morgan = require("morgan");
 const cache = require("node-file-cache").create();
 
-const IndexCreator = require("./tree/IndexCreator");
-const Walker = require("./tree/Walker");
-const config = require("../../config");
 const {
-  getPages,
-  getFile,
   ensureDir,
   sanitizeBaseUrl,
   returnJsonNoCache,
   getUser
 } = require("./utils");
+const { getFile, getPages } = require("./books");
+const IndexCreator = require("./tree/IndexCreator");
+const Walker = require("./tree/Walker");
+const config = require("../../config");
 const layout = require("./template");
 const db = require("./db");
 
