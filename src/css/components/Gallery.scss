@@ -7,12 +7,13 @@
 }
 
 .Gallery__item img {
-    display:block;
+    display: block;
     border: none;
+    background: #000;
+    font-size: 12px;
 }
 
 .Gallery__page {
-    
     padding:0 5px;
     line-height:1.2em;
     height:2em;

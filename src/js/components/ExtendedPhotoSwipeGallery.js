@@ -57,8 +57,7 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
     e.preventDefault();
     const _this = this;
     const getThumbBoundsFn = index => {
-      const thumbnail = _this.thumbnails[index];
-      const img = thumbnail.getElementsByTagName("img")[0];
+      const img = _this.thumbnails[index];
       const pageYScroll =
         window.pageYOffset || document.documentElement.scrollTop;
       const rect = img.getBoundingClientRect();
@@ -95,8 +94,17 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
     window.removeEventListener("scroll", this.handleScroll, false);
   }
 
+  loadImages() {
+    this.thumbnails
+      .filter(thumb => !thumb.src && elementInViewport(thumb))
+      .forEach(thumb => {
+        thumb.src = thumb.getAttribute("data-src");
+      });
+  }
+
   handleResize = debounce(() => {
     this.resizeGallery(Math.floor(this._gallery.clientWidth));
+    this.loadImages();
   }, 10);
 
   handleClose = () => {
@@ -104,13 +112,7 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
     this.props.onClose();
   };
 
-  handleScroll = debounce(() => {
-    this.thumbnails
-      .filter(thumb => !thumb.src && elementInViewport(thumb))
-      .forEach(thumb => {
-        thumb.src = thumb.getAttribute("data-src");
-      });
-  }, 10);
+  handleScroll = debounce(() => this.loadImages(), 10);
 
   resizeGallery(containerWidth) {
     const photoPreviewNodes = [];
