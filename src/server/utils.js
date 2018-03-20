@@ -73,7 +73,17 @@ async function ensureDir(pathToCreate) {
     if (parts.hasOwnProperty(i)) {
       fullPath = fullPath + parts[i] + path.sep;
       if (!await isDirectory(fullPath)) {
-        await mkdirAsync(fullPath);
+        try {
+          await mkdirAsync(fullPath);
+        } catch(e) {
+          // If the error is EEXIST, we probably created the 
+          // folder at the same time as another request
+          // We can ignore this safely
+          if (e.code !== "EEXIST") {
+            throw e;
+          }
+        }
+        
       }
     }
   }

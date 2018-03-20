@@ -17,10 +17,48 @@ module.exports = class PDF {
   }
 
   async extractFile(file) {
-    return this.extractPage(file.replace(".png", "") - 1);
+    return this.extractPage(parseInt(file.replace(".png", ""), 10));
   }
 
-  async extractPage(page) {
+  async extractPageWithLib(pageNum) {
+    const doc = await pdfjsLib.getDocument({
+      verbosity: -1,
+      data: new Uint8Array(await readFileAsync(this.file))
+    });
+
+    const page = await doc.getPage(pageNum);
+    const opList = await page.getOperatorList();
+    const filteredList = opList.argsArray.filter((item, index) => 
+      opList.fnArray[index] == 82 // 82 = paintJpegXObject
+      && Array.isArray(item) 
+      && item.length == 3 
+      && page.objs.objs[item[0]] // Does the object exist ?
+    );
+
+    if (filteredList.length != 1) {
+      throw new Error("Could not find a JPG image on this page or find too many")
+    }
+
+    const obj = page.objs.objs[filteredList[0][0]];
+
+    // remove "data:image/jpeg;base64," from the string
+    const base64Object = obj.data._src.substring(23);
+
+    return {
+      path: Buffer.from(base64Object, "base64"),
+      cleanup: () => {}
+    }
+  }
+
+  async extractPage(pageNum) {
+    try {
+      return this.extractPageWithLib(pageNum);
+    } catch (e) { 
+      console.log("Could not extract file " + e.message);
+    }
+
+    // the convert command takes zero-indexed page numbers
+    const page = pageNum -1;
     const file = await tmp.file({ postfix: ".png" });
 
     const command = `convert -density 400 ${escape(
@@ -43,10 +81,9 @@ module.exports = class PDF {
       data: new Uint8Array(await readFileAsync(this.file))
     });
 
-    var loadPage = function(pageNum) {
-      return doc
-        .getPage(pageNum)
-        .then(page => page.getViewport(1.0 /* scale */));
+    var loadPage = async function(pageNum) {
+      const page = await doc.getPage(pageNum)
+      return page.getViewport(1.0 /* scale */);
     };
 
     const promises = [];
