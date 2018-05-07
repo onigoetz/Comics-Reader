@@ -55,9 +55,8 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
 
   showPhotoSwipe = itemIndex => e => {
     e.preventDefault();
-    const _this = this;
     const getThumbBoundsFn = index => {
-      const img = _this.thumbnails[index];
+      const img = this.thumbnails[index];
       const pageYScroll =
         window.pageYOffset || document.documentElement.scrollTop;
       const rect = img.getBoundingClientRect();

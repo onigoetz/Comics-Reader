@@ -3,7 +3,7 @@ const { promisify } = require("util");
 
 const tmp = require("tmp-promise");
 require("pdf.js-extract/lib/pdfjs/domstubs.js").setStubs(global);
-const pdfjsLib = require("pdf.js-extract/lib/pdfjs/pdf.combined");
+const pdfjsLib = require("pdf.js-extract/lib/pdfjs/pdf");
 
 const { exec, escape } = require("../exec");
 const { getBigatureSize } = require("../utils");
