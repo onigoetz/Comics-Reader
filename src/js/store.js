@@ -1,5 +1,5 @@
 /* global process */
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 
 import rootReducer from "./reducers/index";
@@ -8,7 +8,9 @@ import { loadRead } from "./reducers/read";
 
 const middleware = [thunk];
 
-const store = createStore(rootReducer, applyMiddleware(...middleware));
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...middleware)));
 
 // Load this data as soon as possible
 store.dispatch(loadBooks());
