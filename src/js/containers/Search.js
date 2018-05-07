@@ -66,12 +66,12 @@ class Search extends React.Component {
         )}
         {this.state.searchVisible &&
           this.state.text && (
-            <Portal>
-              <div className="SearchResult">
-                {this.matching().map(item => this.renderItem(item))}
-              </div>
-            </Portal>
-          )}
+          <Portal>
+            <div className="SearchResult">
+              {this.matching().map(item => this.renderItem(item))}
+            </div>
+          </Portal>
+        )}
       </div>
     );
   }

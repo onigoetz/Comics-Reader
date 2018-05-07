@@ -9,17 +9,16 @@ const defaultState = {
 };
 
 export default function booksReducer(state = defaultState, action) {
-  switch (action.type) {
-    case NAVIGATE:
-      document.title = action.title;
-
-      return {
-        ...state,
-        title: action.title,
-        url: action.url,
-        parent: action.parent
-      };
-    default:
-      return state;
+  if (action.type !== NAVIGATE) {
+    return state;
   }
+
+  document.title = action.title;
+
+  return {
+    ...state,
+    title: action.title,
+    url: action.url,
+    parent: action.parent
+  };
 }

@@ -114,6 +114,7 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
 
   handleScroll = debounce(() => this.loadImages(), 10);
 
+  // eslint-disable-next-line @swissquote/swissquote/sonarjs/cognitive-complexity
   resizeGallery(containerWidth) {
     const photoPreviewNodes = [];
     const rowLimit = getRowLimit(containerWidth);

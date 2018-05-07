@@ -44,10 +44,9 @@ const defaultState = {
 };
 
 export default function booksReducer(state = defaultState, action) {
-  switch (action.type) {
-    case READ_LOAD_DONE:
-      return { ...state, read: action.read };
-    default:
-      return state;
+  if (action.type !== READ_LOAD_DONE) {
+    return state;
   }
+
+  return { ...state, read: action.read };
 }
