@@ -2,16 +2,8 @@
 
 import { TYPE_DIR } from "./types";
 
-const isRetina =
-  ((window.matchMedia &&
-    (window.matchMedia(
-      "only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx), only screen and (min-resolution: 75.6dpcm)"
-    ).matches ||
-      window.matchMedia(
-        "only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (min--moz-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2)"
-      ).matches)) ||
-    (window.devicePixelRatio && window.devicePixelRatio >= 2)) &&
-  /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+const mediaQuery = "(-webkit-min-device-pixel-ratio: 1.5),(min--moz-device-pixel-ratio: 1.5),(-o-min-device-pixel-ratio: 3/2),(min-resolution: 1.5dppx)";
+const isRetina = window.devicePixelRatio > 1.5 || (window.matchMedia && window.matchMedia(mediaQuery).matches);
 
 export function dirname(path) {
   return path.indexOf("/") === -1
