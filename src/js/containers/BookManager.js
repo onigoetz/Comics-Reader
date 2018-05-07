@@ -71,7 +71,7 @@ const mapStateToProps = (state, ownProps) => {
     (ownProps.location && ownProps.location.pathname.replace("/book/", "")) ||
     "";
 
-  const { book, parent, pages } = selectBook(state, path);
+  const { book, parent, pages } = selectBook(state, path.replace(/%23/g, "#"));
 
   const read = isRead(state.read.read, path);
 

@@ -97,7 +97,7 @@ app.get(/\/thumb\/([0-9])\/(.*)/, async (req, res) => {
     if (exists) {
       res.sendFile(storedFile);
     } else {
-      res.redirect(`${BASE}images/${file.replace("#", "%23")}`);
+      res.redirect(`${BASE}images/${file.replace(/#/g, "%23")}`);
     }
   });
 });

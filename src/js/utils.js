@@ -29,23 +29,27 @@ export function isNumeric(mixedVar) {
   );
 }
 
+export function cleanPath(path) {
+  return path.replace(/#/g, "%23");
+}
+
 export function image(preset, img) {
   if (!img) {
     return "";
   }
 
-  let imageUrl = img.replace("#", "%23");
+  let imageUrl = cleanPath(img);
   if (isRetina) {
-    imageUrl = img.replace(/(\.[A-z]{3,4}\/?(\?.*)?)$/, "@2x$1");
+    imageUrl = imageUrl.replace(/(\.[A-z]{3,4}\/?(\?.*)?)$/, "@2x$1");
   }
 
   return `${baseURL}images/cache/${preset}/${imageUrl}`;
 }
 
 export function createUrl(node) {
-  return (node.type === TYPE_DIR ? "/list/" : "/book/") + node.path;
+  return (node.type === TYPE_DIR ? "/list/" : "/book/") + cleanPath(node.path);
 }
 
 export function thumb(path) {
-  return `${baseURL}thumb/${isRetina ? 2 : 1}/${path.replace("#", "%23")}`;
+  return `${baseURL}thumb/${isRetina ? 2 : 1}/${cleanPath(path)}`;
 }

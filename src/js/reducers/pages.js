@@ -15,7 +15,7 @@ export function loadPages(id) {
   return dispatch => {
     return fetch(`books/${id}`)
       .then(response => {
-        dispatch(pagesLoaded(id, response));
+        dispatch(pagesLoaded(id.replace(/%23/g, "#"), response));
       })
       .catch(error => {
         dispatch(pagesLoadError(error.message));
