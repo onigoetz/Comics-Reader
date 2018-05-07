@@ -53,7 +53,7 @@ module.exports = class IndexCreator {
       }
 
       // A zip / rar archive
-      if (archives.indexOf(path.extname(item)) !== -1) {
+      if (archives.indexOf(path.extname(item).toLowerCase()) !== -1) {
         try {
           const node = new Node(item, parent);
           console.log(`Found book: ${node.getPath()}`);

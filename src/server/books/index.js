@@ -13,7 +13,7 @@ const Dir = require("./Dir");
 const archives = [".cbr", ".cbz", ".zip", ".rar", ".pdf"];
 
 function isArchive(extension) {
-  return archives.indexOf(extension) !== -1;
+  return archives.indexOf(extension.toLowerCase()) !== -1;
 }
 
 async function open(file) {
