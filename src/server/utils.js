@@ -75,15 +75,15 @@ async function ensureDir(pathToCreate) {
       if (!await isDirectory(fullPath)) {
         try {
           await mkdirAsync(fullPath);
-        } catch(e) {
-          // If the error is EEXIST, we probably created the 
+        } catch (e) {
+          // If the error is EEXIST, we probably created the
           // folder at the same time as another request
           // We can ignore this safely
           if (e.code !== "EEXIST") {
             throw e;
           }
         }
-        
+
       }
     }
   }
