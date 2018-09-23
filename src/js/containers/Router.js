@@ -9,7 +9,7 @@ import ListManager from "./ListManager";
 import { loadBooks } from "../reducers/books";
 
 const BookManager = props => (
-  <Async componentProps={props} load={import("./BookManager")} />
+  <Async componentProps={props} load={import(/* webpackChunkName: "book" */"./BookManager")} />
 );
 
 class Router extends Component {
