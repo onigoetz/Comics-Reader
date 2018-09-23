@@ -1,16 +1,32 @@
 import Async from "react-code-splitting";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import Header from "./Header";
 import Loading from "../components/Loading";
 import ListManager from "./ListManager";
+import Login from "./Login";
+import Logout from "./Logout";
 import { loadBooks } from "../reducers/books";
 
 const BookManager = props => (
   <Async componentProps={props} load={import("./BookManager")} />
 );
+
+function PrivateRoute ({component: C, render, authed, ...rest}) {
+
+  const rendering = (props) => C ? <C {...props} /> : render(props);
+
+  return (
+    <Route
+      {...rest}
+      render={(props) => authed === true
+        ? rendering(props)
+        : <Redirect to={{pathname: "/login", state: {from: props.location}}} />}
+    />
+  );
+}
 
 class Router extends Component {
   handleRetry = () => {
@@ -39,9 +55,11 @@ class Router extends Component {
         <React.Fragment>
           <Header />
           <Switch>
-            <Route path="/list/:path" component={ListManager} />
-            <Route path="/book/" component={BookManager} />
-            <Route render={props => <ListManager {...props} />} />
+            <Route path="/login" exact component={Login} />
+            <PrivateRoute authed={!!this.props.token} path="/logout" component={Logout} />
+            <PrivateRoute authed={!!this.props.token} path="/list/:path" component={ListManager} />
+            <PrivateRoute authed={!!this.props.token} path="/book/" component={BookManager} />
+            <PrivateRoute authed={!!this.props.token} render={props => <ListManager {...props} />} />
           </Switch>
         </React.Fragment>
       </BrowserRouter>
@@ -49,4 +67,4 @@ class Router extends Component {
   }
 }
 
-export default connect(state => ({ books: state.books }))(Router);
+export default connect(state => ({ token: state.auth.token, books: state.books }))(Router);

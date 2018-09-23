@@ -2,9 +2,7 @@
 import { createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 
-import rootReducer from "./reducers/index";
-import { loadBooks } from "./reducers/books";
-import { loadRead } from "./reducers/read";
+import rootReducer, {loadUserData} from "./reducers/index";
 
 const middleware = [thunk];
 
@@ -12,8 +10,9 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...middleware)));
 
-// Load this data as soon as possible
-store.dispatch(loadBooks());
-store.dispatch(loadRead());
+if (store.getState().auth.token) {
+  loadUserData(store.dispatch);
+}
+
 
 export default store;

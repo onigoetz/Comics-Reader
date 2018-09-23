@@ -83,7 +83,28 @@ function markRead(user, book) {
   return getRead(user);
 }
 
+function getUserByName(username) {
+  // TODO :: implement
+  return {
+    username: "onigoetz",
+    passwordHash: "$2b$10$ZjHnr5fAJSH4Rwfzk6Da4utkJihtS5tisJnBaaQ0loCVyNKsyWcnK"
+  };
+}
+
+function createUser(username, password) {
+  // TODO :: implement
+  return 1;
+}
+
+function changePassword(username, password) {
+  // TODO :: implement
+  //console.log(await require("bcrypt").hash("test", 10))
+}
+
 module.exports = {
   getRead,
-  markRead
+  markRead,
+  getUserByName,
+  createUser,
+  changePassword
 };

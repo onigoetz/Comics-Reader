@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+    jwtSecret: process.env.JWT_SECRET || "MyS3cr3tK3Y",
     port: 8080,
     comics: path.join(__dirname, 'images'),
     // Not recommended to changes those sizes

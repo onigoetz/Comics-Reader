@@ -1,0 +1,47 @@
+:root {
+    --Dialog-background: #000;
+    --Dialog-border-radius: 4px;
+    --Dialog-border-color: #888;
+
+    --Dialog-title-background: #333;
+}
+
+.DialogWrapper {
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+
+    background-color: #000;
+    background-color: rgba(0, 0, 0, 0.4);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Dialog {
+    background: var(--Dialog-background);
+    border: 1px solid var(--Dialog-border-color);
+    border-radius: var(--Dialog-border-radius);
+
+    max-width: 300px;
+    width: 80%;
+}
+
+.Dialog__title {
+    background: var(--Dialog-title-background);
+    padding: .4em .6em;
+    margin: 0;
+    border-top-left-radius: calc(var(--Dialog-border-radius) - 1px);
+    border-top-right-radius: calc(var(--Dialog-border-radius) - 1px);
+
+    font-size: 1.3em;
+}
+
+.Dialog__content {
+    padding: 2em;
+}

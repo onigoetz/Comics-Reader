@@ -12,8 +12,11 @@ export function readLoadError(error) {
 }
 
 export function markRead(book) {
-  return dispatch => {
-    return fetch(`read/${book}`, { method: "POST" })
+  return (dispatch, getState) => {
+    return fetch(`read/${book}`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${getState().auth.token}` }
+    })
       .then(response => {
         dispatch(readLoaded(response));
       })
@@ -24,8 +27,10 @@ export function markRead(book) {
 }
 
 export function loadRead() {
-  return dispatch => {
-    return fetch("read")
+  return (dispatch, getState) => {
+    return fetch("read", {
+      headers: { Authorization: `Bearer ${getState().auth.token}` }
+    })
       .then(response => {
         dispatch(readLoaded(response));
       })

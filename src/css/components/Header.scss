@@ -32,3 +32,22 @@
     text-align: center;
     white-space: nowrap;
 }
+
+.Dropdown__content {
+    position: absolute;
+    top: calc($bar-height - 1px);
+    right: 0;
+    background: #000;
+
+    border: 1px solid #888;
+    border-top-width: 0;
+}
+
+.Dropdown__content .Link,
+.Dropdown__content a {
+    display: block;
+    padding: 0 .3em;
+    margin: 0;
+    border-top: 1px solid #555;
+    border-radius: 0;
+}

@@ -19,10 +19,10 @@ export function booksLoadStart() {
 }
 
 export function loadBooks() {
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(booksLoadStart());
 
-    return fetch("books")
+    return fetch("books", {headers: {Authorization: `Bearer ${getState().auth.token}`}})
       .then(response => {
         dispatch(booksLoaded(response));
       })

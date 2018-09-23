@@ -12,8 +12,8 @@ export function pagesLoadError(error) {
 }
 
 export function loadPages(id) {
-  return dispatch => {
-    return fetch(`books/${id}`)
+  return (dispatch, getState) => {
+    return fetch(`books/${id}`, {headers: {Authorization: `Bearer ${getState().auth.token}`}})
       .then(response => {
         dispatch(pagesLoaded(id.replace(/%23/g, "#"), response));
       })
