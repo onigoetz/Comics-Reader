@@ -1,3 +1,16 @@
+FROM node:9 AS build
+
+WORKDIR /usr/src/app
+
+RUN mkdir /usr/src/app/static
+COPY src/ /usr/src/app/src/
+COPY package.json /usr/src/app/package.json
+COPY yarn.lock /usr/src/app/yarn.lock
+COPY crafty.config.js /usr/src/app/crafty.config.js
+COPY webpack.config.js /usr/src/app/webpack.config.js
+
+RUN yarn install --non-interactive && yarn build
+
 FROM node:9
 
 # Install extensions : zip, rar, imagick
@@ -17,9 +30,6 @@ WORKDIR /usr/src/app
 VOLUME /comics
 RUN ln -s /comics /usr/src/app/images
 
-# Set to production mode
-ENV NODE_ENV production
-
 # Run a first yarn install, to allow a shorter 
 # rebuild if the package.json didn't change
 COPY package.json /usr/src/app/package.json
@@ -27,7 +37,7 @@ COPY yarn.lock /usr/src/app/yarn.lock
 RUN yarn install --production --non-interactive && yarn cache clean
 
 # Copy files
-COPY static/ /usr/src/app/static/
+COPY --from=build /usr/src/app/static/ /usr/src/app/static/
 COPY src/ /usr/src/app/src/
 COPY config.js /usr/src/app/config.js
 
