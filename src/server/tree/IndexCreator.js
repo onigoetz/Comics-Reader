@@ -1,3 +1,5 @@
+//@ts-check
+
 const fs = require("fs");
 const path = require("path");
 const { promisify } = require("util");
@@ -43,8 +45,10 @@ module.exports = class IndexCreator {
         return;
       }
 
-      // a PDF file
-      if (path.extname(item).toLowerCase() === ".pdf") {
+      const extension = path.extname(item).toLowerCase();
+
+      // A PDF file
+      if (extension === ".pdf") {
         const node = new Node(item, parent);
         console.log(`Found book: ${node.getPath()}`);
         node.setThumb(`${node.getPath()}/1.png`);
@@ -53,14 +57,14 @@ module.exports = class IndexCreator {
       }
 
       // A zip / rar archive
-      if (archives.indexOf(path.extname(item).toLowerCase()) !== -1) {
+      if (archives.indexOf(extension) !== -1) {
         try {
           const node = new Node(item, parent);
           console.log(`Found book: ${node.getPath()}`);
           node.setThumb(await this.getThumb(node));
           directories.push(node);
         } catch ($e) {
-          console.log("Could not open archive: ".item);
+          console.log(`Could not open archive: ${item}`);
         }
       }
     });
@@ -91,7 +95,7 @@ module.exports = class IndexCreator {
    *
    * @param {Node} folder The node to get the thumbnail from
    * @param {string[]} files The files to choose from
-   * @return {bool|string} The path to a thumbnail or false
+   * @return {boolean|string} The path to a thumbnail or false
    */
   getBestThumbnail(folder, files) {
     const images = getValidImages(files);
@@ -107,7 +111,7 @@ module.exports = class IndexCreator {
    * Get the thumbnail for a directory
    *
    * @param {Node} folder The node to get the thumbnail from
-   * @return {bool|string} The path to a thumbnail or false
+   * @return {boolean|string} The path to a thumbnail or false
    */
   getThumbFromDirectory(folder) {
     const files = fs
@@ -125,7 +129,7 @@ module.exports = class IndexCreator {
    * Get the thumbnail for an archive
    *
    * @param {Node} node The node to get the thumbnail from
-   * @return {bool|string} The path to a thumbnail or false
+   * @return {Promise<boolean|string>} The path to a thumbnail or false
    */
   async getThumbFromArchive(node) {
     try {
@@ -163,13 +167,5 @@ module.exports = class IndexCreator {
     }
 
     return item.getThumb();
-  }
-
-  static serialize(nodes) {
-    return nodes.map(node => ({
-      name: node.getName(),
-      thumb: node.getThumb(),
-      children: IndexCreator.toCache(node.getChildren())
-    }));
   }
 };

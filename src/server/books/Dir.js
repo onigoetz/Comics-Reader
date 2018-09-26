@@ -1,3 +1,5 @@
+//@ts-check
+
 const path = require("path");
 const fs = require("fs");
 const { promisify } = require("util");
@@ -20,9 +22,17 @@ module.exports = class Dir {
     this.dir = dirPath;
   }
 
+  async getFileNames() {
+    return readdir(this.dir);
+  }
+
+  async extractFile(file) {
+    return file;
+  }
+
   async getPages() {
     const dirPath = this.dir;
-    const files = await readdir(dirPath);
+    const files = await this.getFileNames();
 
     const promises = files
       .filter(

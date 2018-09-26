@@ -1,7 +1,9 @@
+//@ts-check
+
 const path = require("path");
 const fs = require("fs");
 
-const chalk = require("chalk");
+const chalk = require("chalk").default;
 const express = require("express");
 const sharp = require("sharp");
 const compression = require("compression");

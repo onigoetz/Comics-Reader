@@ -1,3 +1,5 @@
+//@ts-check
+
 const naturalSort = require("natural-sort")();
 
 module.exports = class TreeWalker {

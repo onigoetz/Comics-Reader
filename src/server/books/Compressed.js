@@ -1,3 +1,5 @@
+//@ts-check
+
 const path = require("path");
 const { promisify } = require("util");
 
@@ -10,6 +12,19 @@ const { getValidImages, getBigatureSize } = require("../utils");
 const config = require("../../../config");
 
 module.exports = class Compressed {
+
+  constructor(filePath) {
+    this.path = filePath;
+  }
+
+  async getFileNames() {
+    throw new Error("Missing implementation");
+  }
+
+  async extractAll(destination) {
+    throw new Error("Missing implementation");
+  }
+
   async getPages() {
     const images = getValidImages(await this.getFileNames());
 

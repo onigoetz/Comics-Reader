@@ -1,3 +1,4 @@
+//@ts-check
 const pathLib = require("path");
 
 const tmp = require("tmp-promise");
@@ -10,11 +11,6 @@ const { exec, escape } = require("../exec");
  * http://acritum.com/winrar/console-rar-manual
  */
 module.exports = class Rar extends Compressed {
-  constructor(filePath) {
-    super();
-    this.path = filePath;
-  }
-
   async getFileNames() {
     const { stdout: filenames } = await exec(`unrar lb ${escape(this.path)}`);
 

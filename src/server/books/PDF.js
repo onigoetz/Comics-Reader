@@ -1,3 +1,4 @@
+//@ts-check
 const fs = require("fs");
 const { promisify } = require("util");
 
@@ -18,6 +19,10 @@ module.exports = class PDF {
 
   async extractFile(file) {
     return this.extractPage(parseInt(file.replace(".png", ""), 10));
+  }
+
+  async getFileNames() {
+    return [];
   }
 
   async extractPageWithLib(pageNum) {
