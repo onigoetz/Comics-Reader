@@ -1,4 +1,4 @@
-FROM node:9 AS build
+FROM node:10 AS build
 
 WORKDIR /usr/src/app
 
@@ -11,7 +11,7 @@ COPY webpack.config.js /usr/src/app/webpack.config.js
 
 RUN yarn install --non-interactive && yarn build
 
-FROM node:9
+FROM node:10
 
 # Install extensions : zip, rar, imagick
 RUN (echo "deb http://deb.debian.org/debian jessie main contrib non-free" > /etc/apt/sources.list) && \ 
