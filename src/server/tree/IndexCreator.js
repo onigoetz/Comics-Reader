@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const { promisify } = require("util");
 
+const debug = require('debug')('comics:index');
 const naturalSort = require("natural-sort")();
 
 const Node = require("./Node");
@@ -16,11 +17,12 @@ const readdir = promisify(fs.readdir);
 
 module.exports = class IndexCreator {
   constructor(dirPath) {
+    this.foundBooks = 0;
     this.dirPath = dirPath;
   }
 
   async generateList(dirPath = ".", parent = null) {
-    console.log(`Scanning '${dirPath.replace(this.dirPath, "")}'`);
+    debug(`Scanning '${dirPath.replace(this.dirPath, "")}'`);
     const directories = [];
 
     // Directories to ignore when listing output.
@@ -38,10 +40,11 @@ module.exports = class IndexCreator {
       // A normal directory
       if (await isDirectory(itemPath)) {
         const node = new Node(item, parent);
-        console.log(`Found book or directory: ${node.getPath()}`);
+        debug(`Found book or directory: ${node.getPath()}`);
         node.setChildren(await this.generateList(itemPath, node));
         node.setThumb(await this.getThumb(node));
         directories.push(node);
+        this.foundBooks++;
         return;
       }
 
@@ -50,9 +53,10 @@ module.exports = class IndexCreator {
       // A PDF file
       if (extension === ".pdf") {
         const node = new Node(item, parent);
-        console.log(`Found book: ${node.getPath()}`);
+        debug(`Found book: ${node.getPath()}`);
         node.setThumb(`${node.getPath()}/1.png`);
         directories.push(node);
+        this.foundBooks++;
         return;
       }
 
@@ -60,11 +64,12 @@ module.exports = class IndexCreator {
       if (archives.indexOf(extension) !== -1) {
         try {
           const node = new Node(item, parent);
-          console.log(`Found book: ${node.getPath()}`);
+          debug(`Found book: ${node.getPath()}`);
           node.setThumb(await this.getThumb(node));
           directories.push(node);
+          this.foundBooks++;
         } catch ($e) {
-          console.log(`Could not open archive: ${item}`);
+          console.error(`Could not open archive: ${item}`);
         }
       }
     });
@@ -82,6 +87,9 @@ module.exports = class IndexCreator {
 
     const root = new RootNode("Home");
     root.setChildren(this.list);
+
+    console.log(`Found ${this.foundBooks} books and directories`);
+
     return root;
   }
 
@@ -138,13 +146,13 @@ module.exports = class IndexCreator {
       if (fileNames) {
         return this.getBestThumbnail(node, fileNames);
       } else {
-        console.log("    could not open archive");
+        console.error(`Could not open archive ${node.getPath()}`);
       }
     } catch (e) {
       console.error(e.message);
     }
 
-    console.log(`Failed on ${node.getPath()}`);
+    console.error(`Failed on ${node.getPath()}`);
     return false;
   }
 
@@ -162,7 +170,7 @@ module.exports = class IndexCreator {
     const item = folder.getChildren().find(child => child.getThumb());
 
     if (!item) {
-      console.log(`Could not find thumb for ${folder.getName()}`);
+      console.error(`Could not find thumb for ${folder.getPath()}`);
       return false;
     }
 

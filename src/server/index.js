@@ -9,6 +9,7 @@ const sharp = require("sharp");
 const compression = require("compression");
 const morgan = require("morgan");
 const cache = require("node-file-cache").create();
+const debug = require('debug')('comics:server');
 
 const {
   ensureDir,
@@ -148,7 +149,7 @@ app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, async (req, res) => {
   const requestedFile = req.params[1];
   let sourceFile = requestedFile;
 
-  console.log(title("Generating Image"), req.params[0], req.params[1]);
+  debug(title("Generating Image"), req.params[0], req.params[1]);
 
   if (!config.sizes.hasOwnProperty(presetName)) {
     res.status(404).send("Preset not found");

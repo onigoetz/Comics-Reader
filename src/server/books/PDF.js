@@ -59,7 +59,7 @@ module.exports = class PDF {
     try {
       return this.extractPageWithLib(pageNum);
     } catch (e) {
-      console.log(`Could not extract file ${e.message}`);
+      console.error(`Could not extract file ${e.message}`);
     }
 
     // the convert command takes zero-indexed page numbers
@@ -73,7 +73,7 @@ module.exports = class PDF {
     try {
       await exec(command);
     } catch (e) {
-      console.log("Failed extracting image", e);
+      console.error("Failed extracting image", e);
       throw e;
     }
 
