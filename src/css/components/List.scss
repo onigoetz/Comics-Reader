@@ -17,6 +17,10 @@
   padding: 0;
   text-align: center;
 
+  &--allRead {
+    opacity: 0.8;
+  }
+
   // If it's a table view of links, make sure the child <a>
   // takes up full table view item tap area (want to avoid selecting child buttons though)
   > a {
@@ -35,4 +39,14 @@
 
 .List__cell__name {
   display: block;
+}
+
+.UnreadBadge {
+  border: 1px solid white;
+  background: $primary-color;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  margin-right: 0.4em;
 }
