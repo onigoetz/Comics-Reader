@@ -1,3 +1,5 @@
+import { cleanName } from "../utils";
+
 export const NAVIGATE = "NAVIGATE";
 
 export function navigate(title, url, parent) {
@@ -13,7 +15,7 @@ export default function booksReducer(state = defaultState, action) {
     return state;
   }
 
-  document.title = action.title;
+  document.title = cleanName(action.title);
 
   return {
     ...state,

@@ -3,7 +3,7 @@ import LazyLoad from "react-lazyload";
 import { Link } from "react-router-dom";
 import classnames from "classnames";
 
-import { thumb, createUrl } from "../utils";
+import { thumb, createUrl, cleanName } from "../utils";
 import { TYPE_DIR } from "../types";
 
 function allRead(folder) {
@@ -16,10 +16,6 @@ function unread(folder) {
   }
 
   return !folder.read;
-}
-
-function cleanName(name) {
-  return name.replace(/(\.(:?cbr|cbz|zip|rar|pdf))$/, "");
 }
 
 function getRead(folder) {

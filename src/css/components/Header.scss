@@ -32,3 +32,22 @@
     text-align: center;
     white-space: nowrap;
 }
+
+.headroom--scrolled {
+    will-change: transform;
+
+    position: fixed;
+    z-index: 10;
+    right: 0;
+    left: 0;
+    top: 0;
+
+    &.headroom--pinned {
+        transform: translateY(0);
+        transition: transform 0.25s ease-in-out;
+    }
+
+    &.headroom--unpinned {
+        transform: translateY(-100%);    
+    }
+}

@@ -2,9 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-//import Headroom from "react-headroom";
+import Headroom from "react-headroom";
 
 import Search from "./Search";
+import { cleanName } from "../utils";
 import { IoIosHome, IoIosArrowBack } from "../components/Icons";
 
 class Header extends React.Component {
@@ -16,14 +17,16 @@ class Header extends React.Component {
 
   render() {
     return (
-      <header className="Header">
-        <div className="Header__Section pull-right">
-          <Search />
-          {this.isNotHome() ? this.renderHome() : null}
-        </div>
-        {this.isNotHome() ? this.renderPrevious() : null}
-        <h1 className="Header__title">{this.props.title}</h1>
-      </header>
+      <Headroom disableInlineStyles>
+        <header className="Header">
+          <div className="Header__Section pull-right">
+            <Search />
+            {this.isNotHome() ? this.renderHome() : null}
+          </div>
+          {this.isNotHome() ? this.renderPrevious() : null}
+          <h1 className="Header__title">{cleanName(this.props.title)}</h1>
+        </header>
+      </Headroom>
     );
   }
 
