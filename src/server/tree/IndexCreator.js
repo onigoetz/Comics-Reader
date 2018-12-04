@@ -37,6 +37,11 @@ module.exports = class IndexCreator {
         return;
       }
 
+      // Ignore files starting with ._ (macOS metadata files)
+      if (item.indexOf("._") === 0) {
+        return;
+      }
+
       // A normal directory
       if (await isDirectory(itemPath)) {
         const node = new Node(item, parent);
