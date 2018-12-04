@@ -14,9 +14,7 @@ RUN yarn install --non-interactive && yarn build
 FROM node:10
 
 # Install extensions : zip, rar, imagick
-RUN (echo "deb http://deb.debian.org/debian jessie main contrib non-free" > /etc/apt/sources.list) && \ 
-	(echo "deb http://deb.debian.org/debian jessie-updates main contrib non-free" >> /etc/apt/sources.list) && \ 
-	(echo "deb http://security.debian.org/ jessie/updates main contrib non-free" >> /etc/apt/sources.list) && \
+RUN (sed -i "s/main/main contrib non-free/g" /etc/apt/sources.list) && \
     apt-get update && apt-get install -y \
 		zip \
 		unrar \
