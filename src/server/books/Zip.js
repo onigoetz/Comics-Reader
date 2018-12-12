@@ -8,6 +8,9 @@ const { exec, escape } = require("../exec");
 
 const options = { encoding: "utf8" };
 
+// TODO :: investigate
+// https://www.npmjs.com/package/node-stream-zip
+
 module.exports = class Zip extends Compressed {
   async getFileNames() {
     const { stdout: filenames } = await exec(

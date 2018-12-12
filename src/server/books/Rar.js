@@ -10,6 +10,10 @@ const { exec, escape } = require("../exec");
  * Documentation of the unrar command :
  * http://acritum.com/winrar/console-rar-manual
  */
+
+ // TODO :: investigate alternative
+ // https://www.npmjs.com/package/@huanjiesm/nodeunrar
+ // https://www.npmjs.com/package/node-unrar-js
 module.exports = class Rar extends Compressed {
   async getFileNames() {
     const { stdout: filenames } = await exec(`unrar lb ${escape(this.path)}`);
