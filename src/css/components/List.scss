@@ -37,11 +37,13 @@
   }
 }
 
-.List__cell--unread .List__cell__image {
-  position:relative;
-  display:inline-block;
+.List__cell__image {
+  position: relative;
+  display: inline-block;
   overflow: hidden;
+}
 
+.List__cell--unread .List__cell__image {
   transition: all .2s;
 
   &:after {
@@ -62,6 +64,29 @@
   &:hover:after {
     transform: rotate(45deg) translate3D(-30px, -30px, 0);
   }
+}
+
+.List__cell__unreadCount {
+  content: "";
+  display:block;
+  position:absolute;
+  top: 0;
+  right: 0;
+
+  background-color: #cc7b19;
+  color: #eee;
+  padding: 0 8px;
+  box-shadow: 0 0 4px rgba(0,0,0,.6);
+  line-height: 24px;
+  font-size: 13px;
+  opacity: 1;
+
+  transition: all .2s;
+}
+
+.List__cell__image:hover .List__cell__unreadCount {
+  opacity: 0;
+  transform: translate3D(0, -30px, 0);
 }
 
 .List__cell__name {
