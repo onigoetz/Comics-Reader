@@ -7554,6 +7554,14 @@ react-router-dom@^4.3.1:
     react-router "^4.3.1"
     warning "^4.0.1"
 
+react-router-scroll-memory@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-router-scroll-memory/-/react-router-scroll-memory-2.0.1.tgz#3cba23494e27f233be1bf46a522f4bcc35cad031"
+  integrity sha512-wCGj08vDXreeOUOp0L9ExN0XSyMY1D4crO5iF1lFNFqb/Hya/J/NUL7fF7jfrbP5Pmd42ZmlTrPUBKG2f8k0vA==
+  dependencies:
+    react "^16.6.0"
+    react-router-dom "^4.3.1"
+
 react-router@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/react-router/-/react-router-4.3.1.tgz#aada4aef14c809cb2e686b05cee4742234506c4e"
@@ -7567,7 +7575,7 @@ react-router@^4.3.1:
     prop-types "^15.6.1"
     warning "^4.0.1"
 
-react@^16.0.0, react@^16.5.2:
+react@^16.0.0, react@^16.5.2, react@^16.6.0:
   version "16.6.3"
   resolved "https://registry.yarnpkg.com/react/-/react-16.6.3.tgz#25d77c91911d6bbdd23db41e70fb094cc1e0871c"
   integrity sha512-zCvmH2vbEolgKxtqXL2wmGCUxUyNheYn/C+PD1YAjfxHC54+MhdruyhO7QieQrYsYeTxrn93PM2y0jRH1zEExw==

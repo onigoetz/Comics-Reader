@@ -2,6 +2,7 @@ import Async from "react-code-splitting";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import ScrollMemory from "react-router-scroll-memory";
 
 import Header from "./Header";
 import Loading from "../components/Loading";
@@ -37,6 +38,7 @@ class Router extends Component {
     return (
       <BrowserRouter basename={window.baseURL}>
         <React.Fragment>
+          <ScrollMemory />
           <Header />
           <Switch>
             <Route path="/list/:path" component={ListManager} />

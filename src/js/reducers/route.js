@@ -19,6 +19,7 @@ export default function booksReducer(state = defaultState, action) {
 
   return {
     ...state,
+    previousUrl: state.url,
     title: action.title,
     url: action.url,
     parent: action.parent
