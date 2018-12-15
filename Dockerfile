@@ -1,9 +1,20 @@
-FROM node:9
+FROM node:10 AS build
+
+WORKDIR /usr/src/app
+
+RUN mkdir /usr/src/app/static
+COPY src/ /usr/src/app/src/
+COPY package.json /usr/src/app/package.json
+COPY yarn.lock /usr/src/app/yarn.lock
+COPY crafty.config.js /usr/src/app/crafty.config.js
+COPY webpack.config.js /usr/src/app/webpack.config.js
+
+RUN yarn install --non-interactive && yarn build
+
+FROM node:10
 
 # Install extensions : zip, rar, imagick
-RUN (echo "deb http://deb.debian.org/debian jessie main contrib non-free" > /etc/apt/sources.list) && \ 
-	(echo "deb http://deb.debian.org/debian jessie-updates main contrib non-free" >> /etc/apt/sources.list) && \ 
-	(echo "deb http://security.debian.org/ jessie/updates main contrib non-free" >> /etc/apt/sources.list) && \
+RUN (sed -i "s/main/main contrib non-free/g" /etc/apt/sources.list) && \
     apt-get update && apt-get install -y \
 		zip \
 		unrar \
@@ -17,9 +28,6 @@ WORKDIR /usr/src/app
 VOLUME /comics
 RUN ln -s /comics /usr/src/app/images
 
-# Set to production mode
-ENV NODE_ENV production
-
 # Run a first yarn install, to allow a shorter 
 # rebuild if the package.json didn't change
 COPY package.json /usr/src/app/package.json
@@ -27,7 +35,7 @@ COPY yarn.lock /usr/src/app/yarn.lock
 RUN yarn install --production --non-interactive && yarn cache clean
 
 # Copy files
-COPY static/ /usr/src/app/static/
+COPY --from=build /usr/src/app/static/ /usr/src/app/static/
 COPY src/ /usr/src/app/src/
 COPY config.js /usr/src/app/config.js
 

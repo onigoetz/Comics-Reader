@@ -2,6 +2,7 @@ import Async from "react-code-splitting";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import ScrollMemory from "react-router-scroll-memory";
 
 import Header from "./Header";
 import Loading from "../components/Loading";
@@ -11,7 +12,7 @@ import Logout from "./Logout";
 import { loadBooks } from "../reducers/books";
 
 const BookManager = props => (
-  <Async componentProps={props} load={import("./BookManager")} />
+  <Async componentProps={props} load={import(/* webpackChunkName: "book" */"./BookManager")} />
 );
 
 function PrivateRoute ({component: C, render, authed, ...rest}) {
@@ -53,6 +54,7 @@ class Router extends Component {
     return (
       <BrowserRouter basename={window.baseURL}>
         <React.Fragment>
+          <ScrollMemory />
           <Header />
           <Switch>
             <Route path="/login" exact component={Login} />

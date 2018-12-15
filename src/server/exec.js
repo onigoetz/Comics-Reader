@@ -1,3 +1,5 @@
+//@ts-check
+
 const childProcess = require("child_process");
 
 const shellEscape = require("shell-escape");

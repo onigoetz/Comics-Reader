@@ -1,3 +1,4 @@
+//@ts-check
 const pathLib = require("path");
 
 const tmp = require("tmp-promise");
@@ -7,12 +8,10 @@ const { exec, escape } = require("../exec");
 
 const options = { encoding: "utf8" };
 
-module.exports = class Zip extends Compressed {
-  constructor(filePath) {
-    super();
-    this.path = filePath;
-  }
+// TODO :: investigate
+// https://www.npmjs.com/package/node-stream-zip
 
+module.exports = class Zip extends Compressed {
   async getFileNames() {
     const { stdout: filenames } = await exec(
       `zipinfo -1 ${escape(this.path)}`,

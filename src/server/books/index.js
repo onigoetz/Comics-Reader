@@ -1,8 +1,11 @@
+//@ts-check
+
 const path = require("path");
 const fs = require("fs");
 
 const archiveType = require("archive-type");
 const readChunk = require("read-chunk");
+const debug = require('debug')('comics:archive');
 
 const { isDirectory, isFile, getExtension } = require("../utils");
 const Zip = require("./Zip");
@@ -17,9 +20,9 @@ function isArchive(extension) {
 }
 
 async function open(file) {
-  console.log("Opening archive", file);
+  debug("Opening archive", file);
   if (await isDirectory(file)) {
-    console.log("It's a directory", file);
+    debug("It's a directory", file);
     return new Dir(file);
   }
 

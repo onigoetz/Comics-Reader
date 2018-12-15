@@ -17,6 +17,10 @@
   padding: 0;
   text-align: center;
 
+  &--allRead {
+    opacity: 0.5;
+  }
+
   // If it's a table view of links, make sure the child <a>
   // takes up full table view item tap area (want to avoid selecting child buttons though)
   > a {
@@ -33,6 +37,66 @@
   }
 }
 
+.List__cell__image {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.List__cell--unread .List__cell__image {
+  transition: all .2s;
+
+  &:after {
+    content: "";
+    display:block;
+    position:absolute;
+    top: -16px;
+    right: -16px;
+    width: 32px;
+    height: 32px;
+    background: $primary-color;
+    transform: rotate(45deg);
+    box-shadow: 0 0 4px rgba(0,0,0,.6);
+
+    transition: all .2s;
+  }
+
+  &:hover:after {
+    transform: rotate(45deg) translate3D(-30px, -30px, 0);
+  }
+}
+
+.List__cell__unreadCount {
+  content: "";
+  display:block;
+  position:absolute;
+  top: 0;
+  right: 0;
+
+  background-color: $primary-color;
+  color: #fff;
+  padding: 0 8px;
+  box-shadow: 0 0 4px rgba(0,0,0,.6);
+  line-height: 24px;
+  font-size: 13px;
+  opacity: 1;
+
+  transition: all .2s;
+}
+
+.List__cell__image:hover .List__cell__unreadCount {
+  opacity: 0;
+  transform: translate3D(0, -30px, 0);
+}
+
 .List__cell__name {
   display: block;
+  line-height: 20px;
+  font-size: 15px;
+}
+
+.List__cell__details {
+  line-height: 20px;
+  font-size: 13px;
+  color: hsla(0,0%,100%,.45);
 }

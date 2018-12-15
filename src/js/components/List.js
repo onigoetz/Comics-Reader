@@ -1,45 +1,46 @@
 import React from "react";
 import LazyLoad from "react-lazyload";
 import { Link } from "react-router-dom";
+import classnames from "classnames";
 
-import { thumb, createUrl } from "../utils";
+import { thumb, createUrl, cleanName } from "../utils";
 import { TYPE_DIR } from "../types";
 
-function getRead(folder) {
-  if (folder.type !== TYPE_DIR || !folder.booksInsideRead) {
-    return null;
-  }
+function allRead(folder) {
+  return folder.type === TYPE_DIR && folder.booksInside === folder.booksInsideRead;
+}
 
-  if (folder.booksInside === folder.booksInsideRead) {
-    return <small>(All Read)</small>;
-  }
+function unread(folder) {
+  return folder.type !== TYPE_DIR && !folder.read;
+}
 
-  return <small>({folder.booksInsideRead} Read)</small>;
+function bookCount(folder) {
+  return folder.booksInside === 1 ? "1 book" : `${folder.booksInside} books`;
 }
 
 export default function List({ books }) {
   return (
     <ul className="List">
-      {books.map(folder => {
-        if (!folder) {
-          return <li>Not Found</li>;
-        }
-
+      {books.filter(Boolean).map((folder) => {
+        const classes = {
+          "List__cell--allRead": allRead(folder),
+          "List__cell--unread": unread(folder)
+        };
         return (
-          <li className="List__cell" key={folder.name}>
+          <li className={classnames("List__cell", classes)} key={folder.name}>
             <Link to={createUrl(folder)}>
-              <LazyLoad height={140} offset={200}>
-                <img src={thumb(folder.path)} height="140" alt={folder.name} />
-              </LazyLoad>
-              <span className="List__cell__name">{folder.name}</span>
-              {folder.read && (
-                <p>
-                  <small>Read</small>
-                </p>
-              )}
+              <div className="List__cell__image">
+                {folder.type === TYPE_DIR && folder.booksInside !== folder.booksInsideRead && (
+                  <div className="List__cell__unreadCount">{folder.booksInside - folder.booksInsideRead}</div>
+                )}
+                <LazyLoad height={140} offset={200}>
+                  <img src={thumb(folder.path)} height="140" alt={folder.name} />
+                </LazyLoad>
+              </div>
+              <div className="List__cell__name">{cleanName(folder.name)}</div>
               {folder.type === TYPE_DIR && (
-                <p>
-                  {folder.booksInside} Books {getRead(folder)}
+                <p className="List__cell__details">
+                  {bookCount(folder)}
                 </p>
               )}
             </Link>

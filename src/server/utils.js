@@ -1,3 +1,5 @@
+//@ts-check
+
 const fs = require("fs");
 const path = require("path");
 const { promisify } = require("util");
@@ -59,11 +61,9 @@ function getBigatureSize(data) {
 
   return {
     width: newWidth,
-    height: parseInt(Math.round(newWidth / ratio), 0)
+    height: Math.round(newWidth / ratio)
   };
 }
-
-
 
 async function ensureDir(pathToCreate) {
   const parts = pathToCreate.split(path.sep);

@@ -1,3 +1,5 @@
+//@ts-check
+
 module.exports = class Node {
   constructor($name, $parent = null) {
     this.name = $name;
@@ -45,7 +47,7 @@ module.exports = class Node {
   }
 
   /**
-   * @return {string|bool} path to the thumbnail
+   * @return {string|boolean} path to the thumbnail
    */
   getThumb() {
     return this.thumb;

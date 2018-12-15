@@ -1,10 +1,12 @@
+//@ts-check
+
 const path = require("path");
 
 const Database = require("better-sqlite3");
 
 const config = require("../../config");
 
-const db = new Database(path.join(config.comics, "comics.db"));
+const db = Database(path.join(config.comics, "comics.db"));
 
 const DBVersion = 1;
 const migrations = {

@@ -5,6 +5,10 @@ import { TYPE_DIR } from "./types";
 const mediaQuery = "(-webkit-min-device-pixel-ratio: 1.5),(min--moz-device-pixel-ratio: 1.5),(-o-min-device-pixel-ratio: 3/2),(min-resolution: 1.5dppx)";
 const isRetina = window.devicePixelRatio > 1.5 || (window.matchMedia && window.matchMedia(mediaQuery).matches);
 
+export function cleanName(name) {
+  return name.replace(/(\.(:?cbr|cbz|zip|rar|pdf))$/, "");
+}
+
 export function dirname(path) {
   return path.indexOf("/") === -1
     ? ""
