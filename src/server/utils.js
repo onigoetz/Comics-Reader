@@ -89,6 +89,17 @@ async function ensureDir(pathToCreate) {
   }
 }
 
+function getManifest(BASE) {
+  const manifest = require("../manifest.json");
+  manifest.start_url = BASE;
+  manifest.icons = manifest.icons.map(icon => {
+    icon.src = BASE + icon.src;
+    return icon;
+  });
+
+  return manifest;
+}
+
 function sanitizeBaseUrl(base) {
   // Ensure we have one slash at the beginning and one at the end
   const cleaned = `/${(base || "").replace(/^\/+|\/+$/g, "")}/`;
@@ -111,6 +122,7 @@ module.exports = {
   ensureDir,
   getExtension,
   getBigatureSize,
+  getManifest,
   getUser,
   getValidImages,
   isDirectorySync,

@@ -17,7 +17,8 @@ const {
   ensureDir,
   sanitizeBaseUrl,
   returnJsonNoCache,
-  getUser
+  getUser,
+  getManifest
 } = require("./utils");
 const { getFile, getPages } = require("./books");
 const IndexCreator = require("./tree/IndexCreator");
@@ -32,6 +33,7 @@ const title = chalk.underline.bold;
 
 const comicsIndex = new IndexCreator(config.comics);
 const BASE = sanitizeBaseUrl(process.env.COMICS_BASE);
+const manifest = getManifest(BASE);
 const app = express();
 
 app.use(compression()); // Enable Gzip
@@ -54,15 +56,12 @@ app.get(/\/(|login|logout|book(\/.*)?|list(\/.*)?)$/, (req, res) =>
 );
 
 app.get("/manifest.json", (req, res) => {
-  const manifest = require("../manifest.json");
-  manifest.start_url = BASE;
-  manifest.icons = manifest.icons.map(icon => {
-    icon.src = BASE + icon.src;
-    return icon;
-  });
-
   res.json(manifest);
 });
+
+app.get("/favicon.ico", (req, res) => {
+  res.sendFile(path.join(__dirname, "../images/favicon.ico"));
+})
 
 app.get(/\/thumb\/([0-9])\/(.*)/, async (req, res) => {
   const ratio = req.param[0];
