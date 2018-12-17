@@ -87,13 +87,16 @@ module.exports = class IndexCreator {
   async getList() {
     // TODO :: ensure the list isn't generated mutliple times
     if (!this.list) {
+      const start = new Date();
       this.list = await this.generateList(this.dirPath);
+
+      const end  = new Date();
+      const time = (end.getTime() - start.getTime()) / 1000;
+      console.log(`Found ${this.foundBooks} books and directories in ${time} s`);
     }
 
     const root = new RootNode("Home");
     root.setChildren(this.list);
-
-    console.log(`Found ${this.foundBooks} books and directories`);
 
     return root;
   }
