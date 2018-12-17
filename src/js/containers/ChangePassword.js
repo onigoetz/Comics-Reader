@@ -1,37 +1,48 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 
-import Dialog from "../components/Dialog";
+import { navigate } from "../reducers/route";
 
-export default class ChangePassword extends Component {
+class ChangePassword extends Component {
+  state = {
+    current_password: "",
+    password: "",
+    confirm_password: ""
+  };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      password: "",
-      current_password: "",
-      confirm_password: ""
-    };
+  componentDidMount() {
+    this.props.dispatch(navigate("Change Password", "/change_password", {}));
   }
 
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  handleExit = () => {
-    console.log("Exit dialog");
+  handleSubmit = () => {
+
   }
 
   arePasswordsDifferent() {
-    return this.state.confirm_password && this.state.confirm_password !== this.state.password;
+    return (
+      this.state.confirm_password &&
+      this.state.confirm_password !== this.state.password
+    );
   }
 
   render() {
-    return <Dialog title="Change password" onExit={this.handleExit}>
-      <form onSubmit={this.handleSubmit}>
+
+    // We're logged out when the password change is applied
+    if (!this.props.auth.token) {
+      return <Redirect to={{ pathname: "/", state: { from: "/change_password" } }} />;
+    }
+
+    return (
+      <form className="Form" onSubmit={this.handleSubmit}>
         <label className="Label">
           Current Password
-          <input className="Input"
+          <input
+            className="Input"
             name="current_password"
             type="password"
             value={this.state.current_password}
@@ -42,7 +53,8 @@ export default class ChangePassword extends Component {
         <br />
         <label className="Label">
           New Password
-          <input className="Input"
+          <input
+            className="Input"
             name="password"
             type="password"
             value={this.state.password}
@@ -52,19 +64,25 @@ export default class ChangePassword extends Component {
 
         <label className="Label">
           Confirm Password
-          <input className="Input"
+          <input
+            className="Input"
             name="confirm_password"
             type="password"
             value={this.state.confirm_password}
             onChange={this.handleChange}
           />
-          {this.arePasswordsDifferent() && <span className="Label__text">Passwords are different</span>}
+          {this.arePasswordsDifferent() && (
+            <span className="Label__text">Passwords are different</span>
+          )}
         </label>
 
-        <div style={{textAlign: "right"}}>
+        <div style={{ textAlign: "right" }}>
           <button className="Button Button--big">Change</button>
         </div>
       </form>
-    </Dialog>;
+    );
   }
 }
+
+
+export default connect(state => ({ auth: state.auth }))(ChangePassword);

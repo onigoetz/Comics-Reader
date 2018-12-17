@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import Headroom from "react-headroom";
 
-import ChangePassword from "./ChangePassword";
 import Search from "./Search";
 import { cleanName } from "../utils";
 import { IoIosHome, IoIosArrowBack, IoIosAccount } from "../components/Icons";
@@ -73,8 +72,7 @@ function User() {
     <div className="Button Button--link">
       <IoIosAccount />
       <div className="Dropdown__content">
-        <button className="Link Button Button--link">Change Password</button>
-        <ChangePassword />
+        <Link to="/change_password" className="Link">Change Password</Link>
         <Link to="/logout" className="Link">
           Logout
         </Link>

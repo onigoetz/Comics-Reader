@@ -9,6 +9,7 @@ import Loading from "../components/Loading";
 import ListManager from "./ListManager";
 import Login from "./Login";
 import Logout from "./Logout";
+import ChangePassword from "./ChangePassword";
 import { loadBooks } from "../reducers/books";
 
 const BookManager = props => (
@@ -59,6 +60,7 @@ class Router extends Component {
           <Switch>
             <Route path="/login" exact component={Login} />
             <PrivateRoute authed={!!this.props.token} path="/logout" component={Logout} />
+            <PrivateRoute authed={!!this.props.token} path="/change_password" component={ChangePassword} />
             <PrivateRoute authed={!!this.props.token} path="/list/:path" component={ListManager} />
             <PrivateRoute authed={!!this.props.token} path="/book/" component={BookManager} />
             <PrivateRoute authed={!!this.props.token} render={props => <ListManager {...props} />} />

@@ -30,7 +30,7 @@ class Login extends Component {
     }
 
     return (
-      <form className="LoginForm" onSubmit={this.handleSubmit}>
+      <form className="Form" onSubmit={this.handleSubmit}>
         <label className="Label">
           Username
           <input className="Input" name="username" onChange={this.handleChange} />

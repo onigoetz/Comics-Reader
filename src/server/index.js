@@ -47,8 +47,8 @@ app.use("/images", express.static("images"));
 
 // Pages that return the main layout,
 // might be custom server rendered later
-// "/" "/login" "/logout" "/book/*" "/list/*" just return the template
-app.get(/\/(|login|logout|book(\/.*)?|list(\/.*)?)$/, (req, res) =>
+// "/" "/login" "/logout" "/change_password" "/book/*" "/list/*" just return the template
+app.get(/\/(|login|logout|change_password|book(\/.*)?|list(\/.*)?)$/, (req, res) =>
   layout(BASE).then(
     template => res.send(template),
     () => res.status(500).send("Could not generate template")
