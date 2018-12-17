@@ -7,6 +7,12 @@ import { navigate } from "../reducers/route";
 import { login } from "../reducers/auth";
 
 class Login extends Component {
+
+  state = {
+    username: "",
+    password: ""
+  }
+
   componentDidMount() {
     this.props.dispatch(navigate("Login", "/login", {}));
   }
@@ -18,34 +24,48 @@ class Login extends Component {
   handleSubmit = event => {
     event.preventDefault();
 
-    this.props.dispatch(login(this.state.username, this.state.password)).then((token) => {
-      localStorage.setItem("comics_id_token", token);
-      loadUserData(this.props.dispatch);
-    });
+    this.props
+      .dispatch(login(this.state.username, this.state.password))
+      .then(token => {
+        localStorage.setItem("comics_id_token", token);
+        return loadUserData(this.props.dispatch);
+      });
   };
 
   render() {
-    if (this.props.auth.token) {
+    // Only redirect when books are loaded
+    if (this.props.auth.token && this.props.books_loaded) {
       return <Redirect to={{ pathname: "/", state: { from: "/login" } }} />;
     }
 
     return (
       <form className="Form" onSubmit={this.handleSubmit}>
+        {this.props.auth.errorMessage && (
+          <div className="Message Message--error">
+            {this.props.auth.errorMessage}
+          </div>
+        )}
+
         <label className="Label">
           Username
-          <input className="Input" name="username" onChange={this.handleChange} />
+          <input
+            className="Input"
+            name="username"
+            onChange={this.handleChange}
+          />
         </label>
 
         <label className="Label">
           Password
-          <input className="Input"
+          <input
+            className="Input"
             name="password"
             type="password"
             onChange={this.handleChange}
           />
         </label>
 
-        <div style={{textAlign: "right"}}>
+        <div style={{ textAlign: "right" }}>
           <button className="Button Button--big">Submit</button>
         </div>
       </form>
@@ -53,4 +73,4 @@ class Login extends Component {
   }
 }
 
-export default connect(state => ({ auth: state.auth }))(Login);
+export default connect(state => ({ auth: state.auth, books_loaded: state.books.loaded }))(Login);

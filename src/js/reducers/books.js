@@ -55,6 +55,7 @@ export function selectBook(state, path) {
 }
 
 const defaultState = {
+  loaded: false,
   loading: false,
   error: false,
   books: {}
@@ -98,6 +99,7 @@ export default function booksReducer(state = defaultState, action) {
     case BOOK_LOAD_DONE:
       return {
         ...state,
+        loaded: true,
         loading: false,
         error: false,
         books: cleanBooks(action.books)

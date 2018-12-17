@@ -34,23 +34,30 @@
 }
 
 .Dropdown__content {
+    display: none;
     position: absolute;
     top: calc($bar-height - 1px);
-    right: 0;
+    right: -0.5em;
     background: #000;
 
     border: 1px solid #888;
     border-top-width: 0;
+
+    .Button:hover & {
+        display: block;
+    }
 }
 
 .Dropdown__content .Link,
 .Dropdown__content a {
     display: block;
-    padding: 0 .3em;
+    padding: .5em 1em;
+    line-height: 1;
     margin: 0;
     border-top: 1px solid #555;
     border-radius: 0;
 }
+
 .headroom--scrolled {
     will-change: transform;
 

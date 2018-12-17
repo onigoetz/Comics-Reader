@@ -41,6 +41,7 @@ export function login(username, password) {
       })
       .catch(error => {
         dispatch(loginFailure(error.message));
+        throw error;
       });
   };
 }

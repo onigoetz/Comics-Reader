@@ -10,6 +10,7 @@ import ListManager from "./ListManager";
 import Login from "./Login";
 import Logout from "./Logout";
 import ChangePassword from "./ChangePassword";
+import logout from "../logout";
 import { loadBooks } from "../reducers/books";
 
 const BookManager = props => (
@@ -35,14 +36,22 @@ class Router extends Component {
     this.props.dispatch(loadBooks());
   };
 
+  handleLogout = () => {
+    logout(this.props.dispatch);
+  };
+
   render() {
     if (this.props.books.error) {
       return (
-        <div>
+        <div style={{margin: "1em"}}>
           <h1>Failed to load books with error:</h1>
           <p>
             <strong>{this.props.books.error}</strong>
-            <button onClick={this.handleRetry}>Retry</button>
+          </p>
+          <p>
+            <button className="Button" onClick={this.handleRetry}>Retry</button>
+            {" "}
+            {!!this.props.token && <button className="Button" onClick={this.handleLogout}>Logout</button>}
           </p>
         </div>
       );

@@ -10,7 +10,11 @@ import { cleanName } from "../utils";
 import { IoIosHome, IoIosArrowBack, IoIosAccount } from "../components/Icons";
 
 function isNotHome(url) {
-  return url && url !== "/" && url !== "/list/";
+  return url !== "/" && url !== "/list/";
+}
+
+function canGoBack(url) {
+  return url && isNotHome() && url !== "/login";
 }
 
 function Home() {
@@ -30,7 +34,7 @@ function PreviousInner({ parent, previousUrl, history }) {
     return null;
   }
 
-  const url = `/list/${parent.path}`;
+  const url = parent.path ? `/list/${parent.path}` : previousUrl;
   const title = parent.name;
 
   // If the url is identical to the previousUrl,
@@ -86,13 +90,13 @@ function Header({ url, title, parent, previousUrl, token }) {
     <Headroom disableInlineStyles>
       <header className="Header">
         <div className="Header__Section pull-right">
-          <Search />
-          {isNotHome(url) ? <Home /> : null}
-          {token ? <User /> : null}
+          {token && <Search />}
+          {canGoBack(url) && <Home />}
+          {token && <User />}
         </div>
-        {isNotHome(url) ? (
+        {canGoBack(url) && (
           <Previous parent={parent} previousUrl={previousUrl} />
-        ) : null}
+        )}
         <h1 className="Header__title">{cleanName(title)}</h1>
       </header>
     </Headroom>

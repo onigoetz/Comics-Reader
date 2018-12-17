@@ -7,8 +7,10 @@ import route from "./route";
 import auth from "./auth";
 
 export function loadUserData(dispatch) {
-  dispatch(loadBooks());
-  dispatch(loadRead());
+  const loadingBooks = dispatch(loadBooks());
+  const loadingRead = dispatch(loadRead());
+
+  return Promise.all([loadingBooks, loadingRead]);
 }
 
 export default combineReducers({
