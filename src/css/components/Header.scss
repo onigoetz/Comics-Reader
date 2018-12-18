@@ -14,7 +14,7 @@
     padding:0 .5rem;
 
     position: relative;
-    z-index: 5;
+    z-index: var(--zindex-header-section);
     height: calc($bar-height - 1px);
 }
 
@@ -62,7 +62,7 @@
     will-change: transform;
 
     position: fixed;
-    z-index: 10;
+    z-index: var(--zindex-header-fixed);
     right: 0;
     left: 0;
     top: 0;

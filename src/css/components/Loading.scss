@@ -9,6 +9,9 @@
     bottom: 0;
     display: table;
 
+    z-index: var(--zindex-overlay);
+    background: rgba(0,0,0, .5);
+
     &__container {
         display: table-cell;
         vertical-align: middle;

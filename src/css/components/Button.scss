@@ -27,6 +27,12 @@
         color: #fff;
         background-color: #555;
     }
+
+    &[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
 }
 
 .Button--link {
