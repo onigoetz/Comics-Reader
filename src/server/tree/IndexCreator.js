@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const { promisify } = require("util");
 
-const debug = require('debug')('comics:index');
+const debug = require("debug")("comics:index");
 const naturalSort = require("natural-sort")();
 
 const Node = require("./Node");
@@ -90,7 +90,7 @@ module.exports = class IndexCreator {
       const start = new Date();
       this.list = await this.generateList(this.dirPath);
 
-      const end  = new Date();
+      const end = new Date();
       const time = (end.getTime() - start.getTime()) / 1000;
       console.log(`Found ${this.foundBooks} books and directories in ${time} s`);
     }

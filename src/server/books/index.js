@@ -5,7 +5,7 @@ const fs = require("fs");
 
 const archiveType = require("archive-type");
 const readChunk = require("read-chunk");
-const debug = require('debug')('comics:archive');
+const debug = require("debug")("comics:archive");
 
 const { isDirectory, isFile, getExtension } = require("../utils");
 const Zip = require("./Zip");

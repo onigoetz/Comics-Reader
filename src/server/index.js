@@ -11,7 +11,7 @@ const morgan = require("morgan");
 const cache = require("node-file-cache").create();
 const jwt = require("jwt-simple");
 const bodyParser = require("body-parser");
-const debug = require('debug')('comics:server');
+const debug = require("debug")("comics:server");
 
 const {
   ensureDir,
@@ -48,11 +48,13 @@ app.use("/images", express.static("images"));
 // Pages that return the main layout,
 // might be custom server rendered later
 // "/" "/login" "/logout" "/change_password" "/book/*" "/list/*" just return the template
-app.get(/\/(|login|logout|change_password|book(\/.*)?|list(\/.*)?)$/, (req, res) =>
-  layout(BASE).then(
-    template => res.send(template),
-    () => res.status(500).send("Could not generate template")
-  )
+app.get(
+  /\/(|login|logout|change_password|book(\/.*)?|list(\/.*)?)$/,
+  (req, res) =>
+    layout(BASE).then(
+      template => res.send(template),
+      () => res.status(500).send("Could not generate template")
+    )
 );
 
 app.get("/manifest.json", (req, res) => {
@@ -61,7 +63,7 @@ app.get("/manifest.json", (req, res) => {
 
 app.get("/favicon.ico", (req, res) => {
   res.sendFile(path.join(__dirname, "../images/favicon.ico"));
-})
+});
 
 app.get(/\/thumb\/([0-9])\/(.*)/, async (req, res) => {
   const ratio = req.param[0];

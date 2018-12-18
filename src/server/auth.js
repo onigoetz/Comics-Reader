@@ -15,6 +15,7 @@ const params = {
 
 const strategy = new Strategy(params, ((payload, done) => {
   let user;
+
   try {
     user = getUserByName(payload.username);
   } catch (e) {
