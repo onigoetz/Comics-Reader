@@ -157,9 +157,33 @@ app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, async (req, res) => {
   }
 });
 
-/*app.get("/user", auth.authenticate(), (req, res) => {
-  res.json(req.user);
-});*/
+app.post("/api/change_password", auth.authenticate(), async (req, res) => {
+  const current_password = req.body.current_password;
+  const password = req.body.password;
+
+  if (!current_password || !password) {
+    res.sendStatus(400);
+    return;
+  }
+
+  let username;
+  try {
+    username = getUser(req);
+  } catch (e) {
+    res.sendStatus(500);
+    return;
+  }
+
+  const user = await auth.checkPassword(username, current_password);
+  if (!user) {
+    res.sendStatus(401);
+    return;
+  }
+
+  await db.changePassword(username, password);
+
+  res.json({ success: true });
+});
 
 app.post("/api/token", async (req, res) => {
   const username = req.body.username;
@@ -194,15 +218,14 @@ app.get("/api/books", auth.authenticate(), async (req, res) => {
 });
 
 app.get("/api/read", auth.authenticate(), (req, res) => {
-  console.log(req)
-  const read = db.getRead(req.user.username);
+  const read = db.getRead(getUser(req));
 
   returnJsonNoCache(res, read);
 });
 
 app.post(/\/api\/read\/(.*)/, auth.authenticate(), (req, res) => {
   const book = req.params[0];
-  const user = req.user.username;
+  const user = getUser(req);
   const read = db.markRead(user, book);
 
   returnJsonNoCache(res, read);

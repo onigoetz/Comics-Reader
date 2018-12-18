@@ -113,7 +113,15 @@ function returnJsonNoCache(res, data) {
   res.json(data);
 }
 
+function fullAuthEnabled() {
+  return true;
+}
+
 function getUser(req) {
+  if (fullAuthEnabled()) {
+    return req.user.user;
+  }
+
   const authentication = auth(req);
   return authentication ? authentication.name : "anonymous";
 }
@@ -130,5 +138,6 @@ module.exports = {
   isFile,
   returnJsonNoCache,
   sanitizeBaseUrl,
-  validImageFilter
+  validImageFilter,
+  fullAuthEnabled
 };

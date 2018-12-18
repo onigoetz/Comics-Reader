@@ -8,12 +8,17 @@ const config = require("../../config");
 
 const db = Database(path.join(config.comics, "comics.db"));
 
-const DBVersion = 1;
+const DBVersion = 2;
 const migrations = {
   1: () => {
     console.log("Creating 'read' table");
 
     db.prepare("CREATE TABLE read (user varchar(255), book TEXT)").run();
+  },
+  2: () => {
+    console.log("Creating 'users' table");
+
+    db.prepare("CREATE TABLE users (user varchar(255), passwordHash varchar(255))").run();
   }
 };
 
@@ -85,22 +90,30 @@ function markRead(user, book) {
   return getRead(user);
 }
 
-function getUserByName(username) {
-  // TODO :: implement
-  return {
-    username: "onigoetz",
-    passwordHash: "$2b$10$ZjHnr5fAJSH4Rwfzk6Da4utkJihtS5tisJnBaaQ0loCVyNKsyWcnK"
-  };
+function getUserByName(user) {
+  return db
+    .prepare("SELECT * FROM users WHERE user = @user")
+    .get({ user });
 }
 
-function createUser(username, password) {
-  // TODO :: implement
-  return 1;
+function encodePassword(password) {
+  return require("bcrypt").hash(password, 10);
 }
 
-function changePassword(username, password) {
-  // TODO :: implement
-  //console.log(await require("bcrypt").hash("test", 10))
+async function createUser(user, password) {
+  const passwordHash = await encodePassword(password);
+
+  return db
+    .prepare("INSERT INTO users (user, passwordHash) VALUES (@user, @passwordHash)")
+    .run({ user, passwordHash });
+}
+
+async function changePassword(user, password) {
+  const passwordHash = await encodePassword(password);
+
+  return db
+    .prepare("UPDATE users SET passwordHash = @passwordHash WHERE user = @user")
+    .run({ user, passwordHash });
 }
 
 module.exports = {
