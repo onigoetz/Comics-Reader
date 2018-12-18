@@ -1,6 +1,7 @@
 import fetch from "../fetch";
 import { TYPE_DIR, TYPE_BOOK } from "../types";
 import { dirname, basename } from "../utils";
+import { LOGOUT } from "./auth";
 
 export const BOOK_LOAD_START = "BOOK_LOAD_START";
 export const BOOK_LOAD_DONE = "BOOK_LOAD_DONE";
@@ -106,6 +107,8 @@ export default function booksReducer(state = defaultState, action) {
       };
     case BOOK_LOAD_ERROR:
       return { ...state, loading: false, error: action.error };
+    case LOGOUT:
+      return defaultState;
     default:
       return state;
   }

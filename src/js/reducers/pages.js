@@ -1,4 +1,5 @@
 import fetch from "../fetch";
+import { LOGOUT } from "./auth";
 
 export const PAGES_LOAD_DONE = "PAGES_LOAD_DONE";
 export const PAGES_LOAD_ERROR = "PAGES_LOAD_ERROR";
@@ -39,6 +40,8 @@ export default function pagesReducer(state = defaultState, action) {
       };
     case PAGES_LOAD_ERROR:
       return { ...state, error: action.error };
+    case LOGOUT:
+      return defaultState;
     default:
       return state;
   }

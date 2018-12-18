@@ -1,4 +1,5 @@
 import fetch from "../fetch";
+import { LOGOUT } from "./auth";
 
 export const READ_LOAD_DONE = "READ_LOAD_DONE";
 export const READ_ADD = "READ_ADD";
@@ -49,9 +50,12 @@ const defaultState = {
 };
 
 export default function booksReducer(state = defaultState, action) {
-  if (action.type !== READ_LOAD_DONE) {
-    return state;
+  switch (action.type) {
+    case READ_LOAD_DONE:
+      return { ...state, read: action.read };
+    case LOGOUT:
+      return defaultState;
+    default:
+      return state;
   }
-
-  return { ...state, read: action.read };
 }
