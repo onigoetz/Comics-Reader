@@ -28,7 +28,7 @@ WORKDIR /usr/src/app
 VOLUME /comics
 RUN ln -s /comics /usr/src/app/images
 
-# Run a first yarn install, to allow a shorter 
+# Run yarn install early to allow a quick
 # rebuild if the package.json didn't change
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
@@ -38,6 +38,7 @@ RUN yarn install --production --non-interactive && yarn cache clean
 COPY --from=build /usr/src/app/static/ /usr/src/app/static/
 COPY src/ /usr/src/app/src/
 COPY config.js /usr/src/app/config.js
+COPY comics /usr/src/app/comics
 
 EXPOSE 8080
 
