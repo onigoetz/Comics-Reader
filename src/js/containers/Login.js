@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { loadUserData } from "../reducers";
 import { navigate } from "../reducers/route";
 import { login } from "../reducers/auth";
+import { authMode } from "../utils";
 
 class Login extends Component {
 
@@ -34,7 +35,8 @@ class Login extends Component {
 
   render() {
     // Only redirect when books are loaded
-    if (this.props.auth.token && this.props.books_loaded) {
+    // Redirect when auth mode isn't db
+    if (this.props.auth.token && this.props.books_loaded || authMode() !== "db") {
       return <Redirect to={{ pathname: "/", state: { from: "/login" } }} />;
     }
 

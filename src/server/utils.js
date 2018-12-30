@@ -4,8 +4,6 @@ const fs = require("fs");
 const path = require("path");
 const { promisify } = require("util");
 
-const auth = require("basic-auth");
-
 const config = require("../../config");
 
 const mkdirAsync = promisify(fs.mkdir);
@@ -113,31 +111,16 @@ function returnJsonNoCache(res, data) {
   res.json(data);
 }
 
-function fullAuthEnabled() {
-  return true;
-}
-
-function getUser(req) {
-  if (fullAuthEnabled()) {
-    return req.user.user;
-  }
-
-  const authentication = auth(req);
-  return authentication ? authentication.name : "anonymous";
-}
-
 module.exports = {
   ensureDir,
   getExtension,
   getBigatureSize,
   getManifest,
-  getUser,
   getValidImages,
   isDirectorySync,
   isDirectory,
   isFile,
   returnJsonNoCache,
   sanitizeBaseUrl,
-  validImageFilter,
-  fullAuthEnabled
+  validImageFilter
 };

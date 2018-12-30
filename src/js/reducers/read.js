@@ -1,4 +1,4 @@
-import fetch from "../fetch";
+import { fetchWithAuth } from "../fetch";
 import { LOGOUT } from "./auth";
 
 export const READ_LOAD_DONE = "READ_LOAD_DONE";
@@ -14,9 +14,8 @@ export function readLoadError(error) {
 
 export function markRead(book) {
   return (dispatch, getState) => {
-    return fetch(`read/${book}`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${getState().auth.token}` }
+    return fetchWithAuth(getState().auth.token, `read/${book}`, {
+      method: "POST"
     })
       .then(response => {
         dispatch(readLoaded(response));
@@ -29,9 +28,7 @@ export function markRead(book) {
 
 export function loadRead() {
   return (dispatch, getState) => {
-    return fetch("read", {
-      headers: { Authorization: `Bearer ${getState().auth.token}` }
-    })
+    return fetchWithAuth(getState().auth.token, "read")
       .then(response => {
         dispatch(readLoaded(response));
       })

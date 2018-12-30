@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
-import fetch from "../fetch";
+import { fetchWithAuth } from "../fetch";
 import { navigate } from "../reducers/route";
 import logout from "../logout";
 import Loading from "../components/Loading";
+import { authMode } from "../utils";
 
 class ChangePassword extends Component {
   state = {
@@ -30,9 +31,8 @@ class ChangePassword extends Component {
       return;
     }
 
-    fetch("change_password", {
+    fetchWithAuth(this.props.auth.token, "change_password", {
       headers: {
-        Authorization: `Bearer ${this.props.auth.token}`,
         "Content-Type": "application/json"
       },
       method: "POST",
@@ -60,7 +60,8 @@ class ChangePassword extends Component {
 
   render() {
     // We're logged out when the password change is applied
-    if (!this.props.auth.token) {
+    // Redirect when auth mode isn't db
+    if (!this.props.auth.token || authMode() !== "db") {
       return (
         <Redirect to={{ pathname: "/", state: { from: "/change_password" } }} />
       );

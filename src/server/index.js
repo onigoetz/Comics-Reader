@@ -168,7 +168,7 @@ app.post("/api/change_password", auth.authenticate(), async (req, res) => {
 
   let username;
   try {
-    username = getUser(req);
+    username = auth.getUser(req);
   } catch (e) {
     res.sendStatus(500);
     return;
@@ -218,14 +218,14 @@ app.get("/api/books", auth.authenticate(), async (req, res) => {
 });
 
 app.get("/api/read", auth.authenticate(), (req, res) => {
-  const read = db.getRead(getUser(req));
+  const read = db.getRead(auth.getUser(req));
 
   returnJsonNoCache(res, read);
 });
 
 app.post(/\/api\/read\/(.*)/, auth.authenticate(), (req, res) => {
   const book = req.params[0];
-  const user = getUser(req);
+  const user = auth.getUser(req);
   const read = db.markRead(user, book);
 
   returnJsonNoCache(res, read);

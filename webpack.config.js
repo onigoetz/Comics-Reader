@@ -19,7 +19,7 @@ module.exports = {
             /.*\/node_modules\/history\/createHashHistory\.js/,
             require.resolve('history/es/createHashHistory.js')
         ),
-        new BundleAnalyzerPlugin({analyzerMode: "static"}) 
+        //new BundleAnalyzerPlugin({analyzerMode: "static"}) 
     ],
     module: {
         rules: [

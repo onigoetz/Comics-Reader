@@ -12,6 +12,7 @@ import Logout from "./Logout";
 import ChangePassword from "./ChangePassword";
 import logout from "../logout";
 import { loadBooks } from "../reducers/books";
+import { authMode } from "../utils";
 
 const BookManager = props => (
   <Async componentProps={props} load={import(/* webpackChunkName: "book" */"./BookManager")} />
@@ -41,6 +42,8 @@ class Router extends Component {
   };
 
   render() {
+    const authed = authMode() === "db" ? !!this.props.token : true;
+
     if (this.props.books.error) {
       return (
         <div style={{margin: "1em"}}>
@@ -51,7 +54,7 @@ class Router extends Component {
           <p>
             <button className="Button" onClick={this.handleRetry}>Retry</button>
             {" "}
-            {!!this.props.token && <button className="Button" onClick={this.handleLogout}>Logout</button>}
+            {authMode() === "db" && authed && <button className="Button" onClick={this.handleLogout}>Logout</button>}
           </p>
         </div>
       );
@@ -68,11 +71,11 @@ class Router extends Component {
           <Header />
           <Switch>
             <Route path="/login" exact component={Login} />
-            <PrivateRoute authed={!!this.props.token} path="/logout" component={Logout} />
-            <PrivateRoute authed={!!this.props.token} path="/change_password" component={ChangePassword} />
-            <PrivateRoute authed={!!this.props.token} path="/list/:path" component={ListManager} />
-            <PrivateRoute authed={!!this.props.token} path="/book/" component={BookManager} />
-            <PrivateRoute authed={!!this.props.token} render={props => <ListManager {...props} />} />
+            <PrivateRoute authed={authed} path="/logout" component={Logout} />
+            <PrivateRoute authed={authed} path="/change_password" component={ChangePassword} />
+            <PrivateRoute authed={authed} path="/list/:path" component={ListManager} />
+            <PrivateRoute authed={authed} path="/book/" component={BookManager} />
+            <PrivateRoute authed={authed} render={props => <ListManager {...props} />} />
           </Switch>
         </React.Fragment>
       </BrowserRouter>

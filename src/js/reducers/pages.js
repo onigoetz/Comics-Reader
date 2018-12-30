@@ -1,4 +1,4 @@
-import fetch from "../fetch";
+import { fetchWithAuth } from "../fetch";
 import { LOGOUT } from "./auth";
 
 export const PAGES_LOAD_DONE = "PAGES_LOAD_DONE";
@@ -14,7 +14,7 @@ export function pagesLoadError(error) {
 
 export function loadPages(id) {
   return (dispatch, getState) => {
-    return fetch(`books/${id}`, {headers: {Authorization: `Bearer ${getState().auth.token}`}})
+    return fetchWithAuth(getState().auth.token, `books/${id}`)
       .then(response => {
         dispatch(pagesLoaded(id.replace(/%23/g, "#"), response));
       })

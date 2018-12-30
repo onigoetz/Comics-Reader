@@ -56,6 +56,8 @@ function migrate(currentVersion) {
   }
 }
 
+// Ensure DB is up to date
+
 let version;
 
 try {
@@ -70,8 +72,6 @@ if (version !== DBVersion) {
   migrate(version);
   console.log("Your DB is up to date");
 }
-
-// START / INIT DB
 
 // PUBLIC METHODS
 

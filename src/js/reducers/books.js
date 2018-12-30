@@ -1,4 +1,4 @@
-import fetch from "../fetch";
+import { fetchWithAuth } from "../fetch";
 import { TYPE_DIR, TYPE_BOOK } from "../types";
 import { dirname, basename } from "../utils";
 import { LOGOUT } from "./auth";
@@ -23,7 +23,7 @@ export function loadBooks() {
   return (dispatch, getState) => {
     dispatch(booksLoadStart());
 
-    return fetch("books", {headers: {Authorization: `Bearer ${getState().auth.token}`}})
+    return fetchWithAuth(getState().auth.token, "books")
       .then(response => {
         dispatch(booksLoaded(response));
       })
