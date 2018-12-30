@@ -7,15 +7,23 @@ import Headroom from "react-headroom";
 
 import Search from "./Search";
 import { cleanName } from "../utils";
-import { IoIosHome, IoIosArrowBack } from "../components/Icons";
+import { IoIosHome, IoIosArrowBack, IoIosAccount } from "../components/Icons";
 
 function isNotHome(url) {
-  return url && url !== "/" && url !== "/list/";
+  return url !== "/" && url !== "/list/";
+}
+
+function canGoBack(url) {
+  return url && isNotHome() && url !== "/login";
 }
 
 function Home() {
   return (
-    <Link to="" className="Button Button--link" title="Back to Home">
+    <Link
+      to=""
+      className="Header__item Header__item--link Button Button--link"
+      title="Back to Home"
+    >
       <IoIosHome />
     </Link>
   );
@@ -26,7 +34,7 @@ function PreviousInner({ parent, previousUrl, history }) {
     return null;
   }
 
-  const url = `/list/${parent.path}`;
+  const url = parent.path ? `/list/${parent.path}` : previousUrl;
   const title = parent.name;
 
   // If the url is identical to the previousUrl,
@@ -36,7 +44,7 @@ function PreviousInner({ parent, previousUrl, history }) {
     return (
       <div className="Header__Section pull-left">
         <button
-          className="Button Button--link Button--back"
+          className="Header__item Header__item--link Button Button--link Button--back"
           title={`Back to ${title}`}
           onClick={() => history.goBack()}
         >
@@ -51,7 +59,7 @@ function PreviousInner({ parent, previousUrl, history }) {
     <div className="Header__Section pull-left">
       <Link
         to={url}
-        className="Button Button--link Button--back"
+        className="Header__item Header__item--link Button Button--link Button--back"
         title={`Back to ${title}`}
       >
         <IoIosArrowBack />
@@ -63,17 +71,32 @@ function PreviousInner({ parent, previousUrl, history }) {
 
 const Previous = withRouter(PreviousInner);
 
-function Header({ url, title, parent, previousUrl }) {
+function User() {
+  return (
+    <div className="Button Button--link">
+      <IoIosAccount />
+      <div className="Dropdown__content">
+        <Link to="/change_password" className="Link">Change Password</Link>
+        <Link to="/logout" className="Link">
+          Logout
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+function Header({ url, title, parent, previousUrl, token }) {
   return (
     <Headroom disableInlineStyles>
       <header className="Header">
         <div className="Header__Section pull-right">
-          <Search />
-          {isNotHome(url) ? <Home /> : null}
+          {token && <Search />}
+          {canGoBack(url) && <Home />}
+          {token && <User />}
         </div>
-        {isNotHome(url) ? (
+        {canGoBack(url) && (
           <Previous parent={parent} previousUrl={previousUrl} />
-        ) : null}
+        )}
         <h1 className="Header__title">{cleanName(title)}</h1>
       </header>
     </Headroom>
@@ -87,7 +110,7 @@ Header.propTypes = {
 };
 
 const mapStateToProps = state => {
-  return state.route;
+  return { ...state.route, token: state.auth.token };
 };
 
 export default connect(mapStateToProps)(Header);

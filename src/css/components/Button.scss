@@ -27,6 +27,12 @@
         color: #fff;
         background-color: #555;
     }
+
+    &[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
 }
 
 .Button--link {
@@ -38,10 +44,18 @@
     color: $primary-color;
     background-color: transparent;
     border: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 .Button--back {
     margin-left: -.4em;
+}
+
+.Button--big {
+    font-size: 1.1em;
 }
 
 .Header .Button {
@@ -60,5 +74,3 @@
     color: $primary-color;
     border: 0;
 }
-
-

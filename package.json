@@ -24,7 +24,8 @@
     "start": "node src/server/index.js",
     "watch": "crafty watch",
     "build": "rm -rf static && crafty run",
-    "lint": "crafty jsLint src/server/** --preset recommended --preset node --fix"
+    "lint-server": "crafty jsLint src/server/** --preset recommended --preset node --fix",
+    "lint-client": "crafty jsLint src/js/** --preset recommended --fix"
   },
   "devDependencies": {
     "@swissquote/crafty": "^1.3.0",
@@ -60,7 +61,9 @@
   "dependencies": {
     "archive-type": "^4.0.0",
     "basic-auth": "^2.0.0",
+    "bcrypt": "^2.0.1",
     "better-sqlite3": "^5.0.1",
+    "body-parser": "^1.18.2",
     "chalk": "^2.4.1",
     "classnames": "^2.2.6",
     "compression": "^1.7.1",
@@ -68,10 +71,15 @@
     "express": "^4.16.3",
     "hogan.js": "^3.0.2",
     "image-size": "^0.6.2",
+    "jwt-simple": "^0.5.1",
+    "meow": "^5.0.0",
     "morgan": "^1.9.1",
     "natural-sort": "^1.0.0",
     "node-file-cache": "^1.0.2",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
     "pdf.js-extract": "^0.0.9",
+    "prompts": "^2.0.0",
     "react-router-scroll-memory": "^2.0.1",
     "read-chunk": "^3.0.0",
     "rimraf": "^2.6.2",

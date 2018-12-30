@@ -1,4 +1,5 @@
-import fetch from "../fetch";
+import { fetchWithAuth } from "../fetch";
+import { LOGOUT } from "./auth";
 
 export const READ_LOAD_DONE = "READ_LOAD_DONE";
 export const READ_ADD = "READ_ADD";
@@ -12,8 +13,10 @@ export function readLoadError(error) {
 }
 
 export function markRead(book) {
-  return dispatch => {
-    return fetch(`read/${book}`, { method: "POST" })
+  return (dispatch, getState) => {
+    return fetchWithAuth(getState().auth.token, `read/${book}`, {
+      method: "POST"
+    })
       .then(response => {
         dispatch(readLoaded(response));
       })
@@ -24,8 +27,8 @@ export function markRead(book) {
 }
 
 export function loadRead() {
-  return dispatch => {
-    return fetch("read")
+  return (dispatch, getState) => {
+    return fetchWithAuth(getState().auth.token, "read")
       .then(response => {
         dispatch(readLoaded(response));
       })
@@ -44,9 +47,12 @@ const defaultState = {
 };
 
 export default function booksReducer(state = defaultState, action) {
-  if (action.type !== READ_LOAD_DONE) {
-    return state;
+  switch (action.type) {
+    case READ_LOAD_DONE:
+      return { ...state, read: action.read };
+    case LOGOUT:
+      return defaultState;
+    default:
+      return state;
   }
-
-  return { ...state, read: action.read };
 }

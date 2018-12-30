@@ -8,12 +8,17 @@ const config = require("../../config");
 
 const db = Database(path.join(config.comics, "comics.db"));
 
-const DBVersion = 1;
+const DBVersion = 2;
 const migrations = {
   1: () => {
     console.log("Creating 'read' table");
 
     db.prepare("CREATE TABLE read (user varchar(255), book TEXT)").run();
+  },
+  2: () => {
+    console.log("Creating 'users' table");
+
+    db.prepare("CREATE TABLE users (user varchar(255), passwordHash varchar(255))").run();
   }
 };
 
@@ -51,6 +56,8 @@ function migrate(currentVersion) {
   }
 }
 
+// Ensure DB is up to date
+
 let version;
 
 try {
@@ -65,8 +72,6 @@ if (version !== DBVersion) {
   migrate(version);
   console.log("Your DB is up to date");
 }
-
-// START / INIT DB
 
 // PUBLIC METHODS
 
@@ -85,7 +90,36 @@ function markRead(user, book) {
   return getRead(user);
 }
 
+function getUserByName(user) {
+  return db
+    .prepare("SELECT * FROM users WHERE user = @user")
+    .get({ user });
+}
+
+function encodePassword(password) {
+  return require("bcrypt").hash(password, 10);
+}
+
+async function createUser(user, password) {
+  const passwordHash = await encodePassword(password);
+
+  return db
+    .prepare("INSERT INTO users (user, passwordHash) VALUES (@user, @passwordHash)")
+    .run({ user, passwordHash });
+}
+
+async function changePassword(user, password) {
+  const passwordHash = await encodePassword(password);
+
+  return db
+    .prepare("UPDATE users SET passwordHash = @passwordHash WHERE user = @user")
+    .run({ user, passwordHash });
+}
+
 module.exports = {
   getRead,
-  markRead
+  markRead,
+  getUserByName,
+  createUser,
+  changePassword
 };

@@ -35,3 +35,14 @@ $button-font-size: 12px !default;
 // --------------------------------------------------
 
 $bar-height: 44px;
+
+:root {
+    // Z-Indexes
+    // --------------------------------------------------
+    --zindex-header-section: 5;
+    --zindex-header-action: 5;
+    --zindex-header-search: 5;
+    --zindex-header-search-icon: 6;
+    --zindex-header-fixed: 10;
+    --zindex-overlay: 100;
+}

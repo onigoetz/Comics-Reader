@@ -61,7 +61,7 @@ class Search extends React.Component {
           <input
             onChange={this.handleSearch}
             value={this.state.text}
-            className="Input"
+            className="Input Input--search"
           />
         )}
         {this.state.searchVisible &&

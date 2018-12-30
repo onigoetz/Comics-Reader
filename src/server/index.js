@@ -9,13 +9,16 @@ const sharp = require("sharp");
 const compression = require("compression");
 const morgan = require("morgan");
 const cache = require("node-file-cache").create();
-const debug = require('debug')('comics:server');
+const jwt = require("jwt-simple");
+const bodyParser = require("body-parser");
+const debug = require("debug")("comics:server");
 
 const {
   ensureDir,
   sanitizeBaseUrl,
   returnJsonNoCache,
-  getUser
+  getUser,
+  getManifest
 } = require("./utils");
 const { getFile, getPages } = require("./books");
 const IndexCreator = require("./tree/IndexCreator");
@@ -23,16 +26,20 @@ const Walker = require("./tree/Walker");
 const config = require("../../config");
 const layout = require("./template");
 const db = require("./db");
+const auth = require("./auth");
 
 const error = chalk.red;
 const title = chalk.underline.bold;
 
 const comicsIndex = new IndexCreator(config.comics);
 const BASE = sanitizeBaseUrl(process.env.COMICS_BASE);
+const manifest = getManifest(BASE);
 const app = express();
 
 app.use(compression()); // Enable Gzip
 app.use(morgan("tiny")); // Access logs
+app.use(bodyParser.json());
+app.use(auth.initialize());
 
 // Static assets
 app.use("/static", express.static("static"));
@@ -40,34 +47,22 @@ app.use("/images", express.static("images"));
 
 // Pages that return the main layout,
 // might be custom server rendered later
-app.get("/", (req, res) =>
-  layout(BASE).then(
-    template => res.send(template),
-    () => res.status(500).send("Could not generate template")
-  )
-);
-app.get("/book/*", (req, res) =>
-  layout(BASE).then(
-    template => res.send(template),
-    () => res.status(500).send("Could not generate template")
-  )
-);
-app.get("/list/*", (req, res) =>
-  layout(BASE).then(
-    template => res.send(template),
-    () => res.status(500).send("Could not generate template")
-  )
+// "/" "/login" "/logout" "/change_password" "/book/*" "/list/*" just return the template
+app.get(
+  /\/(|login|logout|change_password|book(\/.*)?|list(\/.*)?)$/,
+  (req, res) =>
+    layout(BASE).then(
+      template => res.send(template),
+      () => res.status(500).send("Could not generate template")
+    )
 );
 
 app.get("/manifest.json", (req, res) => {
-  const manifest = require("../manifest.json");
-  manifest.start_url = BASE;
-  manifest.icons = manifest.icons.map(icon => {
-    icon.src = BASE + icon.src;
-    return icon;
-  });
-
   res.json(manifest);
+});
+
+app.get("/favicon.ico", (req, res) => {
+  res.sendFile(path.join(__dirname, "../images/favicon.ico"));
 });
 
 app.get(/\/thumb\/([0-9])\/(.*)/, async (req, res) => {
@@ -103,44 +98,6 @@ app.get(/\/thumb\/([0-9])\/(.*)/, async (req, res) => {
       res.redirect(`${BASE}images/${file.replace(/#/g, "%23")}`);
     }
   });
-});
-
-app.get("/api/books", async (req, res) => {
-  const walker = new Walker(await comicsIndex.getList());
-
-  res.json(walker.toJson());
-});
-
-app.get("/api/read", (req, res) => {
-  const user = getUser(req);
-  const read = db.getRead(user);
-
-  returnJsonNoCache(res, read);
-});
-
-app.post(/\/api\/read\/(.*)/, (req, res) => {
-  const book = req.params[0];
-  const user = getUser(req);
-  const read = db.markRead(user, book);
-
-  returnJsonNoCache(res, read);
-});
-
-app.get(/\/api\/books\/(.*)/, async (req, res) => {
-  const book = req.params[0];
-  const dirPath = path.join(config.comics, book);
-  const key = `BOOK_${dirPath}`;
-
-  const pagesFromCache = cache.get(key);
-
-  if (pagesFromCache) {
-    returnJsonNoCache(res, pagesFromCache);
-    return;
-  }
-
-  const pages = await getPages(dirPath);
-  cache.set(key, pages);
-  returnJsonNoCache(res, pages);
 });
 
 app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, async (req, res) => {
@@ -198,6 +155,97 @@ app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, async (req, res) => {
     file.cleanup();
     res.status(500).send("Could not compress image");
   }
+});
+
+app.post("/api/change_password", auth.authenticate(), async (req, res) => {
+  const current_password = req.body.current_password;
+  const password = req.body.password;
+
+  if (!current_password || !password) {
+    res.sendStatus(400);
+    return;
+  }
+
+  let username;
+  try {
+    username = auth.getUser(req);
+  } catch (e) {
+    res.sendStatus(500);
+    return;
+  }
+
+  const user = await auth.checkPassword(username, current_password);
+  if (!user) {
+    res.sendStatus(401);
+    return;
+  }
+
+  await db.changePassword(username, password);
+
+  res.json({ success: true });
+});
+
+app.post("/api/token", async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  if (!username || !password) {
+    res.sendStatus(401);
+    return;
+  }
+
+  const user = await auth.checkPassword(username, password);
+  if (!user) {
+    res.sendStatus(401);
+    return;
+  }
+
+  const payload = {
+    username
+  };
+
+  const token = jwt.encode(payload, config.jwtSecret);
+
+  res.json({
+    token
+  });
+});
+
+app.get("/api/books", auth.authenticate(), async (req, res) => {
+  const walker = new Walker(await comicsIndex.getList());
+
+  res.json(walker.toJson());
+});
+
+app.get("/api/read", auth.authenticate(), (req, res) => {
+  const read = db.getRead(auth.getUser(req));
+
+  returnJsonNoCache(res, read);
+});
+
+app.post(/\/api\/read\/(.*)/, auth.authenticate(), (req, res) => {
+  const book = req.params[0];
+  const user = auth.getUser(req);
+  const read = db.markRead(user, book);
+
+  returnJsonNoCache(res, read);
+});
+
+app.get(/\/api\/books\/(.*)/, auth.authenticate(), async (req, res) => {
+  const book = req.params[0];
+  const dirPath = path.join(config.comics, book);
+  const key = `BOOK_${dirPath}`;
+
+  const pagesFromCache = cache.get(key);
+
+  if (pagesFromCache) {
+    returnJsonNoCache(res, pagesFromCache);
+    return;
+  }
+
+  const pages = await getPages(dirPath);
+  cache.set(key, pages);
+  returnJsonNoCache(res, pages);
 });
 
 console.log(title("Generating index"));

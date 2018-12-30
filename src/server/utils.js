@@ -4,8 +4,6 @@ const fs = require("fs");
 const path = require("path");
 const { promisify } = require("util");
 
-const auth = require("basic-auth");
-
 const config = require("../../config");
 
 const mkdirAsync = promisify(fs.mkdir);
@@ -89,6 +87,17 @@ async function ensureDir(pathToCreate) {
   }
 }
 
+function getManifest(BASE) {
+  const manifest = require("../manifest.json");
+  manifest.start_url = BASE;
+  manifest.icons = manifest.icons.map(icon => {
+    icon.src = BASE + icon.src;
+    return icon;
+  });
+
+  return manifest;
+}
+
 function sanitizeBaseUrl(base) {
   // Ensure we have one slash at the beginning and one at the end
   const cleaned = `/${(base || "").replace(/^\/+|\/+$/g, "")}/`;
@@ -102,16 +111,11 @@ function returnJsonNoCache(res, data) {
   res.json(data);
 }
 
-function getUser(req) {
-  const authentication = auth(req);
-  return authentication ? authentication.name : "anonymous";
-}
-
 module.exports = {
   ensureDir,
   getExtension,
   getBigatureSize,
-  getUser,
+  getManifest,
   getValidImages,
   isDirectorySync,
   isDirectory,

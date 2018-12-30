@@ -1,0 +1,23 @@
+
+.Input {
+    border: 1px solid #fff;
+    background: #333;
+    color: #fff;
+    display: block;
+    line-height: 1.4em;
+    width: 100%;
+    padding: .3em .6em;
+    font-weight: 400;
+    border-radius: 4px;
+}
+
+.Input--search {
+    position: relative;
+    top: 7px;
+    z-index: var(--zindex-header-search);
+
+    padding-right: 1em;
+    margin-top: 1px;
+    margin-right: .4em;
+    border-width: 0;
+}

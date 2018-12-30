@@ -3,6 +3,8 @@ const fs = require("fs");
 
 const Hogan = require("hogan.js");
 
+const cfg = require("../../config");
+
 const template = Hogan.compile(
   fs.readFileSync(`${__dirname}/../index.html`, { encoding: "utf8" })
 );
@@ -19,6 +21,7 @@ function getManifest() {
 
 function render(BASE, style) {
   return template.render({
+    AUTH_MODE: cfg.auth,
     BASE,
     CSS: style,
     JS: `${BASE}static/js/${getManifest()["default.js"]}`

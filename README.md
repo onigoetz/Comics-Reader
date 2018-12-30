@@ -7,6 +7,7 @@ It is not intended to work on a desktop computer.
 
 ## Features
 
+- Use basic auth credentials (from Nginx/Apache) or use the embedded Database to manage users.
 - Watch your comic books on your phone or tablet, at home or on the go.
 - Uses your filesystem, no need for a database
 - Read images from a folder
@@ -16,7 +17,7 @@ It is not intended to work on a desktop computer.
 
 ## Installing
 
-### Using docker
+### Using docker (Recommended)
 
 ```
 docker run -v /your-images-dir:/comics -p 8080:8080 --rm onigoetz/comicsreader

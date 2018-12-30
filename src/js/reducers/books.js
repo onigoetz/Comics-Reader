@@ -1,6 +1,7 @@
-import fetch from "../fetch";
+import { fetchWithAuth } from "../fetch";
 import { TYPE_DIR, TYPE_BOOK } from "../types";
 import { dirname, basename } from "../utils";
+import { LOGOUT } from "./auth";
 
 export const BOOK_LOAD_START = "BOOK_LOAD_START";
 export const BOOK_LOAD_DONE = "BOOK_LOAD_DONE";
@@ -19,10 +20,10 @@ export function booksLoadStart() {
 }
 
 export function loadBooks() {
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(booksLoadStart());
 
-    return fetch("books")
+    return fetchWithAuth(getState().auth.token, "books")
       .then(response => {
         dispatch(booksLoaded(response));
       })
@@ -55,6 +56,7 @@ export function selectBook(state, path) {
 }
 
 const defaultState = {
+  loaded: false,
   loading: false,
   error: false,
   books: {}
@@ -98,12 +100,15 @@ export default function booksReducer(state = defaultState, action) {
     case BOOK_LOAD_DONE:
       return {
         ...state,
+        loaded: true,
         loading: false,
         error: false,
         books: cleanBooks(action.books)
       };
     case BOOK_LOAD_ERROR:
       return { ...state, loading: false, error: action.error };
+    case LOGOUT:
+      return defaultState;
     default:
       return state;
   }

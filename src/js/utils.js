@@ -57,3 +57,7 @@ export function createUrl(node) {
 export function thumb(path) {
   return `${baseURL}thumb/${isRetina ? 2 : 1}/${cleanPath(path)}`;
 }
+
+export function authMode() {
+  return window.authMode;
+}
