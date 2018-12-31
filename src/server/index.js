@@ -36,6 +36,8 @@ const BASE = sanitizeBaseUrl(process.env.COMICS_BASE);
 const manifest = getManifest(BASE);
 const app = express();
 
+let indexReady = false;
+
 app.use(compression()); // Enable Gzip
 app.use(morgan("tiny")); // Access logs
 app.use(bodyParser.json());
@@ -51,7 +53,7 @@ app.use("/images", express.static("images"));
 app.get(
   /\/(|login|logout|change_password|book(\/.*)?|list(\/.*)?)$/,
   (req, res) =>
-    layout(BASE).then(
+    layout(BASE, indexReady).then(
       template => res.send(template),
       () => res.status(500).send("Could not generate template")
     )
@@ -66,6 +68,11 @@ app.get("/favicon.ico", (req, res) => {
 });
 
 app.get(/\/thumb\/([0-9])\/(.*)/, async (req, res) => {
+  if (!indexReady) {
+    res.status(503).send("Server Not Ready");
+    return;
+  }
+
   const ratio = req.param[0];
   const book = req.params[1];
 
@@ -101,6 +108,10 @@ app.get(/\/thumb\/([0-9])\/(.*)/, async (req, res) => {
 });
 
 app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, async (req, res) => {
+  if (!indexReady) {
+    res.status(503).send("Server Not Ready");
+    return;
+  }
   const retinaRegex = /(.*)@2x\.(jpe?g|png|webp|gif)/;
   const presetName = req.params[0];
   const requestedFile = req.params[1];
@@ -158,6 +169,10 @@ app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, async (req, res) => {
 });
 
 app.post("/api/change_password", auth.authenticate(), async (req, res) => {
+  if (!indexReady) {
+    res.status(503).send("Server Not Ready");
+    return;
+  }
   const current_password = req.body.current_password;
   const password = req.body.password;
 
@@ -186,6 +201,10 @@ app.post("/api/change_password", auth.authenticate(), async (req, res) => {
 });
 
 app.post("/api/token", async (req, res) => {
+  if (!indexReady) {
+    res.status(503).send("Server Not Ready");
+    return;
+  }
   const username = req.body.username;
   const password = req.body.password;
 
@@ -212,18 +231,30 @@ app.post("/api/token", async (req, res) => {
 });
 
 app.get("/api/books", auth.authenticate(), async (req, res) => {
+  if (!indexReady) {
+    res.status(503).send("Server Not Ready");
+    return;
+  }
   const walker = new Walker(await comicsIndex.getList());
 
   res.json(walker.toJson());
 });
 
 app.get("/api/read", auth.authenticate(), (req, res) => {
+  if (!indexReady) {
+    res.status(503).send("Server Not Ready");
+    return;
+  }
   const read = db.getRead(auth.getUser(req));
 
   returnJsonNoCache(res, read);
 });
 
 app.post(/\/api\/read\/(.*)/, auth.authenticate(), (req, res) => {
+  if (!indexReady) {
+    res.status(503).send("Server Not Ready");
+    return;
+  }
   const book = req.params[0];
   const user = auth.getUser(req);
   const read = db.markRead(user, book);
@@ -232,6 +263,10 @@ app.post(/\/api\/read\/(.*)/, auth.authenticate(), (req, res) => {
 });
 
 app.get(/\/api\/books\/(.*)/, auth.authenticate(), async (req, res) => {
+  if (!indexReady) {
+    res.status(503).send("Server Not Ready");
+    return;
+  }
   const book = req.params[0];
   const dirPath = path.join(config.comics, book);
   const key = `BOOK_${dirPath}`;
@@ -248,23 +283,25 @@ app.get(/\/api\/books\/(.*)/, auth.authenticate(), async (req, res) => {
   returnJsonNoCache(res, pages);
 });
 
+console.log(title("Starting server"));
+if (BASE === "/") {
+  app.listen(config.port);
+} else {
+  // If we have a custom basepath, wrap our application as a
+  // sub application with the basepath set to the main route.
+  const outerApp = express();
+  outerApp.use(BASE.replace(/\/+$/, ""), app);
+  outerApp.listen(config.port);
+}
+
+console.log(
+  title(`Started server on port ${config.port} with baseurl ${BASE}`)
+);
+
 console.log(title("Generating index"));
 comicsIndex.getList().then(
   () => {
-    console.log(title("Starting server"));
-    if (BASE === "/") {
-      app.listen(config.port);
-    } else {
-      // If we have a custom basepath, wrap our application as a
-      // sub application with the basepath set to the main route.
-      const outerApp = express();
-      outerApp.use(BASE.replace(/\/+$/, ""), app);
-      outerApp.listen(config.port);
-    }
-
-    console.log(
-      title(`Started server on port ${config.port} with baseurl ${BASE}`)
-    );
+    indexReady = true;
   },
   e => {
     console.error(error("Could not create index"), e);

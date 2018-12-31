@@ -19,21 +19,23 @@ function getManifest() {
   return require("../../static/asset-manifest.json");
 }
 
-function render(BASE, style) {
+function render(BASE, style, INDEX_READY) {
   return template.render({
     AUTH_MODE: cfg.auth,
     BASE,
     CSS: style,
+    INDEX_READY,
     JS: `${BASE}static/js/${getManifest()["default.js"]}`
   });
 }
 
-module.exports = function generateLayout(BASE) {
+module.exports = function generateLayout(BASE, INDEX_READY) {
   if (!production) {
     return Promise.resolve(
       render(
         BASE,
-        `<link rel="stylesheet" href="${BASE}static/css/app.min.css"/>`
+        `<link rel="stylesheet" href="${BASE}static/css/app.min.css"/>`,
+        INDEX_READY
       )
     );
   }
