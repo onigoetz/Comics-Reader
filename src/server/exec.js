@@ -91,11 +91,9 @@ const queue = new Queue();
  * The queue will then execute each in turn, with a predefined maximum
  * 
  * @param {string} cmd The command to run
- * @param {*} opts Options for child_process.exec
+ * @param {*} options Options for child_process.exec
  */
-function exec(cmd, opts) {
-  const options = opts || {};
-
+function exec(cmd, options = {}) {
   const deferred = defer();
 
   queue.add({cmd, options, deferred});
