@@ -1,34 +1,63 @@
 //@ts-check
 const pathLib = require("path");
+const fs = require("fs");
 
+const unzipper = require("unzipper");
 const tmp = require("tmp-promise");
 
 const Compressed = require("./Compressed");
-const { exec, escape } = require("../exec");
-
-const options = { encoding: "utf8" };
-
-// TODO :: investigate
-// https://www.npmjs.com/package/node-stream-zip
+const { ensureDir } = require("../utils");
 
 module.exports = class Zip extends Compressed {
   async getFileNames() {
-    const { stdout: filenames } = await exec(
-      `zipinfo -1 ${escape(this.path)}`,
-      options
-    );
-    return filenames.split("\n");
+    const filenames = [];
+
+    await fs.createReadStream(this.path)
+      .pipe(unzipper.Parse())
+      .on("error", e => {
+        console.log(e, "omagaaad");
+      })
+      .on("entry", entry => {
+        debug && console.log(entry.path);
+        if (entry.type === "File") {
+          filenames.push(entry.path);
+        }
+        entry.autodrain();
+      })
+      .on("error", e => {
+        console.log(e, "omagaaad");
+      })
+      .promise();
+
+    active = active.filter(item => item !== this.path);
+
+    console.log("active", active.length);
+
+    if (active.length < 5) {
+      console.log(active);
+    }
+
+    return filenames;
   }
 
   async extractFile(file) {
+
+    console.log("Extracting file");
+
     const { path, cleanup } = await tmp.file({
       postfix: pathLib.extname(file).toLowerCase()
     });
 
-    await exec(
-      `unzip -p ${escape(this.path)} ${escape(file)} > ${escape(path)}`,
-      options
-    );
+    await fs.createReadStream(this.path)
+      .pipe(unzipper.Parse())
+      .on("entry", entry => {
+        if (entry.path === file) {
+          entry.pipe(fs.createWriteStream(path));
+        } else {
+          entry.autodrain();
+        }
+      })
+      .promise();
 
     return {
       path,
@@ -37,9 +66,20 @@ module.exports = class Zip extends Compressed {
   }
 
   async extractAll(destination) {
-    return exec(
-      `unzip ${escape(this.path)} -d ${escape(destination)}`,
-      options
-    );
+
+    console.log("Extracting all");
+
+    return fs.createReadStream(this.path)
+      .pipe(unzipper.Parse())
+      .on("entry", async entry => {
+        const finalPath = pathLib.join(destination, entry.path);
+        if (entry.type === "Directory") {
+          await ensureDir(finalPath);
+          entry.autodrain()
+        } else {
+          entry.pipe(fs.createWriteStream(finalPath));
+        }        
+      })
+      .promise();
   }
 };
