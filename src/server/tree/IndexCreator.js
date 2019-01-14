@@ -15,6 +15,15 @@ const GALLERY_ROOT = require("../../../config.js").comics;
 
 const readdir = promisify(fs.readdir);
 
+// Directories to ignore when listing output.
+const ignore = ["cgi-bin", ".", "..", "cache", ".DS_Store", "Thumbs.db"];
+const archives = [".cbr", ".cbz", ".zip", ".rar"];
+
+function getDuration(start) {
+  const end = new Date();
+  return (end.getTime() - start.getTime()) / 1000;
+}
+
 module.exports = class IndexCreator {
   constructor(dirPath) {
     this.foundBooks = 0;
@@ -24,10 +33,7 @@ module.exports = class IndexCreator {
   async generateList(dirPath = ".", parent = null) {
     debug(`Scanning '${dirPath.replace(this.dirPath, "")}'`);
     const directories = [];
-
-    // Directories to ignore when listing output.
-    const ignore = ["cgi-bin", ".", "..", "cache"];
-    const archives = [".cbr", ".cbz", ".zip", ".rar"];
+    const maybeThumbnails = [];
 
     const files = await readdir(dirPath);
 
@@ -37,68 +43,104 @@ module.exports = class IndexCreator {
         return;
       }
 
-      // Ignore files starting with ._ (macOS metadata files)
-      if (item.indexOf("._") === 0) {
+      // Ignore hidden files
+      if (item.indexOf(".") === 0) {
         return;
       }
 
-      // A normal directory
-      if (await isDirectory(itemPath)) {
-        const node = new Node(item, parent);
-        debug(`Found book or directory: ${node.getPath()}`);
-        node.setChildren(await this.generateList(itemPath, node));
-        node.setThumb(await this.getThumb(node));
-        directories.push(node);
-        this.foundBooks++;
-        return;
-      }
-
+      const isDir = await isDirectory(itemPath);
       const extension = path.extname(item).toLowerCase();
 
-      // A PDF file
-      if (extension === ".pdf") {
+      if (isDir || extension === ".pdf" || archives.indexOf(extension) !== -1) {
         const node = new Node(item, parent);
-        debug(`Found book: ${node.getPath()}`);
-        node.setThumb(`${node.getPath()}/1.png`);
+        debug(`Found: ${node.getPath()}`);
         directories.push(node);
         this.foundBooks++;
+
+        if (isDir) {
+          node.setChildren(await this.generateList(itemPath, node));
+        }
         return;
       }
 
-      // A zip / rar archive
-      if (archives.indexOf(extension) !== -1) {
-        try {
-          const node = new Node(item, parent);
-          debug(`Found book: ${node.getPath()}`);
-          node.setThumb(await this.getThumb(node));
-          directories.push(node);
-          this.foundBooks++;
-        } catch ($e) {
-          console.error(`Could not open archive: ${item}`);
-        }
-      }
+      maybeThumbnails.push(item);
     });
 
     await Promise.all(promises);
 
+    // If this folder contains images, but doesn't contain books
+    // it's probably a book itself
+    // So we'll get the thumbnail directly, instead of traversing it again later.
+    if (maybeThumbnails.length > 0 && directories.length == 0) {
+      parent.setThumb(this.getBestThumbnail(parent, maybeThumbnails));
+    }
+
     return directories;
   }
 
-  async getList() {
-    // TODO :: ensure the list isn't generated mutliple times
-    if (!this.list) {
-      const start = new Date();
-      this.list = await this.generateList(this.dirPath);
+  async getThumbnails(dir) {
 
-      const end = new Date();
-      const time = (end.getTime() - start.getTime()) / 1000;
-      console.log(`Found ${this.foundBooks} books and directories in ${time} s`);
+    const children = dir.getChildren();
+
+    if (children) {
+      const promises = children.map(async node => {
+        const extension = path.extname(node.getName()).toLowerCase();
+
+        if (node.getThumb()) {
+          return;
+        }
+
+        // A PDF file
+        if (extension === ".pdf") {
+          node.setThumb(`${node.getPath()}/1.png`);
+          return;
+        }
+
+        // A zip / rar archive
+        if (archives.indexOf(extension) !== -1) {
+          try {
+            node.setThumb(await this.getThumbFromArchive(node));
+          } catch (e) {
+            console.error(`Could not open archive: ${node.getPath()} (${e})`);
+          }
+
+          return;
+        }
+
+        // A normal directory
+        if (node.getChildren()) {
+          await this.getThumbnails(node);
+          node.setThumb(await this.getThumbForDirectory(node));
+          return;
+        }
+
+        console.error(`Could not find a thumb for ${node.getPath()}`);
+      })
+
+      await Promise.all(promises);
     }
+  }
 
+  async getRootNode() {
     const root = new RootNode("Home");
-    root.setChildren(this.list);
+
+    let start = new Date();
+    root.setChildren(await this.generateList(this.dirPath));
+    console.log(`Found ${this.foundBooks} books and directories in ${getDuration(start)} s`);
+
+    start = new Date();
+    await this.getThumbnails(root);
+    console.log(`Computed thumbnails in ${getDuration(start)} s`);
 
     return root;
+  }
+
+  async getList() {
+    if (!this.rootNode) {
+      this.rootNode = this.getRootNode();
+    }
+
+    return this.rootNode;
   }
 
   async getNode(node) {
@@ -164,17 +206,7 @@ module.exports = class IndexCreator {
     return false;
   }
 
-  async getThumb(folder) {
-    if (folder.getType() === "tome") {
-      if (await isDirectory(`${GALLERY_ROOT}/${folder.getPath()}`)) {
-        return this.getThumbFromDirectory(folder);
-      }
-
-      return this.getThumbFromArchive(folder);
-    }
-
-    // If we're in a directory, get its
-    // own children to give the thumbnail
+  async getThumbForDirectory(folder) {
     const item = folder.getChildren().find(child => child.getThumb());
 
     if (!item) {
