@@ -1,8 +1,12 @@
 //@ts-check
 
 const childProcess = require("child_process");
+const fs = require("fs");
+const path = require("path");
 
 const shellEscape = require("shell-escape");
+const createSymlink = require("create-symlink");
+const tmp = require("tmp-promise");
 const debug = require("debug")("comics:execQueue");
 
 const processTimeout = 5000;
@@ -105,7 +109,35 @@ function escape(input) {
   return shellEscape([input]);
 }
 
+/**
+ * Temporary symlinks are used because some files can have accents in their names,
+ * and using exec to unzip/unrar them might fail, I've seen it happen in docker mounted volumes
+ * Creating a symlink to the files ensures the CLI only goes to a simple path and works reliably. 
+ * 
+ * @param {*} file 
+ */
+async function createTempSymlink(file) {
+  var filePath = await tmp.tmpName({
+    prefix: "symlink-",
+    postfix: path.extname(file).toLowerCase()
+  }); 
+
+  await createSymlink(file, filePath)
+
+  return {
+    filePath,
+    cleanup: () => {
+      fs.unlink(filePath, (err => {
+        if (err) {
+          console.error(`Could not delete ${filePath}: ${err}`);
+        }
+      }));
+    }
+  }
+}
+
 module.exports = {
   exec,
-  escape
+  escape,
+  createTempSymlink
 };

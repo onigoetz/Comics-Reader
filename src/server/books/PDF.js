@@ -6,7 +6,7 @@ const tmp = require("tmp-promise");
 require("pdf.js-extract/lib/pdfjs/domstubs.js").setStubs(global);
 const pdfjsLib = require("pdf.js-extract/lib/pdfjs/pdf");
 
-const { exec, escape } = require("../exec");
+const { exec, escape, createTempSymlink } = require("../exec");
 const { getBigatureSize } = require("../utils");
 const config = require("../../../config");
 
@@ -66,12 +66,15 @@ module.exports = class PDF {
     const page = pageNum - 1;
     const file = await tmp.file({ postfix: ".png" });
 
+    const { filePath, cleanup } = await createTempSymlink(this.file);
+
     const command = `convert -density 400 ${escape(
-      `${this.file}[${page}]`
+      `${filePath}[${page}]`
     )} ${escape(file.path)} `;
 
     try {
       await exec(command);
+      cleanup();
     } catch (e) {
       console.error("Failed extracting image", e);
       throw e;
