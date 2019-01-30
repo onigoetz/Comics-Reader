@@ -271,15 +271,13 @@ app.get(/\/api\/books\/(.*)/, auth.authenticate(), async (req, res) => {
   const dirPath = path.join(config.comics, book);
   const key = `BOOK_${dirPath}`;
 
-  const pagesFromCache = cache.get(key);
+  let pages = cache.get(key);
 
-  if (pagesFromCache) {
-    returnJsonNoCache(res, pagesFromCache);
-    return;
+  if (pages) {
+    pages = await getPages(dirPath);
+    cache.set(key, pages);
   }
 
-  const pages = await getPages(dirPath);
-  cache.set(key, pages);
   returnJsonNoCache(res, pages);
 });
 
