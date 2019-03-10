@@ -88,7 +88,6 @@
     "rimraf": "^2.6.2",
     "sharp": "^0.21.0",
     "shell-escape": "^0.2.0",
-    "tmp-promise": "^1.0.4",
-    "webpack-bundle-analyzer": "^3.0.2"
+    "tmp-promise": "^1.0.4"
   }
 }

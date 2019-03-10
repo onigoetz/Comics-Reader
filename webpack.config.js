@@ -1,5 +1,4 @@
 const ManifestPlugin = require('webpack-manifest-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
 
 module.exports = {
@@ -18,8 +17,7 @@ module.exports = {
         new webpack.NormalModuleReplacementPlugin(
             /.*\/node_modules\/history\/createHashHistory\.js/,
             require.resolve('history/es/createHashHistory.js')
-        ),
-        //new BundleAnalyzerPlugin({analyzerMode: "static"}) 
+        )
     ],
     module: {
         rules: [
