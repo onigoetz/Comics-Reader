@@ -273,7 +273,7 @@ app.get(/\/api\/books\/(.*)/, auth.authenticate(), async (req, res) => {
 
   let pages = cache.get(key);
 
-  if (pages) {
+  if (!pages) {
     pages = await getPages(dirPath);
     cache.set(key, pages);
   }
