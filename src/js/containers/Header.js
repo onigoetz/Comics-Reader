@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import Headroom from "react-headroom";
 
 import Search from "./Search";
-import { cleanName } from "../utils";
+import { authMode, cleanName } from "../utils";
 import { IoIosHome, IoIosArrowBack, IoIosAccount } from "../components/Icons";
 
 function isNotHome(url) {
@@ -90,7 +90,7 @@ function Header({ url, title, parent, previousUrl, token }) {
     <Headroom disableInlineStyles>
       <header className="Header">
         <div className="Header__Section pull-right">
-          {token && <Search />}
+          {(token || authMode() !== "db") && <Search />}
           {canGoBack(url) && <Home />}
           {token && <User />}
         </div>

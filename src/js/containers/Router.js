@@ -7,15 +7,21 @@ import ScrollMemory from "react-router-scroll-memory";
 import Header from "./Header";
 import Loading from "../components/Loading";
 import ListManager from "./ListManager";
-import Login from "./Login";
 import Logout from "./Logout";
-import ChangePassword from "./ChangePassword";
 import logout from "../logout";
 import { loadBooks } from "../reducers/books";
 import { authMode } from "../utils";
 
 const BookManager = props => (
   <Async componentProps={props} load={import(/* webpackChunkName: "book" */"./BookManager")} />
+);
+
+const Login = props => (
+  <Async componentProps={props} load={import(/* webpackChunkName: "auth" */"./Login")} />
+);
+
+const ChangePassword = props => (
+  <Async componentProps={props} load={import(/* webpackChunkName: "auth" */"./ChangePassword")} />
 );
 
 function PrivateRoute ({component: C, render, authed, ...rest}) {
