@@ -38,7 +38,7 @@
     "@types/compression": "^0.0.36",
     "@types/express": "^4.16.0",
     "@types/morgan": "^1.7.35",
-    "@types/sharp": "^0.22.0",
+    "@types/sharp": "^0.22.2",
     "debounce": "^1.2.0",
     "file-loader": "^3.0.0",
     "nodemon": "^1.18.9",
