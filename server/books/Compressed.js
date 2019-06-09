@@ -9,10 +9,9 @@ const rimraf = require("rimraf");
 const naturalSort = require("natural-sort")();
 
 const { getValidImages, getBigatureSize } = require("../utils");
-const config = require("../../../config");
+const config = require("../../config");
 
 module.exports = class Compressed {
-
   constructor(filePath) {
     this.path = filePath;
   }

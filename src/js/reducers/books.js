@@ -40,7 +40,6 @@ export function listBooksInside(allBooks, path) {
 }
 
 export function selectBook(state, path) {
-
   const allBooks = state.books.books;
 
   const book = allBooks[path] || {};
@@ -52,7 +51,7 @@ export function selectBook(state, path) {
 
   const pages = state.pages.books[path] || [];
 
-  return {book, parent, pages};
+  return { book, parent, pages };
 }
 
 const defaultState = {

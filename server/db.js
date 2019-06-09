@@ -2,11 +2,11 @@
 
 const path = require("path");
 
-const Database = require("better-sqlite3");
+const database = require("better-sqlite3");
 
-const config = require("../../config");
+const config = require("../config");
 
-const db = Database(path.join(config.comics, "comics.db"));
+const db = database(path.join(config.comics, "comics.db"));
 
 const DBVersion = 2;
 const migrations = {
@@ -18,7 +18,9 @@ const migrations = {
   2: () => {
     console.log("Creating 'users' table");
 
-    db.prepare("CREATE TABLE users (user varchar(255), passwordHash varchar(255))").run();
+    db.prepare(
+      "CREATE TABLE users (user varchar(255), passwordHash varchar(255))"
+    ).run();
   }
 };
 
@@ -83,17 +85,16 @@ function getRead(user) {
 }
 
 function markRead(user, book) {
-  db
-    .prepare("INSERT INTO read (user, book) VALUES (@user, @book)")
-    .run({ user, book });
+  db.prepare("INSERT INTO read (user, book) VALUES (@user, @book)").run({
+    user,
+    book
+  });
 
   return getRead(user);
 }
 
 function getUserByName(user) {
-  return db
-    .prepare("SELECT * FROM users WHERE user = @user")
-    .get({ user });
+  return db.prepare("SELECT * FROM users WHERE user = @user").get({ user });
 }
 
 function encodePassword(password) {
@@ -104,7 +105,9 @@ async function createUser(user, password) {
   const passwordHash = await encodePassword(password);
 
   return db
-    .prepare("INSERT INTO users (user, passwordHash) VALUES (@user, @passwordHash)")
+    .prepare(
+      "INSERT INTO users (user, passwordHash) VALUES (@user, @passwordHash)"
+    )
     .run({ user, passwordHash });
 }
 

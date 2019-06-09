@@ -3,20 +3,20 @@ const fs = require("fs");
 
 const Hogan = require("hogan.js");
 
-const cfg = require("../../config");
+const cfg = require("../config");
 
 const template = Hogan.compile(
-  fs.readFileSync(`${__dirname}/../index.html`, { encoding: "utf8" })
+  fs.readFileSync(`${__dirname}/../src/index.html`, { encoding: "utf8" })
 );
 
 const production = process.env.NODE_ENV === "production";
 
 function getManifest() {
   if (!production) {
-    delete require.cache[require.resolve("../../static/asset-manifest.json")];
+    delete require.cache[require.resolve("../static/asset-manifest.json")];
   }
 
-  return require("../../static/asset-manifest.json");
+  return require("../static/asset-manifest.json");
 }
 
 function render(BASE, style, INDEX_READY) {

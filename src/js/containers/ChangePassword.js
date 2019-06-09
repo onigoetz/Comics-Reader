@@ -53,9 +53,7 @@ class ChangePassword extends Component {
   };
 
   arePasswordsDifferent() {
-    return (
-      this.state.confirm_password !== this.state.password
-    );
+    return this.state.confirm_password !== this.state.password;
   }
 
   render() {
@@ -115,7 +113,11 @@ class ChangePassword extends Component {
         <div style={{ textAlign: "right" }}>
           <button
             className="Button Button--big"
-            disabled={!this.state.password || this.arePasswordsDifferent() || this.state.loading}
+            disabled={
+              !this.state.password ||
+              this.arePasswordsDifferent() ||
+              this.state.loading
+            }
           >
             Change
           </button>

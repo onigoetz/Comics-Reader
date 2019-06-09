@@ -58,15 +58,17 @@ const mapStateToProps = (state, ownProps) => {
 
   let books = [];
   if (dir.books) {
-    books = dir.books.map(book => allBooks[book] || {}).map(book => {
-      book.read = isRead(state.read.read, book.path);
-      const booksInside = listBooksInside(allBooks, book.path);
-      book.booksInsideRead = booksInside.filter(innerBook =>
-        isRead(state.read.read, innerBook)
-      ).length;
-      book.booksInside = booksInside.length;
-      return book;
-    });
+    books = dir.books
+      .map(book => allBooks[book] || {})
+      .map(book => {
+        book.read = isRead(state.read.read, book.path);
+        const booksInside = listBooksInside(allBooks, book.path);
+        book.booksInsideRead = booksInside.filter(innerBook =>
+          isRead(state.read.read, innerBook)
+        ).length;
+        book.booksInside = booksInside.length;
+        return book;
+      });
   }
 
   return {

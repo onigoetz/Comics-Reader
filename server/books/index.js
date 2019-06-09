@@ -57,6 +57,7 @@ async function getSourceFile(file) {
 
   do {
     const extension = getExtension(fileDir);
+    // eslint-disable-next-line no-await-in-loop
     if (isArchive(extension) && (await isFile(fileDir))) {
       return fileDir;
     }

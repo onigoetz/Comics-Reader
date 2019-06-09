@@ -8,7 +8,7 @@ const pdfjsLib = require("pdf.js-extract/lib/pdfjs/pdf");
 
 const { exec, escape, createTempSymlink } = require("../exec");
 const { getBigatureSize } = require("../utils");
-const config = require("../../../config");
+const config = require("../../config");
 
 const readFileAsync = promisify(fs.readFile);
 
@@ -33,15 +33,18 @@ module.exports = class PDF {
 
     const page = await doc.getPage(pageNum);
     const opList = await page.getOperatorList();
-    const filteredList = opList.argsArray.filter((item, index) =>
-      opList.fnArray[index] === 82 // 82 = paintJpegXObject
-      && Array.isArray(item)
-      && item.length === 3
-      && page.objs.objs[item[0]] // Does the object exist ?
+    const filteredList = opList.argsArray.filter(
+      (item, index) =>
+        opList.fnArray[index] === 82 && // 82 = paintJpegXObject
+        Array.isArray(item) &&
+        item.length === 3 &&
+        page.objs.objs[item[0]] // Does the object exist ?
     );
 
     if (filteredList.length !== 1) {
-      throw new Error("Could not find a JPG image on this page or find too many");
+      throw new Error(
+        "Could not find a JPG image on this page or find too many"
+      );
     }
 
     const obj = page.objs.objs[filteredList[0][0]];

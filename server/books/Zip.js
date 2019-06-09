@@ -26,7 +26,9 @@ module.exports = class Zip extends Compressed {
   }
 
   async extractFile(file) {
-    const { filePath, cleanup: cleanupSymlink } = await createTempSymlink(this.path);
+    const { filePath, cleanup: cleanupSymlink } = await createTempSymlink(
+      this.path
+    );
 
     const { path, cleanup } = await tmp.file({
       postfix: pathLib.extname(file).toLowerCase()
@@ -37,7 +39,7 @@ module.exports = class Zip extends Compressed {
       options
     );
 
-    cleanupSymlink()
+    cleanupSymlink();
 
     return {
       path,
@@ -48,11 +50,8 @@ module.exports = class Zip extends Compressed {
   async extractAll(destination) {
     const { filePath, cleanup } = await createTempSymlink(this.path);
 
-    await exec(
-      `unzip ${escape(filePath)} -d ${escape(destination)}`,
-      options
-    );
+    await exec(`unzip ${escape(filePath)} -d ${escape(destination)}`, options);
 
-    cleanup()
+    cleanup();
   }
 };

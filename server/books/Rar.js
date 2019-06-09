@@ -26,7 +26,9 @@ module.exports = class Rar extends Compressed {
   }
 
   async extractFile(file) {
-    const { filePath, cleanup: cleanupSymlink } = await createTempSymlink(this.path);
+    const { filePath, cleanup: cleanupSymlink } = await createTempSymlink(
+      this.path
+    );
 
     const { path, cleanup } = await tmp.file({
       postfix: pathLib.extname(file).toLowerCase()

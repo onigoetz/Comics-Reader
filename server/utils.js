@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const { promisify } = require("util");
 
-const config = require("../../config");
+const config = require("../config");
 
 const mkdirAsync = promisify(fs.mkdir);
 
@@ -70,8 +70,10 @@ async function ensureDir(pathToCreate) {
   for (var i in parts) {
     if (parts.hasOwnProperty(i)) {
       fullPath = fullPath + parts[i] + path.sep;
-      if (!await isDirectory(fullPath)) {
+      // eslint-disable-next-line no-await-in-loop
+      if (!(await isDirectory(fullPath))) {
         try {
+          // eslint-disable-next-line no-await-in-loop
           await mkdirAsync(fullPath);
         } catch (e) {
           // If the error is EEXIST, we probably created the
@@ -81,14 +83,13 @@ async function ensureDir(pathToCreate) {
             throw e;
           }
         }
-
       }
     }
   }
 }
 
 function getManifest(BASE) {
-  const manifest = require("../manifest.json");
+  const manifest = require("../src/manifest.json");
   manifest.start_url = BASE;
   manifest.icons = manifest.icons.map(icon => {
     icon.src = BASE + icon.src;

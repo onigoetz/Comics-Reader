@@ -10,7 +10,7 @@ class Logout extends Component {
     logout(this.props.dispatch);
   }
 
-  render () {
+  render() {
     // Redirect when auth mode isn't db
     if (authMode() !== "db") {
       return <Redirect to={{ pathname: "/", state: { from: "/logout" } }} />;

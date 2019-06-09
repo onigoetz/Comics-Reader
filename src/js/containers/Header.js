@@ -76,7 +76,9 @@ function User() {
     <div className="Button Button--link">
       <IoIosAccount />
       <div className="Dropdown__content">
-        <Link to="/change_password" className="Link">Change Password</Link>
+        <Link to="/change_password" className="Link">
+          Change Password
+        </Link>
         <Link to="/logout" className="Link">
           Logout
         </Link>

@@ -12,9 +12,11 @@ const Node = require("./Node");
 const RootNode = require("./RootNode");
 const { getFileNames } = require("../books");
 const { getValidImages, isDirectorySync, isDirectory } = require("../utils");
-const GALLERY_ROOT = require("../../../config.js").comics;
+const GALLERY_ROOT = require("../../config.js").comics;
 
-const indexCache = fileCache.create({file: path.join(GALLERY_ROOT, "indexCache.json")});
+const indexCache = fileCache.create({
+  file: path.join(GALLERY_ROOT, "indexCache.json")
+});
 
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
@@ -77,54 +79,57 @@ module.exports = class IndexCreator {
     // If this folder contains images, but doesn't contain books
     // it's probably a book itself
     // So we'll get the thumbnail directly, instead of traversing it again later.
-    if (maybeThumbnails.length > 0 && directories.length == 0) {
+    if (maybeThumbnails.length > 0 && directories.length === 0) {
       parent.setThumb(this.getBestThumbnail(parent, maybeThumbnails));
     }
 
     return directories;
   }
 
-  async getThumbnails(dir) {
+  async getThumbnailInChild(node) {
+    const extension = path.extname(node.getName()).toLowerCase();
 
+    if (node.getThumb()) {
+      return;
+    }
+
+    // A PDF file
+    if (extension === ".pdf") {
+      node.setThumb(`${node.getPath()}/1.png`);
+      return;
+    }
+
+    // A zip / rar archive
+    if (archives.indexOf(extension) !== -1) {
+      try {
+        node.setThumb(await this.getThumbFromArchive(node));
+      } catch (e) {
+        console.error(`Could not open archive: ${node.getPath()} (${e})`);
+      }
+
+      return;
+    }
+
+    // A normal directory
+    if (node.getChildren()) {
+      await this.getThumbnails(node);
+      node.setThumb(await this.getThumbForDirectory(node));
+      return;
+    }
+
+    console.error(`Could not find a thumb for ${node.getPath()}`);
+  }
+
+  async getThumbnails(dir) {
     const children = dir.getChildren();
 
-    if (children) {
-      const promises = children.map(async node => {
-        const extension = path.extname(node.getName()).toLowerCase();
-
-        if (node.getThumb()) {
-          return;
-        }
-
-        // A PDF file
-        if (extension === ".pdf") {
-          node.setThumb(`${node.getPath()}/1.png`);
-          return;
-        }
-
-        // A zip / rar archive
-        if (archives.indexOf(extension) !== -1) {
-          try {
-            node.setThumb(await this.getThumbFromArchive(node));
-          } catch (e) {
-            console.error(`Could not open archive: ${node.getPath()} (${e})`);
-          }
-
-          return;
-        }
-
-        // A normal directory
-        if (node.getChildren()) {
-          await this.getThumbnails(node);
-          node.setThumb(await this.getThumbForDirectory(node));
-          return;
-        }
-
-        console.error(`Could not find a thumb for ${node.getPath()}`);
-      })
-
-      await Promise.all(promises);
+    if (!children) {
+      return;
     }
+
+    const promises = children.map(node => this.getThumbnailInChild(node));
+
+    await Promise.all(promises);
   }
 
   async getRootNode() {
@@ -132,7 +137,11 @@ module.exports = class IndexCreator {
 
     let start = new Date();
     root.setChildren(await this.generateList(this.dirPath));
-    console.log(`Found ${this.foundBooks} books and directories in ${getDuration(start)} s`);
+    console.log(
+      `Found ${this.foundBooks} books and directories in ${getDuration(
+        start
+      )} s`
+    );
 
     start = new Date();
     await this.getThumbnails(root);
@@ -197,7 +206,9 @@ module.exports = class IndexCreator {
    */
   async getCacheKey(node) {
     const fileStat = await stat(`${GALLERY_ROOT}/${node.getPath()}`);
-    return `thumb:${cacheKeyVersion}:${node.getPath()}:${fileStat.size}:${fileStat.mtimeMs}`;
+    return `thumb:${cacheKeyVersion}:${node.getPath()}:${fileStat.size}:${
+      fileStat.mtimeMs
+    }`;
   }
 
   /**

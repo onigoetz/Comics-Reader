@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { IoIosSearch } from "../components/Icons";
 import { createUrl } from "../utils";
 
-function Search({books}) {
+function Search({ books }) {
   const inputEl = React.useRef(null);
   const [text, setText] = React.useState("");
   const [searchVisible, setVisiblity] = React.useState(false);
