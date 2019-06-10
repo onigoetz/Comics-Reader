@@ -6919,10 +6919,10 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-pdf.js-extract@^0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/pdf.js-extract/-/pdf.js-extract-0.0.9.tgz#3892c8b7e14efefc8be283505aa7797a5470dd9b"
-  integrity sha512-BaZ4+Vfm9rJXaq0akw96iSngrmRPPIbjCHnLCiMASyiBamjpzwPr5eXrBOLTp8HVuO79N8dtg3MkrTCmrc1iFA==
+pdf.js-extract@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/pdf.js-extract/-/pdf.js-extract-0.1.1.tgz#4a33dcd191a5cfa558365dfb0fde610bf27d1a77"
+  integrity sha512-lCu7SwJuc65EnkhnLuAZa5RsinkCjtJ1sk/ufjpy//eTa9NvnmOM1wBP722eDHVkfGnpqT4IUrj7cf4alWQWSg==
 
 performance-now@^2.1.0:
   version "2.1.0"

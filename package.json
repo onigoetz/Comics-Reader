@@ -81,7 +81,7 @@
     "nodemon": "^1.19.1",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
-    "pdf.js-extract": "^0.0.9",
+    "pdf.js-extract": "^0.1.1",
     "prompts": "^2.0.0",
     "react-router-scroll-memory": "^2.0.1",
     "read-chunk": "^3.0.0",
