@@ -12,7 +12,7 @@ const {
   validImageFilter,
   isDirectorySync
 } = require("../utils");
-const config = require("../../../config");
+const config = require("../../config");
 
 const readdir = promisify(fs.readdir);
 const sizeOf = promisify(imageSize);

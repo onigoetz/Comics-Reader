@@ -8,73 +8,68 @@ import { Link } from "react-router-dom";
 import { IoIosSearch } from "../components/Icons";
 import { createUrl } from "../utils";
 
-class Search extends React.Component {
-  constructor(props) {
-    super(props);
+function Search({ books }) {
+  const inputEl = React.useRef(null);
+  const [text, setText] = React.useState("");
+  const [searchVisible, setVisiblity] = React.useState(false);
 
-    this.state = {
-      searchVisible: false,
-      text: ""
-    };
-  }
+  React.useEffect(() => {
+    if (searchVisible) {
+      inputEl.current.focus();
+    }
+  }, [searchVisible]);
 
-  handleSearchToggle = () => {
-    this.setState(oldState => ({ searchVisible: !oldState.searchVisible }));
+  const toggleSearch = () => {
+    setVisiblity(!searchVisible);
   };
 
-  handleSearch = event => {
-    this.setState({ text: event.target.value });
-  };
+  const getMatching = () => {
+    const term = text.toLowerCase();
 
-  matching() {
-    const term = this.state.text.toLowerCase();
-
-    return Object.keys(this.props.books)
-      .map(item => this.props.books[item])
+    return Object.keys(books)
+      .map(item => books[item])
       .filter(item => item.name.toLowerCase().indexOf(term) !== -1);
-  }
+  };
 
-  renderItem(item) {
-    return (
-      <Link
-        to={createUrl(item)}
-        onClick={this.handleSearchToggle}
-        className="SearchResult__item"
-        key={`${item.parent}/${item.name}`}
+  return (
+    <div className="Search">
+      <button
+        onClick={toggleSearch}
+        className="Button Button--link"
+        title="Search"
       >
-        <small>{item.parent}</small> / {item.name}
-      </Link>
-    );
-  }
-
-  render() {
-    return (
-      <div className="Search">
-        <button
-          onClick={this.handleSearchToggle}
-          className="Button Button--link"
-          title="Search"
-        >
-          <IoIosSearch />
-        </button>
-        {this.state.searchVisible && (
-          <input
-            onChange={this.handleSearch}
-            value={this.state.text}
-            className="Input Input--search"
-          />
-        )}
-        {this.state.searchVisible &&
-          this.state.text && (
-          <Portal>
-            <div className="SearchResult">
-              {this.matching().map(item => this.renderItem(item))}
-            </div>
-          </Portal>
-        )}
-      </div>
-    );
-  }
+        <IoIosSearch />
+      </button>
+      {searchVisible && (
+        <input
+          ref={inputEl}
+          onChange={event => {
+            setText(event.target.value);
+          }}
+          value={text}
+          className="Input Input--search"
+        />
+      )}
+      {searchVisible && text && (
+        <Portal>
+          <div className="SearchResult">
+            {getMatching().map(item => {
+              return (
+                <Link
+                  to={createUrl(item)}
+                  onClick={toggleSearch}
+                  className="SearchResult__item"
+                  key={`${item.parent}/${item.name}`}
+                >
+                  <small>{item.parent}</small> / {item.name}
+                </Link>
+              );
+            })}
+          </div>
+        </Portal>
+      )}
+    </div>
+  );
 }
 
 const mapStateToProps = state => {

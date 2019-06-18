@@ -12,20 +12,19 @@ const defaultState = {
 };
 
 function loginRequest() {
-  return {type: LOGIN_REQUEST};
+  return { type: LOGIN_REQUEST };
 }
 
 function loginSuccess(token) {
-  return {type: LOGIN_SUCCESS, token};
+  return { type: LOGIN_SUCCESS, token };
 }
 
 function loginFailure(message) {
-  return {type: LOGIN_FAILURE, message};
+  return { type: LOGIN_FAILURE, message };
 }
 
 export function login(username, password) {
   return dispatch => {
-
     loginRequest();
 
     return fetch("token", {
@@ -33,7 +32,7 @@ export function login(username, password) {
         "Content-Type": "application/json"
       },
       method: "POST",
-      body: JSON.stringify({username, password})
+      body: JSON.stringify({ username, password })
     })
       .then(response => {
         dispatch(loginSuccess(response.token));
@@ -56,7 +55,7 @@ export function logout() {
 export default function auth(state = defaultState, action) {
   switch (action.type) {
     case LOGIN_REQUEST:
-      return {...state, isFetching: true };
+      return { ...state, isFetching: true };
     case LOGIN_SUCCESS:
       return {
         ...state,

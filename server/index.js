@@ -17,13 +17,12 @@ const {
   ensureDir,
   sanitizeBaseUrl,
   returnJsonNoCache,
-  getUser,
   getManifest
 } = require("./utils");
 const { getFile, getPages } = require("./books");
 const IndexCreator = require("./tree/IndexCreator");
 const Walker = require("./tree/Walker");
-const config = require("../../config");
+const config = require("../config");
 const layout = require("./template");
 const db = require("./db");
 const auth = require("./auth");
@@ -64,7 +63,7 @@ app.get("/manifest.json", (req, res) => {
 });
 
 app.get("/favicon.ico", (req, res) => {
-  res.sendFile(path.join(__dirname, "../images/favicon.ico"));
+  res.sendFile(path.join(__dirname, "../src/images/favicon.ico"));
 });
 
 app.get(/\/thumb\/([0-9])\/(.*)/, async (req, res) => {
@@ -173,10 +172,10 @@ app.post("/api/change_password", auth.authenticate(), async (req, res) => {
     res.status(503).send("Server Not Ready");
     return;
   }
-  const current_password = req.body.current_password;
+  const currentPassword = req.body.current_password;
   const password = req.body.password;
 
-  if (!current_password || !password) {
+  if (!currentPassword || !password) {
     res.sendStatus(400);
     return;
   }
@@ -189,7 +188,7 @@ app.post("/api/change_password", auth.authenticate(), async (req, res) => {
     return;
   }
 
-  const user = await auth.checkPassword(username, current_password);
+  const user = await auth.checkPassword(username, currentPassword);
   if (!user) {
     res.sendStatus(401);
     return;
@@ -271,15 +270,13 @@ app.get(/\/api\/books\/(.*)/, auth.authenticate(), async (req, res) => {
   const dirPath = path.join(config.comics, book);
   const key = `BOOK_${dirPath}`;
 
-  const pagesFromCache = cache.get(key);
+  let pages = cache.get(key);
 
-  if (pagesFromCache) {
-    returnJsonNoCache(res, pagesFromCache);
-    return;
+  if (!pages) {
+    pages = await getPages(dirPath);
+    cache.set(key, pages);
   }
 
-  const pages = await getPages(dirPath);
-  cache.set(key, pages);
   returnJsonNoCache(res, pages);
 });
 
@@ -295,7 +292,7 @@ if (BASE === "/") {
 }
 
 console.log(
-  title(`Started server on port ${config.port} with baseurl ${BASE}`)
+  title(`Started server on http://localhost:${config.port}${BASE}`)
 );
 
 console.log(title("Generating index"));

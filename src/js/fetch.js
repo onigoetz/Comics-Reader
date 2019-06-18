@@ -16,14 +16,14 @@ export default function apiFetch(url, options = {}) {
     method: "GET",
     credentials: "include",
     ...options,
-    headers: { Accept: "application/json", ...options.headers || {} }
+    headers: { Accept: "application/json", ...(options.headers || {}) }
   };
 
   return fetch(`${window.baseURL}api/${url}`, fetchOptions).then(onlySuccess);
 }
 
 export function fetchWithAuth(token, url, options = {}) {
-  const headers = { ...options.headers || {} };
+  const headers = { ...(options.headers || {}) };
 
   if (authMode() === "db") {
     headers.Authorization = `Bearer ${token}`;

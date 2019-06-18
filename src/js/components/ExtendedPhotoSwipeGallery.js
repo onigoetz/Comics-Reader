@@ -216,5 +216,3 @@ export default class ExtendedPhotoSwipeGallery extends React.Component {
     );
   }
 }
-
-ExtendedPhotoSwipeGallery.displayName = "PhotoSwipe";

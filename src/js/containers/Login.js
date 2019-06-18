@@ -8,11 +8,10 @@ import { login } from "../reducers/auth";
 import { authMode } from "../utils";
 
 class Login extends Component {
-
   state = {
     username: "",
     password: ""
-  }
+  };
 
   componentDidMount() {
     this.props.dispatch(navigate("Login", "/login", {}));
@@ -36,7 +35,10 @@ class Login extends Component {
   render() {
     // Only redirect when books are loaded
     // Redirect when auth mode isn't db
-    if (this.props.auth.token && this.props.books_loaded || authMode() !== "db") {
+    if (
+      (this.props.auth.token && this.props.books_loaded) ||
+      authMode() !== "db"
+    ) {
       return <Redirect to={{ pathname: "/", state: { from: "/login" } }} />;
     }
 
@@ -75,4 +77,7 @@ class Login extends Component {
   }
 }
 
-export default connect(state => ({ auth: state.auth, books_loaded: state.books.loaded }))(Login);
+export default connect(state => ({
+  auth: state.auth,
+  books_loaded: state.books.loaded
+}))(Login);

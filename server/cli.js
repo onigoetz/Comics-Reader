@@ -8,7 +8,8 @@ async function commandCreateUser() {
     type: "text",
     name: "username",
     message: "Username",
-    validate: value => db.getUserByName(value) ? "This user already exists" : true
+    validate: value =>
+      db.getUserByName(value) ? "This user already exists" : true
   });
 
   const username = response.username;
@@ -30,7 +31,8 @@ async function commandChangePassword() {
     type: "text",
     name: "username",
     message: "What username do you want to change the password for ?",
-    validate: value => db.getUserByName(value) ? true : "This user doesn't exist."
+    validate: value =>
+      db.getUserByName(value) ? true : "This user doesn't exist."
   });
 
   const username = response.username;

@@ -7,27 +7,47 @@ import ScrollMemory from "react-router-scroll-memory";
 import Header from "./Header";
 import Loading from "../components/Loading";
 import ListManager from "./ListManager";
-import Login from "./Login";
 import Logout from "./Logout";
-import ChangePassword from "./ChangePassword";
 import logout from "../logout";
 import { loadBooks } from "../reducers/books";
 import { authMode } from "../utils";
 
 const BookManager = props => (
-  <Async componentProps={props} load={import(/* webpackChunkName: "book" */"./BookManager")} />
+  <Async
+    componentProps={props}
+    load={import(/* webpackChunkName: "book" */ "./BookManager")}
+  />
 );
 
-function PrivateRoute ({component: C, render, authed, ...rest}) {
+const Login = props => (
+  <Async
+    componentProps={props}
+    load={import(/* webpackChunkName: "auth" */ "./Login")}
+  />
+);
 
-  const rendering = (props) => C ? <C {...props} /> : render(props);
+const ChangePassword = props => (
+  <Async
+    componentProps={props}
+    load={import(/* webpackChunkName: "auth" */ "./ChangePassword")}
+  />
+);
+
+function PrivateRoute({ component: C, render, authed, ...rest }) {
+  const rendering = props => (C ? <C {...props} /> : render(props));
 
   return (
     <Route
       {...rest}
-      render={(props) => authed === true
-        ? rendering(props)
-        : <Redirect to={{pathname: "/login", state: {from: props.location}}} />}
+      render={props =>
+        authed === true ? (
+          rendering(props)
+        ) : (
+          <Redirect
+            to={{ pathname: "/login", state: { from: props.location } }}
+          />
+        )
+      }
     />
   );
 }
@@ -46,15 +66,20 @@ class Router extends Component {
 
     if (this.props.books.error) {
       return (
-        <div style={{margin: "1em"}}>
+        <div style={{ margin: "1em" }}>
           <h1>Failed to load books with error:</h1>
           <p>
             <strong>{this.props.books.error}</strong>
           </p>
           <p>
-            <button className="Button" onClick={this.handleRetry}>Retry</button>
-            {" "}
-            {authMode() === "db" && authed && <button className="Button" onClick={this.handleLogout}>Logout</button>}
+            <button className="Button" onClick={this.handleRetry}>
+              Retry
+            </button>{" "}
+            {authMode() === "db" && authed && (
+              <button className="Button" onClick={this.handleLogout}>
+                Logout
+              </button>
+            )}
           </p>
         </div>
       );
@@ -72,10 +97,25 @@ class Router extends Component {
           <Switch>
             <Route path="/login" exact component={Login} />
             <PrivateRoute authed={authed} path="/logout" component={Logout} />
-            <PrivateRoute authed={authed} path="/change_password" component={ChangePassword} />
-            <PrivateRoute authed={authed} path="/list/:path" component={ListManager} />
-            <PrivateRoute authed={authed} path="/book/" component={BookManager} />
-            <PrivateRoute authed={authed} render={props => <ListManager {...props} />} />
+            <PrivateRoute
+              authed={authed}
+              path="/change_password"
+              component={ChangePassword}
+            />
+            <PrivateRoute
+              authed={authed}
+              path="/list/:path"
+              component={ListManager}
+            />
+            <PrivateRoute
+              authed={authed}
+              path="/book/"
+              component={BookManager}
+            />
+            <PrivateRoute
+              authed={authed}
+              render={props => <ListManager {...props} />}
+            />
           </Switch>
         </React.Fragment>
       </BrowserRouter>
@@ -83,4 +123,7 @@ class Router extends Component {
   }
 }
 
-export default connect(state => ({ token: state.auth.token, books: state.books }))(Router);
+export default connect(state => ({
+  token: state.auth.token,
+  books: state.books
+}))(Router);

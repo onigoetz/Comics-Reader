@@ -6,3 +6,7 @@ store.json
 
 # npm
 node_modules
+
+/prettier.config.js
+/.eslintrc.js
+/stylelint.config.js
