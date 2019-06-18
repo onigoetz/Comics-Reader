@@ -99,7 +99,11 @@ class NodeZip {
     });
   }
 
-  async extractFile(file, path, cleanup) {
+  async extractFile(file) {
+    const { path, cleanup } = await tmp.file({
+      postfix: pathLib.extname(file).toLowerCase()
+    });
+
     await this.readStream((entry, fileName) => {
       if (fileName === file) {
         entry.pipe(fs.createWriteStream(path));
@@ -182,52 +186,32 @@ module.exports = class Zip extends Compressed {
     this.node = new NodeZip(filePath);
   }
 
-  async getFileNames() {
-    console.log(`ZIP: ${this.path}`);
+  async run(fn, ...args) {
     try {
-      return await promiseTimeout(outerTimeout, this.node.getFileNames());
+      return await promiseTimeout(
+        outerTimeout,
+        this.node[fn].apply(this.node, args)
+      );
     } catch (e) {
       console.error(
-        `Failed retrieving filenames, for "${
+        `Failed to run '${fn}', for '${
           this.path
-        }", retrying through unzip command, original error: ${e}`
+        }', retrying through unzip command, original error: ${e}`
       );
     }
 
-    return await this.exec.getFileNames();
+    return await this.exec[fn].apply(this.exec, args);
+  }
+
+  async getFileNames() {
+    return this.run("getFileNames");
   }
 
   async extractFile(file) {
-    const { path, cleanup } = await tmp.file({
-      postfix: pathLib.extname(file).toLowerCase()
-    });
-
-    try {
-      return await this.node.extractFile(file, path, cleanup);
-    } catch (e) {
-      console.error(
-        `Failed extracting file, for "${
-          this.path
-        }", retrying through unzip command, original error: ${e}`
-      );
-    }
-
-    return await this.exec.extractFile(file);
+    return this.run("extractFile", file);
   }
 
   async extractAll(destination) {
-    console.log("Extracting all");
-
-    try {
-      return await this.node.extractAll(destination);
-    } catch (e) {
-      console.error(
-        `Failed extracting all files, for "${
-          this.path
-        }", retrying through unzip command, original error: ${e}`
-      );
-    }
-
-    return await this.exec.extractAll(destination);
+    return this.run("extractAll", destination);
   }
 };
