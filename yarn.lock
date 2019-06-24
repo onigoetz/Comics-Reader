@@ -851,10 +851,10 @@
     rollup-plugin-eslint "6.0.0"
     tmp "0.1.0"
 
-"@swissquote/crafty-preset-images-simple@^1.0.0":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@swissquote/crafty-preset-images-simple/-/crafty-preset-images-simple-1.7.2.tgz#878cfeb4e0bf2b59e3a0941dbc08e223cb7cc792"
-  integrity sha512-dwknGT7Gk1ERwxQgrahtz+U95ZBVmaeQayarU7Br1G1AZ7A+nJRGZcGq4wZP9DTpyoYqny2G9kmLRSwOJ8KU7w==
+"@swissquote/crafty-preset-images-simple@^1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@swissquote/crafty-preset-images-simple/-/crafty-preset-images-simple-1.7.3.tgz#c8ce13cdf08a7e582708582864afaf034c68515e"
+  integrity sha512-0NmVI8TsxZjBkXVaCjKYxqxja2bklNe/t1CL00KhHDRSuHAUkxBz/U/0eWG1zgDbN9vCp3NPXCU2cFAjEt6AJQ==
 
 "@swissquote/crafty-preset-postcss@^1.1.0":
   version "1.7.2"
