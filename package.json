@@ -88,7 +88,7 @@
     "rimraf": "^2.6.2",
     "sharp": "^0.22.1",
     "shell-escape": "^0.2.0",
-    "tmp-promise": "^2.0.1"
+    "tmp-promise": "^2.0.2"
   },
   "resolutions": {
     "react-router-scroll-memory/react-router-dom": "^5.0.0"
