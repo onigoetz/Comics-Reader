@@ -1,11 +1,10 @@
 //@ts-check
 
-const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
-const shellEscape = require("shell-escape");
 const createSymlink = require("create-symlink");
+const execa = require("execa");
 const tmp = require("tmp-promise");
 const debug = require("debug")("comics:execQueue");
 
@@ -30,22 +29,31 @@ class Queue {
     this.inFlight = [];
   }
 
-  run(item) {
+  async run(item) {
     debug("Running", item.cmd);
-    const { cmd, options, deferred } = item;
+    const {
+      cmd: [cmd, ...args],
+      options: { stdoutFile, ...options },
+      deferred
+    } = item;
 
     const opts = { timeout: processTimeout, ...(options || {}) };
 
-    childProcess.exec(cmd, opts, (err, stdout, stderr) => {
-      err
-        ? deferred.reject(err)
-        : deferred.resolve({
-            stdout: stdout.toString("utf8"),
-            stderr: stderr.toString("utf8")
-          });
+    try {
+      const subprocess = execa(cmd, args, opts);
 
-      this.done(item);
-    });
+      if (stdoutFile) {
+        subprocess.stdout.pipe(fs.createWriteStream(stdoutFile));
+      }
+
+      const { stdout, stderr, all } = await subprocess;
+
+      deferred.resolve({ stdout, stderr, all });
+    } catch (err) {
+      deferred.reject(err);
+    }
+
+    this.done(item);
   }
 
   add(item) {
@@ -67,7 +75,9 @@ class Queue {
     // Don't start a new task if it already has the maximum
     if (this.inFlight.length >= maxProcess) {
       debug(
-        `Max items inflight (${this.inFlight.length}), waiting (${this.queue.length} left in queue)`
+        `Max items inflight (${this.inFlight.length}), waiting (${
+          this.queue.length
+        } left in queue)`
       );
       return;
     }
@@ -92,7 +102,7 @@ const queue = new Queue();
  * This exec method will not directly run the command, but will add it to a queue.
  * The queue will then execute each in turn, with a predefined maximum
  *
- * @param {string} cmd The command to run
+ * @param {string[]} cmd The command to run
  * @param {*} options Options for child_process.exec
  */
 function exec(cmd, options = {}) {
@@ -101,10 +111,6 @@ function exec(cmd, options = {}) {
   queue.add({ cmd, options, deferred });
 
   return deferred.promise;
-}
-
-function escape(input) {
-  return shellEscape([input]);
 }
 
 /**
@@ -136,6 +142,5 @@ async function createTempSymlink(file) {
 
 module.exports = {
   exec,
-  escape,
   createTempSymlink
 };

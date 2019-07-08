@@ -6,7 +6,7 @@ const tmp = require("tmp-promise");
 require("pdf.js-extract/lib/pdfjs/domstubs.js").setStubs(global);
 const pdfjsLib = require("pdf.js-extract/lib/pdfjs/pdf");
 
-const { exec, escape, createTempSymlink } = require("../exec");
+const { exec, createTempSymlink } = require("../exec");
 const { getBigatureSize } = require("../utils");
 const config = require("../../config");
 
@@ -71,9 +71,13 @@ module.exports = class PDF {
 
     const { filePath, cleanup } = await createTempSymlink(this.file);
 
-    const command = `convert -density 400 ${escape(
-      `${filePath}[${page}]`
-    )} ${escape(file.path)} `;
+    const command = [
+      "convert",
+      "-density",
+      "400",
+      `${filePath}[${page}]`,
+      file.path
+    ];
 
     try {
       await exec(command);

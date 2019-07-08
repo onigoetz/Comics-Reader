@@ -5,9 +5,10 @@ const fs = require("fs");
 const unzipper = require("unzipper");
 const tmp = require("tmp-promise");
 const Iconv = require("iconv").Iconv;
+const { timeout: promiseTimeout } = require("promise-timeout");
 
 const Compressed = require("./Compressed");
-const { exec, escape, createTempSymlink } = require("../exec");
+const { exec, createTempSymlink } = require("../exec");
 const { ensureDir } = require("../utils");
 
 const iconv = new Iconv("UTF-8", "UTF-8//IGNORE");
@@ -16,31 +17,10 @@ function cleanupName(nameBuffer) {
   return iconv.convert(nameBuffer).toString("utf8");
 }
 
-function promiseTimeout(ms, promise) {
-  let killTimeout = function() {};
-
-  // Create a promise that rejects in <ms> milliseconds
-  let timeout = new Promise((resolve, reject) => {
-    killTimeout = () => {
-      clearTimeout(id);
-      resolve("Killed timeout");
-    };
-
-    let id = setTimeout(() => {
-      clearTimeout(id);
-      reject(`Timed out in ${ms}ms.`);
-    }, ms);
-  });
-
-  // Returns a race between our timeout and the passed in promise
-  return Promise.race([promise, timeout]).then(val => {
-    killTimeout();
-    return val;
-  });
-}
-
 const outerTimeout = 60000;
 const innerTimeout = 5000;
+
+const failedFiles = new Set();
 
 const options = { encoding: "utf8" };
 
@@ -55,7 +35,7 @@ class NodeZip {
       .pipe(unzipper.Parse())
       .on("entry", async entry => {
         // if some legacy zip tool follow ZIP spec then this flag will be set
-        const isUnicode = entry.props.flags.isUnicode;
+        const { isUnicode } = entry.props.flags;
 
         let fileName = entry.path;
 
@@ -138,7 +118,7 @@ class ExecZip {
     const { filePath, cleanup } = await createTempSymlink(this.path);
 
     const { stdout: filenames } = await exec(
-      `zipinfo -1 ${escape(filePath)}`,
+      ["zipinfo", "-1", filePath],
       options
     );
 
@@ -156,10 +136,10 @@ class ExecZip {
       postfix: pathLib.extname(file).toLowerCase()
     });
 
-    await exec(
-      `unzip -p ${escape(filePath)} ${escape(file)} > ${escape(path)}`,
-      options
-    );
+    await exec(["unzip", "-p", filePath, file], {
+      ...options,
+      stdoutFile: path
+    });
 
     cleanupSymlink();
 
@@ -168,11 +148,11 @@ class ExecZip {
       cleanup
     };
   }
-
+  
   async extractAll(destination) {
     const { filePath, cleanup } = await createTempSymlink(this.path);
 
-    await exec(`unzip ${escape(filePath)} -d ${escape(destination)}`, options);
+    await exec(["unzip", "-o", filePath, "-d", destination], options);
 
     cleanup();
   }
@@ -186,13 +166,26 @@ module.exports = class Zip extends Compressed {
     this.node = new NodeZip(filePath);
   }
 
+  async runExec(fn, args) {
+    return this.exec[fn].apply(this.exec, args);
+  }
+
+  async runNode(fn, args) {
+    return await promiseTimeout(
+      this.node[fn].apply(this.node, args),
+      outerTimeout
+    );
+  }
+
   async run(fn, ...args) {
+    if (failedFiles.has(this.path)) {
+      return this.runExec(fn, args);
+    }
+
     try {
-      return await promiseTimeout(
-        outerTimeout,
-        this.node[fn].apply(this.node, args)
-      );
+      return await this.runNode(fn, args);
     } catch (e) {
+      failedFiles.add(this.path);
       console.error(
         `Failed to run '${fn}', for '${
           this.path
@@ -200,7 +193,7 @@ module.exports = class Zip extends Compressed {
       );
     }
 
-    return await this.exec[fn].apply(this.exec, args);
+    return this.runExec(fn, args);
   }
 
   async getFileNames() {
