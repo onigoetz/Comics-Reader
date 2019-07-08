@@ -4,7 +4,7 @@ const pathLib = require("path");
 const tmp = require("tmp-promise");
 
 const Compressed = require("./Compressed");
-const { exec, escape, createTempSymlink } = require("../exec");
+const { exec, createTempSymlink } = require("../exec");
 
 /**
  * Documentation of the unrar command :
@@ -18,7 +18,7 @@ module.exports = class Rar extends Compressed {
   async getFileNames() {
     const { filePath, cleanup } = await createTempSymlink(this.path);
 
-    const { stdout: filenames } = await exec(`unrar lb ${escape(filePath)}`);
+    const { stdout: filenames } = await exec(["unrar", "lb", filePath]);
 
     cleanup();
 
@@ -34,9 +34,7 @@ module.exports = class Rar extends Compressed {
       postfix: pathLib.extname(file).toLowerCase()
     });
 
-    await exec(
-      `unrar p -idq ${escape(filePath)} ${escape(file)} > ${escape(path)}`
-    );
+    await exec(["unrar", "p", "-idq", filePath, file], { stdoutFile: path });
 
     cleanupSymlink();
 
@@ -49,7 +47,7 @@ module.exports = class Rar extends Compressed {
   async extractAll(destination) {
     const { filePath, cleanup } = await createTempSymlink(this.path);
 
-    await exec(`unrar x ${escape(filePath)} ${escape(destination)}`);
+    await exec(["unrar", "x", filePath, destination]);
 
     cleanup();
   }
