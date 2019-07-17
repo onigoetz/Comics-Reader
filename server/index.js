@@ -8,7 +8,7 @@ const express = require("express");
 const sharp = require("sharp");
 const compression = require("compression");
 const morgan = require("morgan");
-const cache = require("node-file-cache").create();
+const fileCache = require("node-file-cache");
 const jwt = require("jwt-simple");
 const bodyParser = require("body-parser");
 const debug = require("debug")("comics:server");
@@ -30,7 +30,13 @@ const auth = require("./auth");
 const error = chalk.red;
 const title = chalk.underline.bold;
 
-const comicsIndex = new IndexCreator(config.comics);
+const GALLERY_ROOT = config.comics;
+
+const cache = fileCache.create({
+  file: path.join(GALLERY_ROOT, "bookCache.json")
+});
+
+const comicsIndex = new IndexCreator(GALLERY_ROOT);
 const BASE = sanitizeBaseUrl(process.env.COMICS_BASE);
 const manifest = getManifest(BASE);
 const app = express();
@@ -95,7 +101,7 @@ app.get(/\/thumb\/([0-9])\/(.*)/, async (req, res) => {
   }
 
   const file = `cache/thumb/${node.getThumb()}`;
-  const storedFile = path.join(config.comics, file);
+  const storedFile = path.join(GALLERY_ROOT, file);
 
   fs.exists(storedFile, exists => {
     if (exists) {
@@ -136,7 +142,7 @@ app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, async (req, res) => {
   }
 
   const destination = path.join(
-    config.comics,
+    GALLERY_ROOT,
     "cache",
     presetName,
     requestedFile
@@ -146,7 +152,7 @@ app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, async (req, res) => {
 
   let file;
   try {
-    file = await getFile(path.join(config.comics, sourceFile));
+    file = await getFile(path.join(GALLERY_ROOT, sourceFile));
   } catch (e) {
     console.error(error("Cannot find image"), e);
     res.status(404).send("Could not find image");
@@ -267,11 +273,10 @@ app.get(/\/api\/books\/(.*)/, auth.authenticate(), async (req, res) => {
     return;
   }
   const book = req.params[0];
-  const dirPath = path.join(config.comics, book);
+  const dirPath = path.join(GALLERY_ROOT, book);
   const key = `BOOK_${dirPath}`;
 
   let pages = cache.get(key);
-
   if (!pages) {
     pages = await getPages(dirPath);
     cache.set(key, pages);
@@ -299,6 +304,7 @@ console.log(title("Generating index"));
 comicsIndex.getList().then(
   () => {
     indexReady = true;
+    console.log(title("Index ready ! Have a good read !"));
   },
   e => {
     console.error(error("Could not create index"), e);
