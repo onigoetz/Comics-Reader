@@ -100,7 +100,15 @@ app.get(/\/thumb\/([0-9])\/(.*)/, async (req, res) => {
     image = image.replace(/(\.[A-z]{3,4}\/?(\?.*)?)$/, `@${ratio}x$1`);
   }
 
-  const file = `cache/thumb/${node.getThumb()}`;
+  let file = `cache/thumb/${node.getThumb()}`;
+
+  // If webp is not supported by the browser, we'll use .webp.png as an extension
+  // This will instruct the comics reader to convert the webp file to png and cache the result
+  const accept = req.headers.accept;
+  if (!accept || accept.indexOf('image/webp') === -1) {
+    file = file.replace(/\.webp$/, ".webp.png")
+  }
+
   const storedFile = path.join(GALLERY_ROOT, file);
 
   fs.exists(storedFile, exists => {
@@ -118,6 +126,7 @@ app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, async (req, res) => {
     return;
   }
   const retinaRegex = /(.*)@2x\.(jpe?g|png|webp|gif)/;
+  const webpConvertRegex = /(.*)\.webp\.png$/;
   const presetName = req.params[0];
   const requestedFile = req.params[1];
   let sourceFile = requestedFile;
@@ -141,6 +150,12 @@ app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, async (req, res) => {
     preset.height = preset.height ? preset.height * 2 : null;
   }
 
+  let convertToPNG = false;
+  if (webpConvertRegex.test(requestedFile)) {
+    convertToPNG = true;
+    sourceFile = sourceFile.replace(/\.webp\.png$/, ".webp");
+  }
+
   const destination = path.join(
     GALLERY_ROOT,
     "cache",
@@ -160,9 +175,18 @@ app.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, async (req, res) => {
   }
 
   try {
-    await sharp(file.path)
-      .resize(preset.width || null, preset.height || null)
-      .toFile(destination);
+    let sharpObject = sharp(file.path).resize(
+      preset.width || null,
+      preset.height || null
+    );
+
+    // This means we got a webp request from a browser that doesn't support it.
+    // To be sure, let's convert it
+    if (convertToPNG) {
+      sharpObject = sharpObject.toFormat("png");
+    }
+
+    await sharpObject.toFile(destination);
 
     file.cleanup();
     res.sendFile(destination);
@@ -296,9 +320,7 @@ if (BASE === "/") {
   outerApp.listen(config.port);
 }
 
-console.log(
-  title(`Started server on http://localhost:${config.port}${BASE}`)
-);
+console.log(title(`Started server on http://localhost:${config.port}${BASE}`));
 
 console.log(title("Generating index"));
 comicsIndex.getList().then(

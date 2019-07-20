@@ -8,6 +8,19 @@ const isRetina =
   window.devicePixelRatio > 1.5 ||
   (window.matchMedia && window.matchMedia(mediaQuery).matches);
 
+let hasWebP = false;
+(() => {
+  if (window.createImageBitmap) {
+    const webpData =
+      "data:image/webp;base64,UklGRh4AAABXRUJQVlA4TBEAAAAvAAAAAAfQ//73v/+BiOh/AAA=";
+    fetch(webpData)
+      .then(r => r.blob())
+      .then(blob =>
+        createImageBitmap(blob).then(() => (hasWebP = true), () => {})
+      );
+  }
+})();
+
 export function cleanName(name) {
   return name.replace(/(\.(:?cbr|cbz|zip|rar|pdf))$/, "");
 }
@@ -48,6 +61,12 @@ export function image(preset, img) {
   let imageUrl = cleanPath(img);
   if (isRetina) {
     imageUrl = imageUrl.replace(/(\.[A-z]{3,4}\/?(\?.*)?)$/, "@2x$1");
+  }
+
+  // If webp isn't supported, we suffix with .png so that
+  // the server can generate cacheable converted images
+  if (!hasWebP) {
+    imageUrl = imageUrl.replace(/\.webp$/, ".webp.png");
   }
 
   return `${baseURL}images/cache/${preset}/${imageUrl}`;

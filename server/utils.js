@@ -44,7 +44,7 @@ function validImageFilter(item) {
   const filename = item.replace(/^.*[\\\/]/, "");
   return (
     filename.substring(0, 1) !== "." &&
-    /\.(jpe?g|png|gif)$/i.test(item) &&
+    /\.(jpe?g|png|gif|webp)$/i.test(item) &&
     item.indexOf("__MACOSX") === -1
   );
 }
