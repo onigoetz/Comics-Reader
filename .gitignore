@@ -2,10 +2,11 @@
 # project
 /images
 static
-store.json
+/cache
 
 # npm
 node_modules
+isolate-*.log
 
 /prettier.config.js
 /.eslintrc.js

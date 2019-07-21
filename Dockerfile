@@ -32,6 +32,9 @@ WORKDIR /usr/src/app
 VOLUME /comics
 RUN ln -s /comics /usr/src/app/images
 
+VOLUME /cache
+RUN ln -s /cache /usr/src/app/cache
+
 # Run yarn install early to allow a quick
 # rebuild if the package.json didn't change
 COPY package.json yarn.lock ./

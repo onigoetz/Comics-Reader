@@ -8,7 +8,6 @@ const express = require("express");
 const sharp = require("sharp");
 const compression = require("compression");
 const morgan = require("morgan");
-const fileCache = require("node-file-cache");
 const jwt = require("jwt-simple");
 const bodyParser = require("body-parser");
 const debug = require("debug")("comics:server");
@@ -26,15 +25,12 @@ const config = require("../config");
 const layout = require("./template");
 const db = require("./db");
 const auth = require("./auth");
+const cache = require("./cache");
 
 const error = chalk.red;
 const title = chalk.underline.bold;
 
 const GALLERY_ROOT = config.comics;
-
-const cache = fileCache.create({
-  file: path.join(GALLERY_ROOT, "bookCache.json")
-});
 
 const comicsIndex = new IndexCreator(GALLERY_ROOT);
 const BASE = sanitizeBaseUrl(process.env.COMICS_BASE);
@@ -298,13 +294,8 @@ app.get(/\/api\/books\/(.*)/, auth.authenticate(), async (req, res) => {
   }
   const book = req.params[0];
   const dirPath = path.join(GALLERY_ROOT, book);
-  const key = `BOOK_${dirPath}`;
-
-  let pages = cache.get(key);
-  if (!pages) {
-    pages = await getPages(dirPath);
-    cache.set(key, pages);
-  }
+  const key = `BOOK:v1:${dirPath}`;
+  const pages = await cache.wrap(key, () => getPages(dirPath));
 
   returnJsonNoCache(res, pages);
 });

@@ -27,6 +27,11 @@ module.exports = {
      */
     comics: path.join(__dirname, 'images'),
 
+    /**
+     * Data cache
+     */
+    cache: path.join(__dirname, 'cache'),
+
     // Not recommended to changes those sizes
     sizes: {
         thumb: {height: 140},

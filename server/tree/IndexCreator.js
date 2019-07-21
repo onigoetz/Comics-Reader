@@ -6,17 +6,13 @@ const { promisify } = require("util");
 
 const debug = require("debug")("comics:index");
 const naturalSort = require("natural-sort")();
-const fileCache = require("node-file-cache");
 
+const cache = require("../cache");
 const Node = require("./Node");
 const RootNode = require("./RootNode");
 const { getFileNames } = require("../books");
 const { getValidImages, isDirectorySync, isDirectory } = require("../utils");
 const GALLERY_ROOT = require("../../config.js").comics;
-
-const indexCache = fileCache.create({
-  file: path.join(GALLERY_ROOT, "indexCache.json")
-});
 
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
@@ -24,8 +20,6 @@ const stat = promisify(fs.stat);
 // Directories to ignore when listing output.
 const ignore = ["cgi-bin", ".", "..", "cache", ".DS_Store", "Thumbs.db"];
 const archives = [".cbr", ".cbz", ".zip", ".rar"];
-
-const cacheKeyVersion = 1;
 
 function getDuration(start) {
   const end = new Date();
@@ -205,6 +199,7 @@ module.exports = class IndexCreator {
    * @return {Promise<string>} The path to a thumbnail or false
    */
   async getCacheKey(node) {
+    const cacheKeyVersion = 1;
     const fileStat = await stat(`${GALLERY_ROOT}/${node.getPath()}`);
     return `thumb:${cacheKeyVersion}:${node.getPath()}:${fileStat.size}:${
       fileStat.mtimeMs
@@ -220,22 +215,17 @@ module.exports = class IndexCreator {
   async getThumbFromArchive(node) {
     const cacheKey = await this.getCacheKey(node);
 
-    const cachedThumbnail = indexCache.get(cacheKey);
-    if (cachedThumbnail) {
-      return cachedThumbnail;
-    }
-
     try {
-      const fileNames = await getFileNames(`${GALLERY_ROOT}/${node.getPath()}`);
-
-      if (fileNames) {
-        const thumbnail = this.getBestThumbnail(node, fileNames);
-        indexCache.set(cacheKey, thumbnail);
-
-        return thumbnail;
-      } else {
-        console.error(`Could not open archive ${node.getPath()}`);
-      }
+      return await cache.wrap(cacheKey, async () => {
+        console.log(`Running thumb gathering for ${node.getPath()}`)
+        const fileNames = await getFileNames(`${GALLERY_ROOT}/${node.getPath()}`);
+  
+        if (fileNames) {
+          return this.getBestThumbnail(node, fileNames);
+        } else {
+          throw new Error(`Could not open archive ${node.getPath()}`);
+        }
+      });
     } catch (e) {
       console.error(e.message);
     }
