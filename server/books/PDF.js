@@ -3,8 +3,8 @@ const fs = require("fs");
 const { promisify } = require("util");
 
 const tmp = require("tmp-promise");
-require("pdf.js-extract/lib/pdfjs/domstubs.js").setStubs(global);
-const pdfjsLib = require("pdf.js-extract/lib/pdfjs/pdf");
+require("pdfjs-dist/lib/examples/node/domstubs").setStubs(global);
+const pdfjs = require("pdfjs-dist");
 
 const { exec, createTempSymlink } = require("../exec");
 const { getBigatureSize } = require("../utils");
@@ -25,35 +25,57 @@ module.exports = class PDF {
     return [];
   }
 
-  async extractPageWithLib(pageNum) {
-    const doc = await pdfjsLib.getDocument({
-      verbosity: -1,
+  async getDocument() {
+    return pdfjs.getDocument({
       data: new Uint8Array(await readFileAsync(this.file))
-    });
+    }).promise;
+  }
+
+  async extractPageWithLib(pageNum) {
+    const doc = await this.getDocument();
 
     const page = await doc.getPage(pageNum);
-    const opList = await page.getOperatorList();
-    const filteredList = opList.argsArray.filter(
-      (item, index) =>
-        opList.fnArray[index] === 82 && // 82 = paintJpegXObject
-        Array.isArray(item) &&
-        item.length === 3 &&
-        page.objs.objs[item[0]] // Does the object exist ?
-    );
+    const ops = await page.getOperatorList();
+    const images = [];
 
-    if (filteredList.length !== 1) {
+    for (let j = 0; j < ops.fnArray.length; j++) {
+      if (
+        ops.fnArray[j] == pdfjs.OPS.paintJpegXObject ||
+        ops.fnArray[j] == pdfjs.OPS.paintImageXObject
+      ) {
+        images.push({
+          type: ops.fnArray[j],
+          obj: page.objs.get(ops.argsArray[j][0])
+        });
+      }
+    }
+
+    if (images.length !== 1) {
       throw new Error(
         "Could not find a JPG image on this page or find too many"
       );
     }
 
-    const obj = page.objs.objs[filteredList[0][0]];
+    var svgGfx = new pdfjs.SVGGraphics(page.commonObjs, page.objs);
 
-    // remove "data:image/jpeg;base64," from the string
-    const base64Object = obj.data._src.substring(23);
+    const img = images[0];
+
+    let renderedImage;
+    switch (img.type) {
+      case pdfjs.OPS.paintImageXObject:
+        svgGfx.paintInlineImageXObject(img.obj, {
+          appendChild: el => {
+            renderedImage = el.attributes["xlink:href"].substring(22);
+          }
+        });
+        break;
+      case pdfjs.OPS.paintJpegXObject:
+        renderedImage = img.obj.src.substring(23);
+        break;
+    }
 
     return {
-      path: Buffer.from(base64Object, "base64"),
+      path: Buffer.from(renderedImage, "base64"),
       cleanup: () => {}
     };
   }
@@ -91,10 +113,7 @@ module.exports = class PDF {
   }
 
   async getImageSizes() {
-    const doc = await pdfjsLib.getDocument({
-      verbosity: -1,
-      data: new Uint8Array(await readFileAsync(this.file))
-    });
+    const doc = await this.getDocument();
 
     var loadPage = async function(pageNum) {
       const page = await doc.getPage(pageNum);

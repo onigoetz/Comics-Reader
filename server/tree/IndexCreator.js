@@ -217,7 +217,6 @@ module.exports = class IndexCreator {
 
     try {
       return await cache.wrap(cacheKey, async () => {
-        console.log(`Running thumb gathering for ${node.getPath()}`)
         const fileNames = await getFileNames(`${GALLERY_ROOT}/${node.getPath()}`);
   
         if (fileNames) {

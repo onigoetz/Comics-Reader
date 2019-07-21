@@ -25,6 +25,7 @@
     "start:dev": "nodemon --watch server server/index.js",
     "watch": "crafty watch",
     "build": "rm -rf static && crafty run",
+    "clear-cache": "rm -rf cache images/cache",
     "lint-server": "crafty jsLint server/** --preset recommended --preset node --fix",
     "lint-client": "crafty jsLint src/js/** --preset recommended --fix"
   },
@@ -84,7 +85,7 @@
     "nodemon": "^1.19.1",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
-    "pdf.js-extract": "^0.0.9",
+    "pdfjs-dist": "^2.1.266",
     "promise-timeout": "^1.3.0",
     "prompts": "^2.0.0",
     "react-router-scroll-memory": "^2.0.1",
