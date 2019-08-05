@@ -94,7 +94,7 @@
     "sharp": "^0.22.1",
     "tmp-promise": "^2.0.1",
     "unzipper": "^0.10.1",
-    "webpack-bundle-analyzer": "^3.0.2"
+    "webpack-bundle-analyzer": "^3.4.1"
   },
   "resolutions": {
     "react-router-scroll-memory/react-router-dom": "^5.0.0"
