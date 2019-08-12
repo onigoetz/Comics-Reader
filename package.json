@@ -41,7 +41,7 @@
     "@types/morgan": "^1.7.35",
     "@types/sharp": "^0.22.2",
     "debounce": "^1.2.0",
-    "file-loader": "^4.0.0",
+    "file-loader": "^4.2.0",
     "prop-types": "^15.6.0",
     "react": "^16.5.2",
     "react-code-splitting": "^1.2.1",
