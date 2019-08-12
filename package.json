@@ -43,7 +43,7 @@
     "debounce": "^1.2.0",
     "file-loader": "^4.0.0",
     "prop-types": "^15.6.0",
-    "react": "^16.5.2",
+    "react": "^16.9.0",
     "react-code-splitting": "^1.2.1",
     "react-dom": "^16.5.2",
     "react-headroom": "^2.2.4",
