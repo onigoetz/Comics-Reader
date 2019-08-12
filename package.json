@@ -64,7 +64,7 @@
     "archive-type": "^4.0.0",
     "basic-auth": "^2.0.0",
     "bcrypt": "^3.0.0",
-    "better-sqlite3": "^5.0.1",
+    "better-sqlite3": "^5.4.2",
     "body-parser": "^1.19.0",
     "cache-manager": "^2.10.0",
     "cache-manager-fs-hash": "^0.0.7",
