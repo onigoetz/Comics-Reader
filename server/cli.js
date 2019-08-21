@@ -1,6 +1,8 @@
 const meow = require("meow");
 const prompts = require("prompts");
 
+require("./env");
+
 const db = require("./db");
 
 async function commandCreateUser() {

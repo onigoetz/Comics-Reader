@@ -29,12 +29,13 @@ Will start the comics reader using your comic books at `/your-images-dir` and be
 First, you need
 - Nodejs
 - Imagemagick installed on the machine. (for PDF support)
-- `unrar` and `unzip` commands installed (for CBR and CBZ support)
+- `unrar` and `unzip` commands installed. (for CBR and CBZ support)
 
 - Download/clone this repository on your server
-- Edit `config.js` to define the path to your images, defaults to `images` in the root directory
+- Symlink your comics to `images` in the app's directory
 - Make the `images/cache` directory writable
 - Run `yarn install`
+- Run `yarn build`
 
 You can then start the server with `yarn start`.
 
@@ -45,7 +46,7 @@ This will index the books and start the server.
 Authentication is an optional feature, you can either leverage the basic auth credentials from a server (Apache/Nginx)
 Or use the built-in database.
 
-This option can be changed in `config.js` with the `auth` configuration or the `COMICS_AUTH_TYPE` environment variable.
+This option can be with the `COMICS_AUTH_TYPE` environment variable.
 possible values are "basic" (default) or "db"
 
 When using the "db" authentication mode, you need to create users, for this we provide a command-line tool to create them.
@@ -95,5 +96,5 @@ location /BD/ {
 
 - The web interface is made with [React](https://facebook.github.io/react/).
 - The photo viewer is made with [PhotoSwipe](http://photoswipe.com/).
-- [Express](http://expressjs.com/) powers the server side.
+- [Next.js](https://nextjs.org/) powers the server side with a hint of [Express](http://expressjs.com/).
 - [Sharp](http://sharp.pixelplumbing.com/en/stable/) is used to generate the thumbnails. 

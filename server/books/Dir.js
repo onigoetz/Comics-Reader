@@ -12,7 +12,6 @@ const {
   validImageFilter,
   isDirectorySync
 } = require("../utils");
-const config = require("../../config");
 
 const readdir = promisify(fs.readdir);
 const sizeOf = promisify(imageSize);
@@ -46,7 +45,7 @@ module.exports = class Dir {
         const size = getBigatureSize(data);
 
         return {
-          src: fullPath.replace(config.comics, ""),
+          src: fullPath.replace(process.env.DIR_COMICS, ""),
           width: size.width,
           height: size.height
         };

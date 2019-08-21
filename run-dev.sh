@@ -6,4 +6,4 @@ docker run -it --rm \
     -p 8080:8080 \
     --name comics-reader \
     comics-reader \
-    yarn start:dev
+    yarn dev

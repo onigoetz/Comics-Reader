@@ -75,9 +75,7 @@ class Queue {
     // Don't start a new task if it already has the maximum
     if (this.inFlight.length >= maxProcess) {
       debug(
-        `Max items inflight (${this.inFlight.length}), waiting (${
-          this.queue.length
-        } left in queue)`
+        `Max items inflight (${this.inFlight.length}), waiting (${this.queue.length} left in queue)`
       );
       return;
     }
