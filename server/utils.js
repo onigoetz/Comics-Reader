@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const { promisify } = require("util");
 
-const config = require("../config");
+const sizes = require("./sizes");
 
 const mkdirAsync = promisify(fs.mkdir);
 
@@ -18,6 +18,10 @@ function isFile(fullPath) {
       }
     });
   });
+}
+
+function fromUrl(url) {
+  return url.replace(/\|/g, "/");
 }
 
 function isDirectorySync(dirPath) {
@@ -54,7 +58,7 @@ function getValidImages(files) {
 }
 
 function getBigatureSize(data) {
-  const newWidth = config.sizes.big.width;
+  const newWidth = sizes.big.width;
   const ratio = data.width / data.height;
 
   return {
@@ -88,40 +92,14 @@ async function ensureDir(pathToCreate) {
   }
 }
 
-function getManifest(BASE) {
-  const manifest = require("../src/manifest.json");
-  manifest.start_url = BASE;
-  manifest.icons = manifest.icons.map(icon => {
-    icon.src = BASE + icon.src;
-    return icon;
-  });
-
-  return manifest;
-}
-
-function sanitizeBaseUrl(base) {
-  // Ensure we have one slash at the beginning and one at the end
-  const cleaned = `/${(base || "").replace(/^\/+|\/+$/g, "")}/`;
-
-  // Ensure we don't have multiple consecutive slashes
-  return cleaned.replace(/(.*\/)\/+/g, "$1");
-}
-
-function returnJsonNoCache(res, data) {
-  res.setHeader("Cache-Control", "no-cache");
-  res.json(data);
-}
-
 module.exports = {
   ensureDir,
   getExtension,
   getBigatureSize,
-  getManifest,
   getValidImages,
   isDirectorySync,
   isDirectory,
   isFile,
-  returnJsonNoCache,
-  sanitizeBaseUrl,
-  validImageFilter
+  validImageFilter,
+  fromUrl
 };

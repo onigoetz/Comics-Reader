@@ -4,9 +4,7 @@ const path = require("path");
 
 const database = require("better-sqlite3");
 
-const config = require("../config");
-
-const db = database(path.join(config.comics, "comics.db"));
+const db = database(path.join(process.env.DIR_COMICS, "comics.db"));
 
 const DBVersion = 2;
 const migrations = {

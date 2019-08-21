@@ -10,9 +10,9 @@ const naturalSort = require("natural-sort")();
 const cache = require("../cache");
 const Node = require("./Node");
 const RootNode = require("./RootNode");
+const Walker = require("./Walker");
 const { getFileNames } = require("../books");
 const { getValidImages, isDirectorySync, isDirectory } = require("../utils");
-const GALLERY_ROOT = require("../../config.js").comics;
 
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
@@ -30,6 +30,7 @@ module.exports = class IndexCreator {
   constructor(dirPath) {
     this.foundBooks = 0;
     this.dirPath = dirPath;
+    this.isReady = false;
   }
 
   async generateList(dirPath = ".", parent = null) {
@@ -130,7 +131,7 @@ module.exports = class IndexCreator {
     const root = new RootNode("Home");
 
     let start = new Date();
-    root.setChildren(await this.generateList(this.dirPath));
+    root.setChildren(await this.generateList(this.dirPath, root));
     console.log(
       `Found ${this.foundBooks} books and directories in ${getDuration(
         start
@@ -140,6 +141,10 @@ module.exports = class IndexCreator {
     start = new Date();
     await this.getThumbnails(root);
     console.log(`Computed thumbnails in ${getDuration(start)} s`);
+
+    this.isReady = true;
+
+    this.walker = new Walker(root);
 
     return root;
   }
@@ -182,11 +187,13 @@ module.exports = class IndexCreator {
    */
   getThumbFromDirectory(folder) {
     const files = fs
-      .readdirSync(`${GALLERY_ROOT}/${folder.getPath()}`)
+      .readdirSync(`${process.env.DIR_COMICS}/${folder.getPath()}`)
       .filter(
         item =>
           item.substring(0, 1) !== "." &&
-          !isDirectorySync(`${GALLERY_ROOT}/${folder.getPath()}/${item}`)
+          !isDirectorySync(
+            `${process.env.DIR_COMICS}/${folder.getPath()}/${item}`
+          )
       );
 
     return this.getBestThumbnail(folder, files);
@@ -200,7 +207,7 @@ module.exports = class IndexCreator {
    */
   async getCacheKey(node) {
     const cacheKeyVersion = 1;
-    const fileStat = await stat(`${GALLERY_ROOT}/${node.getPath()}`);
+    const fileStat = await stat(`${process.env.DIR_COMICS}/${node.getPath()}`);
     return `thumb:${cacheKeyVersion}:${node.getPath()}:${fileStat.size}:${
       fileStat.mtimeMs
     }`;
@@ -217,8 +224,10 @@ module.exports = class IndexCreator {
 
     try {
       return await cache.wrap(cacheKey, async () => {
-        const fileNames = await getFileNames(`${GALLERY_ROOT}/${node.getPath()}`);
-  
+        const fileNames = await getFileNames(
+          `${process.env.DIR_COMICS}/${node.getPath()}`
+        );
+
         if (fileNames) {
           return this.getBestThumbnail(node, fileNames);
         } else {

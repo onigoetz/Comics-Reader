@@ -32,7 +32,7 @@ class NodeZip {
   readStream(fn) {
     return fs
       .createReadStream(this.path)
-      .pipe(unzipper.Parse())
+      .pipe(unzipper.Parse()) //eslint-disable-line new-cap
       .on("entry", async entry => {
         // if some legacy zip tool follow ZIP spec then this flag will be set
         const { isUnicode } = entry.props.flags;
@@ -43,7 +43,7 @@ class NodeZip {
           fileName = cleanupName(entry.props.pathBuffer);
         }
 
-        return await fn(entry, fileName);
+        return fn(entry, fileName);
       })
       .promise();
   }
@@ -99,7 +99,7 @@ class NodeZip {
   }
 
   async extractAll(destination) {
-    return await this.readStream(async (entry, fileName) => {
+    return this.readStream(async (entry, fileName) => {
       const finalPath = pathLib.join(destination, fileName);
       if (entry.type === "File") {
         await ensureDir(pathLib.dirname(finalPath));
@@ -148,7 +148,7 @@ class ExecZip {
       cleanup
     };
   }
-  
+
   async extractAll(destination) {
     const { filePath, cleanup } = await createTempSymlink(this.path);
 
@@ -167,14 +167,11 @@ module.exports = class Zip extends Compressed {
   }
 
   async runExec(fn, args) {
-    return this.exec[fn].apply(this.exec, args);
+    return this.exec[fn](...args);
   }
 
   async runNode(fn, args) {
-    return await promiseTimeout(
-      this.node[fn].apply(this.node, args),
-      outerTimeout
-    );
+    return promiseTimeout(this.node[fn](...args), outerTimeout);
   }
 
   async run(fn, ...args) {
@@ -187,9 +184,7 @@ module.exports = class Zip extends Compressed {
     } catch (e) {
       failedFiles.add(this.path);
       console.error(
-        `Failed to run '${fn}', for '${
-          this.path
-        }', retrying through unzip command, original error: ${e}`
+        `Failed to run '${fn}', for '${this.path}', retrying through unzip command, original error: ${e}`
       );
     }
 

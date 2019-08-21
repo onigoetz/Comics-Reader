@@ -1,67 +1,52 @@
 const auth = require("basic-auth");
 const bcrypt = require("bcrypt");
-const passport = require("passport");
-const passportJWT = require("passport-jwt");
+const jwt = require("jwt-simple");
 
 const { getUserByName } = require("./db.js");
-const cfg = require("../config.js");
 
-const ExtractJwt = passportJWT.ExtractJwt;
-const Strategy = passportJWT.Strategy;
-const params = {
-  secretOrKey: cfg.jwtSecret,
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
-};
+async function findUser(payload) {
+  const user = getUserByName(payload.username);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return user;
+}
+
+const bearerRegex = /(\S+)\s+(\S+)/;
+function fromAuthHeaderAsBearerToken(authorization) {
+  const authScheme = "bearer";
+
+  if (!authorization) {
+    return null;
+  }
+
+  const matches = authorization.match(bearerRegex);
+  if (!matches || matches[1].toLowerCase() !== authScheme) {
+    return null;
+  }
+
+  return matches[2];
+}
 
 class DBAuth {
-  constructor() {
-    const strategy = new Strategy(params, (payload, done) => {
-      let user;
+  async authenticate(req, res) {
+    if (!("authorization" in req.headers)) {
+      res.status(401).send("Authorization header missing");
+      return false;
+    }
 
-      try {
-        user = getUserByName(payload.username);
-      } catch (e) {
-        return done(e, null);
-      }
+    const token = fromAuthHeaderAsBearerToken(req.headers.authorization);
 
-      if (!user) {
-        return done(new Error("User not found"), null);
-      }
+    const payload = jwt.decode(token, process.env.JWT_SECRET);
 
-      return done(null, user);
-    });
-    passport.use(strategy);
-  }
-
-  initialize() {
-    return passport.initialize();
-  }
-
-  getUser(req) {
-    return req.user.user;
-  }
-
-  authenticate() {
-    return (req, res, next) => {
-      return passport.authenticate(
-        "jwt",
-        { session: false },
-        (err, user, info) => {
-          if (err) {
-            console.error("Failed authentication", err);
-            return res.status(400).json({ error: "Failed" });
-          }
-
-          if (!user) {
-            return res.status(401).json({ error: "Failed authentication" });
-          }
-
-          req.user = user;
-
-          return next();
-        }
-      )(req, res, next);
-    };
+    try {
+      return await findUser(payload);
+    } catch (err) {
+      console.error("Failed authentication", err);
+      return res.status(400).json({ error: "Failed" });
+    }
   }
 
   async checkPassword(username, password) {
@@ -75,7 +60,7 @@ class DBAuth {
     const matches = await bcrypt.compare(password, user.passwordHash);
 
     if (!matches) {
-      return null;
+      throw new Error("Passwords don't match");
     }
 
     return user;
@@ -83,18 +68,11 @@ class DBAuth {
 }
 
 class BasicAuth {
-  initialize() {
-    return (req, res, next) => next();
-  }
+  async authenticate(req, res) {
+    // Basic auth is checked by Apache / Nginx, here we only use the username
 
-  getUser(req) {
     const authentication = auth(req);
     return authentication ? authentication.name : "anonymous";
-  }
-
-  authenticate() {
-    // We don't check authentication here
-    return (req, res, next) => next();
   }
 
   async checkPassword(username, password) {
@@ -102,4 +80,6 @@ class BasicAuth {
   }
 }
 
-module.exports = cfg.auth === "db" ? new DBAuth() : new BasicAuth();
+const authMode = process.env.AUTH_MODE;
+
+module.exports = authMode === "db" ? new DBAuth() : new BasicAuth();

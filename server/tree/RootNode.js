@@ -19,15 +19,21 @@ module.exports = class RootNode extends Node {
     for (const i in segments) {
       if (segments.hasOwnProperty(i)) {
         const segment = segments[i];
-
+        const prevNode = node;
         node = node.getChild(segment);
 
         if (!node) {
-          throw new Error("Node not found");
+          throw new Error(
+            `Node '${segment}' not found in '${prevNode.getName()}' for query '${key}'`
+          );
         }
       }
     }
 
     return node;
+  }
+
+  getPath() {
+    return null;
   }
 };

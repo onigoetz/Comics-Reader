@@ -9,7 +9,6 @@ const rimraf = require("rimraf");
 const naturalSort = require("natural-sort")();
 
 const { getValidImages, getBigatureSize } = require("../utils");
-const config = require("../../config");
 
 module.exports = class Compressed {
   constructor(filePath) {
@@ -36,7 +35,7 @@ module.exports = class Compressed {
       const size = getBigatureSize(data);
 
       return {
-        src: `${this.path}/${image}`.replace(config.comics, ""),
+        src: `${this.path}/${image}`.replace(process.env.DIR_COMICS, ""),
         width: size.width,
         height: size.height
       };

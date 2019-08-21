@@ -11,9 +11,8 @@ RUN yarn install --non-interactive && yarn cache clean
 
 COPY src/ /usr/src/app/src/
 COPY crafty.config.js /usr/src/app/crafty.config.js
-COPY webpack.config.js /usr/src/app/webpack.config.js
 
-RUN yarn build
+RUN yarn crafty:build
 
 FROM node:12.6.0
 
@@ -41,11 +40,14 @@ COPY package.json yarn.lock ./
 RUN yarn install --production --non-interactive && yarn cache clean
 
 # Copy files
-COPY --from=build /usr/src/app/static/ /usr/src/app/static/
-COPY src/ /usr/src/app/src/
+COPY --from=build /usr/src/app/dist/ /usr/src/app/dist/
+COPY crafty.config.js /usr/src/app/crafty.config.js
+COPY pages/ /usr/src/app/pages/
 COPY server/ /usr/src/app/server/
-COPY config.js /usr/src/app/config.js
-COPY comics /usr/src/app/comics
+COPY src/ /usr/src/app/src/
+COPY comics manifest.json next.config.js /usr/src/app/
+
+RUN yarn build
 
 EXPOSE 8080
 

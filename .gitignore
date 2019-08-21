@@ -1,12 +1,13 @@
 
 # project
 /images
-static
 /cache
 
 # npm
 node_modules
 isolate-*.log
+.next
+dist
 
 /prettier.config.js
 /.eslintrc.js

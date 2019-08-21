@@ -8,7 +8,6 @@ const pdfjs = require("pdfjs-dist");
 
 const { exec, createTempSymlink } = require("../exec");
 const { getBigatureSize } = require("../utils");
-const config = require("../../config");
 
 const readFileAsync = promisify(fs.readFile);
 
@@ -40,8 +39,8 @@ module.exports = class PDF {
 
     for (let j = 0; j < ops.fnArray.length; j++) {
       if (
-        ops.fnArray[j] == pdfjs.OPS.paintJpegXObject ||
-        ops.fnArray[j] == pdfjs.OPS.paintImageXObject
+        ops.fnArray[j] === pdfjs.OPS.paintJpegXObject ||
+        ops.fnArray[j] === pdfjs.OPS.paintImageXObject
       ) {
         images.push({
           type: ops.fnArray[j],
@@ -139,7 +138,7 @@ module.exports = class PDF {
       const size = getBigatureSize(image);
 
       return {
-        src: `${this.file}/${i}.png`.replace(config.comics, ""),
+        src: `${this.file}/${i}.png`.replace(process.env.DIR_COMICS, ""),
         width: size.width,
         height: size.height
       };

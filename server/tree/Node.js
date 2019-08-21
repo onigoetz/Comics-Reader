@@ -1,5 +1,7 @@
 //@ts-check
 
+const { TYPE_DIR, TYPE_BOOK } = require("./types");
+
 module.exports = class Node {
   constructor($name, $parent = null) {
     this.name = $name;
@@ -16,7 +18,7 @@ module.exports = class Node {
   }
 
   getType() {
-    return this.count() === 0 ? "tome" : "dir";
+    return this.count() === 0 ? TYPE_BOOK : TYPE_DIR;
   }
 
   getParent() {
@@ -24,11 +26,10 @@ module.exports = class Node {
   }
 
   getPath() {
-    if (!this.parent) {
-      return this.name;
-    }
+    const parent = this.parent ? this.parent.getPath() : null;
+    const name = this.getName();
 
-    return `${this.parent.getPath()}/${this.getName()}`;
+    return parent ? `${parent}/${name}` : name;
   }
 
   setChildren(children) {
@@ -57,13 +58,12 @@ module.exports = class Node {
     return this.children.find(node => node.getName() === key);
   }
 
-  dump() {
+  forClient() {
     return {
       name: this.getName(),
       type: this.getType(),
       thumb: this.getThumb(),
-      path: this.getPath(),
-      count: this.count()
+      path: this.getPath()
     };
   }
 };
