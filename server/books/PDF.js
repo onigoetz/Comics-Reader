@@ -116,7 +116,7 @@ module.exports = class PDF {
 
     var loadPage = async function(pageNum) {
       const page = await doc.getPage(pageNum);
-      return page.getViewport(1.0 /* scale */);
+      return page.getViewport({ scale: 1 });
     };
 
     const promises = [];
