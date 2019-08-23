@@ -96,12 +96,20 @@ export function redirect(res, url) {
 
 let authMode;
 export async function getAuthMode() {
-  // Store in Window so we don't have to request it on each request
   if (!authMode) {
     const { mode } = await apiFetch("auth_mode");
-
     authMode = mode;
   }
 
   return authMode;
+}
+
+let indexReady;
+export async function getIndexReady() {
+  if (!indexReady) {
+    const { ready } = await apiFetch("indexready");
+    indexReady = ready;
+  }
+
+  return indexReady;
 }

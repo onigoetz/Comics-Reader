@@ -1,8 +1,7 @@
 import React from "react";
 
-import fetch from "../fetch";
 import { RawLoading } from "../components/Loading";
-import { getDisplayName } from "../utils";
+import { getDisplayName, getIndexReady } from "../utils";
 
 export default function withIndexReady(WrappedComponent) {
   const component = ({ indexReady, ...props }) =>
@@ -21,7 +20,7 @@ export default function withIndexReady(WrappedComponent) {
       WrappedComponent.getInitialProps &&
       (await WrappedComponent.getInitialProps(ctx));
 
-    const { ready: indexReady } = await fetch("indexready");
+    const indexReady = await getIndexReady();
 
     return { ...componentProps, indexReady };
   };
