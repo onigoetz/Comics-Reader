@@ -1,11 +1,10 @@
 //@ts-check
 
-const { TYPE_DIR, TYPE_BOOK } = require("./types");
-
 module.exports = class Node {
-  constructor($name, $parent = null) {
-    this.name = $name;
-    this.parent = $parent;
+  constructor(name, parent, type) {
+    this.name = name;
+    this.parent = parent;
+    this.type = type;
     this.children = [];
   }
 
@@ -17,8 +16,12 @@ module.exports = class Node {
     return this.name;
   }
 
+  setType(type) {
+    this.type = type;
+  }
+
   getType() {
-    return this.count() === 0 ? TYPE_BOOK : TYPE_DIR;
+    return this.type;
   }
 
   getParent() {
@@ -56,6 +59,13 @@ module.exports = class Node {
 
   getChild(key) {
     return this.children.find(node => node.getName() === key);
+  }
+
+  removeEmptyDirs() {
+    this.children = this.children.filter(node => node.getThumb());
+    this.children.forEach(node => {
+      node.removeEmptyDirs();
+    });
   }
 
   forClient() {
