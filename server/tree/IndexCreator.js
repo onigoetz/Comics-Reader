@@ -8,6 +8,7 @@ const debug = require("debug")("comics:index");
 const naturalSort = require("natural-sort")();
 
 const cache = require("../cache");
+const { TYPE_DIR, TYPE_BOOK } = require("./types");
 const Node = require("./Node");
 const RootNode = require("./RootNode");
 const Walker = require("./Walker");
@@ -55,7 +56,7 @@ module.exports = class IndexCreator {
       const extension = path.extname(item).toLowerCase();
 
       if (isDir || extension === ".pdf" || archives.indexOf(extension) !== -1) {
-        const node = new Node(item, parent);
+        const node = new Node(item, parent, isDir ? TYPE_DIR : TYPE_BOOK);
         debug(`Found: ${node.getPath()}`);
         directories.push(node);
         this.foundBooks++;
@@ -75,6 +76,7 @@ module.exports = class IndexCreator {
     // it's probably a book itself
     // So we'll get the thumbnail directly, instead of traversing it again later.
     if (maybeThumbnails.length > 0 && directories.length === 0) {
+      parent.setType(TYPE_BOOK);
       parent.setThumb(this.getBestThumbnail(parent, maybeThumbnails));
     }
 
@@ -128,7 +130,7 @@ module.exports = class IndexCreator {
   }
 
   async getRootNode() {
-    const root = new RootNode("Home");
+    const root = new RootNode("Home", null, TYPE_DIR);
 
     let start = new Date();
     root.setChildren(await this.generateList(this.dirPath, root));
@@ -141,6 +143,8 @@ module.exports = class IndexCreator {
     start = new Date();
     await this.getThumbnails(root);
     console.log(`Computed thumbnails in ${getDuration(start)} s`);
+
+    root.removeEmptyDirs();
 
     this.isReady = true;
 

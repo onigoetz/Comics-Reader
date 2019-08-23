@@ -37,7 +37,6 @@ module.exports = class TreeWalker {
     }
 
     return entries
-      .filter(row => row.getThumb())
       .map(row => {
         const data = {};
 
