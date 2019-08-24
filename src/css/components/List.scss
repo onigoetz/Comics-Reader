@@ -41,6 +41,10 @@
   position: relative;
   display: inline-block;
   overflow: hidden;
+
+  img {
+    display: block;
+  }
 }
 
 .List__cell--unread .List__cell__image {
@@ -82,11 +86,11 @@
   opacity: 1;
 
   transition: all .2s;
-}
 
-.List__cell__image:hover .List__cell__unreadCount {
-  opacity: 0;
-  transform: translate3D(0, -30px, 0);
+  .List__cell:hover & {
+    opacity: 0;
+    transform: translate3D(0, -30px, 0);
+  }
 }
 
 .List__cell__name {
