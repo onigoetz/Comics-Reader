@@ -93,7 +93,7 @@
     "rimraf": "^2.6.2",
     "sharp": "^0.22.1",
     "tmp-promise": "^2.0.1",
-    "unzipper": "^0.10.1",
+    "unzipper": "^0.10.4",
     "webpack-bundle-analyzer": "^3.0.2"
   },
   "resolutions": {
