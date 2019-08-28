@@ -47,6 +47,6 @@ const nextConfiguration = {
   }
 };
 
-const plugins = [withBundleAnalyzer({}), withCSS];
+const plugins = [withBundleAnalyzer, withCSS];
 
 module.exports = withPlugins([...plugins], nextConfiguration);
