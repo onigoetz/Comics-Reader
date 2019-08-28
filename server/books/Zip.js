@@ -9,7 +9,6 @@ const { timeout: promiseTimeout } = require("promise-timeout");
 
 const Compressed = require("./Compressed");
 const { exec, createTempSymlink } = require("../exec");
-const { ensureDir } = require("../utils");
 
 const iconv = new Iconv("UTF-8", "UTF-8//IGNORE");
 
@@ -17,8 +16,12 @@ function cleanupName(nameBuffer) {
   return iconv.convert(nameBuffer).toString("utf8");
 }
 
-const outerTimeout = 60000;
-const innerTimeout = 5000;
+function getPath({ path, isUnicode, pathBuffer }) {
+  // if some legacy zip tool follow ZIP spec then this flag will be set
+  return isUnicode ? path : cleanupName(pathBuffer);
+}
+
+const outerTimeout = 15000;
 
 const failedFiles = new Set();
 
@@ -29,54 +32,13 @@ class NodeZip {
     this.path = filePath;
   }
 
-  readStream(fn) {
-    return fs
-      .createReadStream(this.path)
-      .pipe(unzipper.Parse()) //eslint-disable-line new-cap
-      .on("entry", async entry => {
-        // if some legacy zip tool follow ZIP spec then this flag will be set
-        const { isUnicode } = entry.props.flags;
-
-        let fileName = entry.path;
-
-        if (!isUnicode) {
-          fileName = cleanupName(entry.props.pathBuffer);
-        }
-
-        return fn(entry, fileName);
-      })
-      .promise();
+  async openFile() {
+    return unzipper.Open.file(this.path);
   }
 
   async getFileNames() {
-    return new Promise(async (resolve, reject) => {
-      let timeoutId;
-
-      const filenames = [];
-      await this.readStream(async (entry, fileName) => {
-        filenames.push(fileName);
-        await entry
-          .autodrain()
-          .on("error", e => console.error("Draining failed", e));
-
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-        }
-
-        // We're setting a timeout, will fail if the stream stops unexpectedly in the middle
-        // We're starting it here as we don't know exactly when the stream starts treating the files
-        // This ensures we give a faire chance to actually get to the files if there are a lot of comics to analyze
-        timeoutId = setTimeout(() => {
-          reject(
-            `No new entry in stream for ${innerTimeout}ms, it's probably stuck`
-          );
-        }, innerTimeout);
-      });
-
-      clearTimeout(timeoutId);
-
-      resolve(filenames);
-    });
+    const directory = await this.openFile();
+    return directory.files.map(entry => getPath(entry));
   }
 
   async extractFile(file) {
@@ -84,12 +46,19 @@ class NodeZip {
       postfix: pathLib.extname(file).toLowerCase()
     });
 
-    await this.readStream((entry, fileName) => {
-      if (fileName === file) {
-        entry.pipe(fs.createWriteStream(path));
-      } else {
-        entry.autodrain();
-      }
+    const directory = await this.openFile();
+    const entry = directory.files.find(entry => getPath(entry) == file);
+
+    if (!entry) {
+      throw new Error(`${file} not found in ${this.path}`);
+    }
+
+    await new Promise((resolve, reject) => {
+      entry
+        .stream()
+        .pipe(fs.createWriteStream(path))
+        .on("error", reject)
+        .on("finish", resolve);
     });
 
     return {
@@ -99,13 +68,8 @@ class NodeZip {
   }
 
   async extractAll(destination) {
-    return this.readStream(async (entry, fileName) => {
-      const finalPath = pathLib.join(destination, fileName);
-      if (entry.type === "File") {
-        await ensureDir(pathLib.dirname(finalPath));
-        entry.pipe(fs.createWriteStream(finalPath));
-      }
-    });
+    const directory = await this.openFile();
+    return directory.extract({ path: destination });
   }
 }
 
@@ -184,7 +148,9 @@ module.exports = class Zip extends Compressed {
     } catch (e) {
       failedFiles.add(this.path);
       console.error(
-        `Failed to run '${fn}', for '${this.path}', retrying through unzip command, original error: ${e}`
+        `Failed to run '${fn}', for '${
+          this.path
+        }', retrying through unzip command, original error: ${e}`
       );
     }
 
