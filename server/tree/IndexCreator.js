@@ -32,6 +32,7 @@ module.exports = class IndexCreator {
     this.foundBooks = 0;
     this.dirPath = dirPath;
     this.isReady = false;
+    this.errors = [];
   }
 
   async generateList(dirPath = ".", parent = null) {
@@ -239,6 +240,13 @@ module.exports = class IndexCreator {
         }
       });
     } catch (e) {
+      this.errors.push([
+        node.getPath(),
+        {
+          message: e.message,
+          stack: e.all ? `${e.all}\n\n${e.stack}` : e.stack
+        }
+      ]);
       console.error(e.message);
     }
 
