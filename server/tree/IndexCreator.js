@@ -37,8 +37,10 @@ function forEachAsync(items, cb) {
 module.exports = class IndexCreator {
   constructor(dirPath) {
     this.foundBooks = 0;
+    this.foundThumbs = 0;
     this.dirPath = dirPath;
     this.isReady = false;
+    this.phase = "NONE";
     this.errors = [];
   }
 
@@ -84,6 +86,7 @@ module.exports = class IndexCreator {
     if (maybeThumbnails.length > 0 && directories.length === 0) {
       parent.setType(TYPE_BOOK);
       parent.setThumb(this.getBestThumbnail(parent, maybeThumbnails));
+      this.foundThumbs++;
     }
 
     return directories;
@@ -99,6 +102,7 @@ module.exports = class IndexCreator {
     // A PDF file
     if (extension === ".pdf") {
       node.setThumb(`${node.getPath()}/1.png`);
+      this.foundThumbs++;
       return;
     }
 
@@ -106,6 +110,7 @@ module.exports = class IndexCreator {
     if (archives.indexOf(extension) !== -1) {
       try {
         node.setThumb(await this.getThumbFromArchive(node));
+        this.foundThumbs++;
       } catch (e) {
         console.error(`Could not open archive: ${node.getPath()} (${e})`);
       }
@@ -117,6 +122,7 @@ module.exports = class IndexCreator {
     if (node.getChildren()) {
       await this.getThumbnails(node);
       node.setThumb(await this.getThumbForDirectory(node));
+      this.foundThumbs++;
       return;
     }
 
@@ -136,18 +142,23 @@ module.exports = class IndexCreator {
   async getRootNode() {
     const root = new RootNode("Home", null, TYPE_DIR);
 
+    this.phase = "SCAN";
     let start = new Date();
     root.setChildren(await this.generateList(this.dirPath, root));
     console.log(
       `Found ${this.foundBooks} books or directories in ${getDuration(start)} s`
     );
 
+    console.log(`Found ${this.foundThumbs} thumbnails already`);
+
     start = new Date();
+    this.phase = "THUMBS";
     await this.getThumbnails(root);
     console.log(`Computed thumbnails in ${getDuration(start)} s`);
 
     root.removeEmptyDirs();
 
+    this.phase = "DONE";
     this.isReady = true;
 
     this.walker = new Walker(root);
