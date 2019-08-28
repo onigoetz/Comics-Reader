@@ -14,9 +14,8 @@ require("./comics");
 
 const title = chalk.underline.bold;
 
-const dev = process.env.NODE_ENV !== "production";
 const app = next({
-  dev,
+  dev: process.env.NODE_ENV !== "production",
   dir: process.cwd()
 });
 const handle = app.getRequestHandler();
