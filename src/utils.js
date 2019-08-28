@@ -103,13 +103,3 @@ export async function getAuthMode() {
 
   return authMode;
 }
-
-let indexReady;
-export async function getIndexReady() {
-  if (!indexReady) {
-    const { ready } = await apiFetch("indexready");
-    indexReady = ready;
-  }
-
-  return indexReady;
-}
