@@ -27,6 +27,13 @@ function getDuration(start) {
   return (end.getTime() - start.getTime()) / 1000;
 }
 
+function forEachAsync(items, cb) {
+  return items.reduce(async (previous, node) => {
+    await previous;
+    return cb(node);
+  }, Promise.resolve());
+}
+
 module.exports = class IndexCreator {
   constructor(dirPath) {
     this.foundBooks = 0;
@@ -42,7 +49,7 @@ module.exports = class IndexCreator {
 
     const files = await readdir(dirPath);
 
-    const promises = files.map(async item => {
+    await forEachAsync(files, async item => {
       const itemPath = path.join(dirPath, item);
       if (ignore.indexOf(item) !== -1) {
         return;
@@ -70,8 +77,6 @@ module.exports = class IndexCreator {
 
       maybeThumbnails.push(item);
     });
-
-    await Promise.all(promises);
 
     // If this folder contains images, but doesn't contain books
     // it's probably a book itself
@@ -125,9 +130,7 @@ module.exports = class IndexCreator {
       return;
     }
 
-    const promises = children.map(node => this.getThumbnailInChild(node));
-
-    await Promise.all(promises);
+    await forEachAsync(children, async node => this.getThumbnailInChild(node));
   }
 
   async getRootNode() {
@@ -136,9 +139,7 @@ module.exports = class IndexCreator {
     let start = new Date();
     root.setChildren(await this.generateList(this.dirPath, root));
     console.log(
-      `Found ${this.foundBooks} books and directories in ${getDuration(
-        start
-      )} s`
+      `Found ${this.foundBooks} books or directories in ${getDuration(start)} s`
     );
 
     start = new Date();
@@ -150,6 +151,8 @@ module.exports = class IndexCreator {
     this.isReady = true;
 
     this.walker = new Walker(root);
+
+    // TODO : list number of books total
 
     return root;
   }
