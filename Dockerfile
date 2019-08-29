@@ -1,4 +1,4 @@
-FROM node:12.6.0 AS build
+FROM node:12.9.1 AS build
 
 WORKDIR /usr/src/app
 
@@ -14,7 +14,7 @@ COPY crafty.config.js /usr/src/app/crafty.config.js
 
 RUN yarn crafty:build
 
-FROM node:12.6.0
+FROM node:12.9.1
 
 # Install extensions : zip, rar, imagick
 RUN (sed -i "s/main/main contrib non-free/g" /etc/apt/sources.list) && \
@@ -29,10 +29,8 @@ WORKDIR /usr/src/app
 
 # Symlink volume
 VOLUME /comics
-RUN ln -s /comics /usr/src/app/images
-
 VOLUME /cache
-RUN ln -s /cache /usr/src/app/cache
+RUN ln -s /comics /usr/src/app/images && ln -s /cache /usr/src/app/cache
 
 # Run yarn install early to allow a quick
 # rebuild if the package.json didn't change
@@ -41,15 +39,13 @@ RUN yarn install --production --non-interactive && yarn cache clean
 
 # Copy files
 COPY --from=build /usr/src/app/dist/ /usr/src/app/dist/
-COPY crafty.config.js /usr/src/app/crafty.config.js
-COPY pages/ /usr/src/app/pages/
-COPY server/ /usr/src/app/server/
-COPY src/ /usr/src/app/src/
-COPY comics manifest.json next.config.js /usr/src/app/
+COPY pages/ ./pages/
+COPY server/ ./server/
+COPY src/ ./src/
+COPY comics manifest.json next.config.js ./
 
 RUN yarn build
 
 EXPOSE 8080
 
-# Generate final autoloader
 CMD [ "yarn", "start" ]

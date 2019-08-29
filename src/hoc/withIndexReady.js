@@ -4,15 +4,13 @@ import { RawLoading } from "../components/Loading";
 import { getDisplayName } from "../utils";
 import apiFetch from "../fetch";
 
-let indexReady;
-let indexReadyData;
+let globalIndexReady = { ready: false };
 export async function getIndexReady() {
-  if (!indexReady) {
-    indexReadyData = await apiFetch("indexready");
-    indexReady = indexReadyData.ready;
+  if (!globalIndexReady.ready) {
+    globalIndexReady = await apiFetch("indexready");
   }
 
-  return indexReady;
+  return globalIndexReady.ready;
 }
 
 export default function withIndexReady(WrappedComponent) {
@@ -21,15 +19,15 @@ export default function withIndexReady(WrappedComponent) {
       <WrappedComponent {...props} />
     ) : (
       <RawLoading>
-        {indexReadyData.phase == "NONE" && <h1>Scan will begin shortly</h1>}
-        {indexReadyData.phase == "SCAN" && (
+        {indexReadyData.phase === "NONE" && <h1>Scan will begin shortly</h1>}
+        {indexReadyData.phase === "SCAN" && (
           <>
             <h1>Scanning for Comics...</h1>
             <br />
             <small>{indexReadyData.books} books and directories found</small>
           </>
         )}
-        {indexReadyData.phase == "THUMBS" && (
+        {indexReadyData.phase === "THUMBS" && (
           <>
             <h1>Computing thumbnails...</h1>
             <br />
@@ -50,7 +48,7 @@ export default function withIndexReady(WrappedComponent) {
     const indexReady = await getIndexReady();
 
     if (!indexReady) {
-      return { indexReady, indexReadyData };
+      return { indexReady, indexReadyData: globalIndexReady };
     }
 
     const componentProps =

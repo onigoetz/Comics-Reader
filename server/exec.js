@@ -12,7 +12,10 @@ const processTimeout = 5000;
 // unrar, unzip and friends is more I/O bound in general,
 // however it still gives a rough indication of what the server might support.
 // As we don't want this value to become too big, we're keeping it between 1 and 3
-const maxProcess = Math.min(3, Math.max(1, Math.floor(require("os").cpus().length / 2)));
+const maxProcess = Math.min(
+  3,
+  Math.max(1, Math.floor(require("os").cpus().length / 2))
+);
 
 function defer() {
   var deferred = {};

@@ -47,7 +47,9 @@ class NodeZip {
     });
 
     const directory = await this.openFile();
-    const entry = directory.files.find(entry => getPath(entry) == file);
+    const entry = directory.files.find(
+      currentFile => getPath(currentFile) === file
+    );
 
     if (!entry) {
       throw new Error(`${file} not found in ${this.path}`);
@@ -148,9 +150,7 @@ module.exports = class Zip extends Compressed {
     } catch (e) {
       failedFiles.add(this.path);
       console.error(
-        `Failed to run '${fn}', for '${
-          this.path
-        }', retrying through unzip command, original error: ${e}`
+        `Failed to run '${fn}', for '${this.path}', retrying through unzip command, original error: ${e}`
       );
     }
 

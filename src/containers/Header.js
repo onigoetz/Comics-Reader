@@ -116,10 +116,7 @@ function Header({ url, current, parent }) {
           type="image/x-icon"
           href={`/static/images/favicon.ico`}
         />
-        <link
-          rel="apple-touch-icon"
-          href={`/static/images/apple-touch.png`}
-        />
+        <link rel="apple-touch-icon" href={`/static/images/apple-touch.png`} />
         <link
           rel="apple-touch-icon"
           sizes="72x72"
