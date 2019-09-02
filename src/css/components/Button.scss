@@ -1,10 +1,17 @@
+:root {
+    --button-color: var(--primary-color);
+    --button-border-color: var(--primary-color);
+
+    --button-font-size: var(--font-size-medium);
+    --button-big-font-size: var(--font-size-big);
+}
 
 .Button {
     position: relative;
     display: inline-block;
-    padding: 6px 8px 7px;
+    padding: .4em .6em;
     margin-bottom: 0;
-    font-size: $button-font-size;
+    font-size: var(--button-font-size);
     font-weight: 400;
     line-height: 1;
     text-align: center;
@@ -14,9 +21,9 @@
     border-radius: 3px;
 
     /* IOS */
-    color: $primary-color;
+    color: var(--button-color);
     background-color: #000;
-    border: 1px solid $primary-color;
+    border: 1px solid var(--button-border-color);
     transition: all;
     transition-duration: .2s;
     transition-timing-function: linear;
@@ -41,7 +48,7 @@
     margin: 0 .4em;
 
     /* IOS */
-    color: $primary-color;
+    color: var(--primary-color);
     background-color: transparent;
     border: none;
 
@@ -55,22 +62,5 @@
 }
 
 .Button--big {
-    font-size: 1.1em;
-}
-
-.Header .Button {
-    position: relative;
-    top: 7px;
-    padding: 6px 12px 7px;
-    margin-top: 0;
-    font-weight: 400;
-}
-
-.Header .Button--link {
-    top: 0;
-    padding: 0;
-    font-size: 16px;
-    line-height: 44px;
-    color: $primary-color;
-    border: 0;
+    font-size: var(--button-big-font-size);
 }

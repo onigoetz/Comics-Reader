@@ -1,13 +1,14 @@
 .Search {
     position: relative;
 
-    display:inline-block;
+    display: inline-block;
 
-    height: calc($bar-height - 1px);
+    margin-top: 2px;
+    height: calc(var(--bar-height) - 1px);
     min-width: 30px;
 
     .Button {
-        position:absolute;
+        position: absolute;
         right: 0;
         top: 0;
         z-index: var(--zindex-header-search-icon);
@@ -16,7 +17,7 @@
 
 .SearchResult {
     position: absolute;
-    top: $bar-height;
+    top: var(--bar-height);
     left: 0;
     right: 0;
     bottom: 0;
@@ -27,7 +28,9 @@
     min-width: 500px;
     margin: 0 auto;
 
-    background: $background-color;
+    background: var(--background-color);
+    border-left: var(--border-color-default) 1px solid;
+    border-right: var(--border-color-default) 1px solid;
 
     box-shadow: black 0 4px 10px;
 }

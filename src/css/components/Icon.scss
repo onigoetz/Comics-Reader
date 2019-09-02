@@ -2,10 +2,14 @@
     margin-right: 2px;
 }
 
+.Header .Button {
+    display: inline-block;
+}
+
 .Header .Button svg {
-    fill: currentColor;
-    display:inline-block;
-    height: 1.6em;
-    transform: translateY(4px);
-    margin-top: -.7em;
+    display: inline-block;
+    vertical-align: middle;
+
+    transform: translateY(-2px);
+    font-size: 1.5em;
 }

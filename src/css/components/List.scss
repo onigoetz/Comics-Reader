@@ -1,3 +1,10 @@
+:root {
+  --list-item-text-height: 1.5em;
+  --list-item-font-size: var(--font-size-medium);
+
+  --list-item-small-font-size: var(--font-size-small);
+}
+
 //
 // Table views
 // --------------------------------------------------
@@ -58,7 +65,7 @@
     right: -16px;
     width: 32px;
     height: 32px;
-    background: $primary-color;
+    background: var(--primary-color);
     transform: rotate(45deg);
     box-shadow: 0 0 4px rgba(0,0,0,.6);
 
@@ -77,12 +84,12 @@
   top: 0;
   right: 0;
 
-  background-color: $primary-color;
-  color: #fff;
+  background-color: var(--primary-color);
+  color: #000;
   padding: 0 8px;
   box-shadow: 0 0 4px rgba(0,0,0,.6);
   line-height: 24px;
-  font-size: 13px;
+  font-size: var(--font-size-small);
   opacity: 1;
 
   transition: all .2s;
@@ -94,13 +101,12 @@
 }
 
 .List__cell__name {
-  display: block;
-  line-height: 20px;
-  font-size: 15px;
+  line-height: var(--list-item-text-height);
+  font-size: var(--list-item-font-size);
 }
 
 .List__cell__details {
-  line-height: 20px;
-  font-size: 13px;
-  color: hsla(0,0%,100%,.45);
+  line-height: var(--list-item-text-height);
+  font-size: var(--list-item-small-font-size);
+  color: hsla(0,0%,100%,.65);
 }

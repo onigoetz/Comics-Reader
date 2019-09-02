@@ -3,7 +3,7 @@ import { Portal } from "react-portal";
 import Link from "next/link";
 
 import Loading from "../components/Loading";
-import { IoIosSearch } from "../components/Icons";
+import { FiSearch } from "react-icons/fi";
 import useInput from "../hooks/useInput";
 import { useAuth } from "../hoc/withAuth";
 import { fetchWithAuth } from "../fetch";
@@ -56,7 +56,7 @@ function Search() {
         className="Button Button--link"
         title="Search"
       >
-        <IoIosSearch />
+        <FiSearch width="28px" height="28px" />
       </button>
       {searchVisible && (
         <input

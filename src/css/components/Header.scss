@@ -1,21 +1,27 @@
+:root {
+    --bar-height: 44px;
+
+    --header-background-color: #000;
+    --header-border-color: var(--border-color-default);
+}
 
 .Header, .BookInfo {
-    height: $bar-height;
+    height: var(--bar-height);
     padding: 0 .5rem;
-    background-color: $header-background-color;
+    background-color: var(--header-background-color);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 
-    border-bottom: 1px solid #888;
+    border-bottom: 1px solid var(--header-border-color);
 }
 
 .Header__Section {
-    background-color: $header-background-color;
+    background-color: var(--header-background-color);
     padding:0 .5rem;
 
     position: relative;
     z-index: var(--zindex-header-section);
-    height: calc($bar-height - 1px);
+    height: calc(var(--bar-height) - 1px);
 }
 
 .Header__title {
@@ -26,21 +32,34 @@
     margin: 0 -10px;
     font-size: 17px;
     font-weight: 500;
-    line-height: $bar-height;
+    line-height: var(--bar-height);
     left: 0;
-    color: $text-color;
+    color: var(--text-color);
     text-align: center;
     white-space: nowrap;
+}
+
+.Header .Button {
+    margin-top: 0;
+    font-weight: 400;
+}
+
+.Header .Button--link {
+    padding: 0;
+    font-size: 16px;
+    line-height: 44px;
+    color: var(--primary-color);
+    border: 0;
 }
 
 .Dropdown__content {
     display: none;
     position: absolute;
-    top: calc($bar-height - 1px);
+    top: calc(var(--bar-height) - 1px);
     right: -0.5em;
-    background: #000;
+    background: var(--header-background-color);
 
-    border: 1px solid #888;
+    border: 1px solid var(--header-border-color);
     border-top-width: 0;
 
     .Button:hover & {

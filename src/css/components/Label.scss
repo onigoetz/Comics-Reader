@@ -1,12 +1,12 @@
 
 .Label {
-    line-height: 1.4em;
+    line-height: 2em;
     margin-bottom: 1em;
     display: block;
 }
 
 .Label__text {
-    color: red;
-    font-size: 0.9em;
+    color: var(--color-error);
+    font-size: var(--font-size-small);
 }
 

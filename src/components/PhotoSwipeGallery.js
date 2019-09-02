@@ -202,7 +202,7 @@ export default class PhotoSwipeGallery extends React.Component {
                 }}
                 {...this.getThumbSize(item.h, item.w)}
               />
-              <span className="Gallery__page">{k + 1}</span>
+              <div className="Gallery__page">{k + 1}</div>
             </div>
           ))}
         </div>

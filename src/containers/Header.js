@@ -7,7 +7,7 @@ import Head from "next/head";
 
 import Search from "./Search";
 import { cleanName, createUrl } from "../utils";
-import { IoIosHome, IoIosArrowBack, IoIosAccount } from "../components/Icons";
+import { FiChevronLeft, FiUser, FiHome } from "react-icons/fi";
 import { useAuth } from "../hoc/withAuth";
 
 function isNotHome(url) {
@@ -22,10 +22,10 @@ function Home() {
   return (
     <Link href="/">
       <a
-        className="Header__item Header__item--link Button Button--link"
+        className="Button Button--link"
         title="Back to Home"
       >
-        <IoIosHome />
+        <FiHome />
       </a>
     </Link>
   );
@@ -49,7 +49,7 @@ function Previous({ parent, previousUrl, history }) {
     return (
       <div className="Header__Section pull-left">
         <button
-          className="Header__item Header__item--link Button Button--link Button--back"
+          className="Button Button--link Button--back"
           title={`Back to ${title}`}
           onClick={() => history.goBack()}
         >
@@ -71,10 +71,10 @@ function Previous({ parent, previousUrl, history }) {
     <div className="Header__Section pull-left">
       <Link {...linkProps}>
         <a
-          className="Header__item Header__item--link Button Button--link Button--back"
+          className="Button Button--link Button--back"
           title={`Back to ${title}`}
         >
-          <IoIosArrowBack />
+          <FiChevronLeft />
           {title}
         </a>
       </Link>
@@ -85,7 +85,7 @@ function Previous({ parent, previousUrl, history }) {
 function User() {
   return (
     <div className="Button Button--link">
-      <IoIosAccount />
+      <FiUser />
       <div className="Dropdown__content">
         <Link href="/change_password">
           <a className="Link">Change Password</a>
