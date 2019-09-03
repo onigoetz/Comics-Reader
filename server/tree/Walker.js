@@ -1,8 +1,7 @@
 //@ts-check
 
-const naturalSort = require("natural-sort")();
-
 const { TYPE_DIR } = require("./types");
+const { sortNaturally } = require("../utils");
 
 module.exports = class TreeWalker {
   constructor(tree) {
@@ -49,6 +48,6 @@ module.exports = class TreeWalker {
 
         return row.getName();
       })
-      .sort(naturalSort);
+      .sort(sortNaturally);
   }
 };

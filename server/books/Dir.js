@@ -4,13 +4,13 @@ const path = require("path");
 const fs = require("fs");
 const { promisify } = require("util");
 
-const naturalSort = require("natural-sort")();
 const imageSize = require("image-size");
 
 const {
   getBigatureSize,
   validImageFilter,
-  isDirectorySync
+  isDirectorySync,
+  sortNaturally
 } = require("../utils");
 
 const readdir = promisify(fs.readdir);
@@ -38,7 +38,7 @@ module.exports = class Dir {
         item =>
           validImageFilter(item) && !isDirectorySync(path.join(dirPath, item))
       )
-      .sort(naturalSort)
+      .sort(sortNaturally)
       .map(async item => {
         const fullPath = path.join(dirPath, item);
         const data = await sizeOf(fullPath);

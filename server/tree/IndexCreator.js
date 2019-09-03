@@ -5,7 +5,6 @@ const path = require("path");
 const { promisify } = require("util");
 
 const debug = require("debug")("comics:index");
-const naturalSort = require("natural-sort")();
 
 const cache = require("../cache");
 const { TYPE_DIR, TYPE_BOOK } = require("./types");
@@ -13,7 +12,12 @@ const Node = require("./Node");
 const RootNode = require("./RootNode");
 const Walker = require("./Walker");
 const { getFileNames } = require("../books");
-const { getValidImages, isDirectorySync, isDirectory } = require("../utils");
+const {
+  getValidImages,
+  isDirectorySync,
+  isDirectory,
+  sortNaturally
+} = require("../utils");
 
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
@@ -195,7 +199,16 @@ module.exports = class IndexCreator {
       return false;
     }
 
-    return `${folder.getPath()}/${images.sort(naturalSort)[0]}`;
+    // Instead of sorting the list, we do a one pass sorting by always keeping the smaller item.
+    // Similar to Math.min / Math.max
+    const thumbnail = images.reduce((previous, current) => {
+      if (previous == null) {
+        return current;
+      }
+      return sortNaturally(current, previous) == 1 ? previous : current;
+    }, null);
+
+    return `${folder.getPath()}/${thumbnail}`;
   }
 
   /**

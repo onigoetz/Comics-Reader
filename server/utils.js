@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const { promisify } = require("util");
+const natsort = require("natural-sort")();
 
 const sizes = require("./sizes");
 
@@ -101,5 +102,6 @@ module.exports = {
   isDirectory,
   isFile,
   validImageFilter,
-  fromUrl
+  fromUrl,
+  sortNaturally: natsort
 };

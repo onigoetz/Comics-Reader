@@ -6,9 +6,8 @@ const { promisify } = require("util");
 const sizeOf = promisify(require("image-size"));
 const tmp = require("tmp-promise");
 const rimraf = require("rimraf");
-const naturalSort = require("natural-sort")();
 
-const { getValidImages, getBigatureSize } = require("../utils");
+const { getValidImages, getBigatureSize, sortNaturally } = require("../utils");
 
 module.exports = class Compressed {
   constructor(filePath) {
@@ -30,7 +29,7 @@ module.exports = class Compressed {
 
     await this.extractAll(tmpdir.path);
 
-    const promises = images.sort(naturalSort).map(async image => {
+    const promises = images.sort(sortNaturally).map(async image => {
       const data = await sizeOf(path.join(tmpdir.path, image));
       const size = getBigatureSize(data);
 
