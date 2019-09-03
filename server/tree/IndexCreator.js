@@ -3,6 +3,8 @@
 const fs = require("fs");
 const path = require("path");
 const { promisify } = require("util");
+const Table = require("cli-table");
+const percentile = require("percentile");
 
 const debug = require("debug")("comics:index");
 
@@ -12,12 +14,7 @@ const Node = require("./Node");
 const RootNode = require("./RootNode");
 const Walker = require("./Walker");
 const { getFileNames } = require("../books");
-const {
-  getValidImages,
-  isDirectorySync,
-  isDirectory,
-  sortNaturally
-} = require("../utils");
+const { getValidImages, isDirectory, sortNaturally } = require("../utils");
 
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
@@ -46,6 +43,15 @@ module.exports = class IndexCreator {
     this.isReady = false;
     this.phase = "NONE";
     this.errors = [];
+    this.stats = [];
+  }
+
+  addStat(type, start) {
+    const hrend = process.hrtime(start);
+
+    // get in ms
+    const duration = hrend[0] * 1000 + hrend[1] / 1000000;
+    this.stats.push({ type, duration });
   }
 
   async generateList(dirPath = ".", parent = null) {
@@ -53,6 +59,7 @@ module.exports = class IndexCreator {
     const directories = [];
     const maybeThumbnails = [];
 
+    const hrstart = process.hrtime();
     const files = await readdir(dirPath);
 
     await forEachAsync(files, async item => {
@@ -90,6 +97,7 @@ module.exports = class IndexCreator {
     if (maybeThumbnails.length > 0 && directories.length === 0) {
       parent.setType(TYPE_BOOK);
       parent.setThumb(this.getBestThumbnail(parent, maybeThumbnails));
+      this.addStat("Dir", hrstart);
       this.foundThumbs++;
     }
 
@@ -103,9 +111,12 @@ module.exports = class IndexCreator {
       return;
     }
 
+    const hrstart = process.hrtime();
+
     // A PDF file
     if (extension === ".pdf") {
       node.setThumb(`${node.getPath()}/1.png`);
+      this.addStat("PDF", hrstart);
       this.foundThumbs++;
       return;
     }
@@ -114,6 +125,7 @@ module.exports = class IndexCreator {
     if (archives.indexOf(extension) !== -1) {
       try {
         node.setThumb(await this.getThumbFromArchive(node));
+        this.addStat(extension.replace(".", ""), hrstart);
         this.foundThumbs++;
       } catch (e) {
         console.error(`Could not open archive: ${node.getPath()} (${e})`);
@@ -143,6 +155,38 @@ module.exports = class IndexCreator {
     await forEachAsync(children, async node => this.getThumbnailInChild(node));
   }
 
+  writeStats() {
+    const table = new Table({
+      head: ["Type", "Books", "Average Duration", "Median", "95th Percentile"]
+    });
+
+    const keys = this.stats
+      .map(item => item.type)
+      .filter((value, index, self) => self.indexOf(value) === index);
+
+    const addRow = (key, items) => {
+      const durations = items.map(item => item.duration);
+      const total = durations.reduce((a, b) => a + b, 0);
+
+      table.push([
+        key,
+        items.length,
+        `${(total / durations.length).toFixed(2)} ms`,
+        `${percentile(50, durations).toFixed(2)} ms`,
+        `${percentile(95, durations).toFixed(2)} ms`
+      ]);
+    };
+
+    keys.forEach(key => {
+      const items = this.stats.filter(item => item.type == key);
+      addRow(key, items);
+    });
+
+    addRow("All", this.stats);
+
+    console.log(table.toString());
+  }
+
   async getRootNode() {
     const root = new RootNode("Home", null, TYPE_DIR);
 
@@ -167,7 +211,7 @@ module.exports = class IndexCreator {
 
     this.walker = new Walker(root);
 
-    // TODO : list number of books total
+    this.writeStats();
 
     return root;
   }
@@ -209,26 +253,6 @@ module.exports = class IndexCreator {
     }, null);
 
     return `${folder.getPath()}/${thumbnail}`;
-  }
-
-  /**
-   * Get the thumbnail for a directory
-   *
-   * @param {Node} folder The node to get the thumbnail from
-   * @return {boolean|string} The path to a thumbnail or false
-   */
-  getThumbFromDirectory(folder) {
-    const files = fs
-      .readdirSync(`${process.env.DIR_COMICS}/${folder.getPath()}`)
-      .filter(
-        item =>
-          item.substring(0, 1) !== "." &&
-          !isDirectorySync(
-            `${process.env.DIR_COMICS}/${folder.getPath()}/${item}`
-          )
-      );
-
-    return this.getBestThumbnail(folder, files);
   }
 
   /**
