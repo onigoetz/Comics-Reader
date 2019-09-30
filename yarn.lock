@@ -4662,10 +4662,10 @@ ignore@^5.0.6:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.1.4.tgz#84b7b3dbe64552b6ef0eca99f6743dbec6d97adf"
   integrity sha512-MzbUSahkTW1u7JpKKjY7LCARd1fU5W2rLdxlM4kdkayuCwZImjkpluF9CM1aLewYJguPDqewLam18Y6AU69A8A==
 
-image-size@^0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.8.1.tgz#d1dd4167a43196b1cb5fe58f2169340cdc21f862"
-  integrity sha512-X2HcWljsuWJPMTb1CGAN2+xuAAjQK5kdSzhqQXZlJBf0MpdXqfIeQCMJKYKS2OEVDwReS2zO5i7MlikWPBTotQ==
+image-size@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.8.2.tgz#9b5cef7a18a0991beba861b731fb4cfe7a45822d"
+  integrity sha512-0AO8bEDtAcC+dScZmCDUvmxIYWlJ+0DQOl1BkTQYrrM3/oQORS03P0gDT7ZoElRozHlfoUxT+L2ErLFmbT5tdA==
   dependencies:
     queue "6.0.1"
 
