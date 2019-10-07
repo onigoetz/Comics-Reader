@@ -68,7 +68,7 @@
     "meow": "^5.0.0",
     "morgan": "^1.9.1",
     "natural-sort": "^1.0.0",
-    "next": "^9.0.6",
+    "next": "^9.0.8",
     "next-compose-plugins": "^2.2.0",
     "next-cookies": "^1.1.2",
     "pdfjs-dist": "^2.1.266",
