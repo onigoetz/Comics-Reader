@@ -42,7 +42,7 @@
     "@types/sharp": "^0.22.2"
   },
   "dependencies": {
-    "@next/bundle-analyzer": "^9.0.6",
+    "@next/bundle-analyzer": "^9.0.8",
     "@zeit/next-css": "^1.0.1",
     "archive-type": "^4.0.0",
     "basic-auth": "^2.0.0",
