@@ -1,8 +1,6 @@
-FROM node:12.9.1 AS build
+FROM node:12.11.1 AS build
 
 WORKDIR /usr/src/app
-
-RUN mkdir /usr/src/app/static
 
 # Run yarn install early to allow a quick
 # rebuild if the package.json didn't change
@@ -14,7 +12,7 @@ COPY crafty.config.js /usr/src/app/crafty.config.js
 
 RUN yarn crafty:build
 
-FROM node:12.9.1
+FROM node:12.11.1
 
 # Install extensions : zip, rar, imagick
 RUN (sed -i "s/main/main contrib non-free/g" /etc/apt/sources.list) && \
@@ -39,10 +37,11 @@ RUN yarn install --production --non-interactive && yarn cache clean
 
 # Copy files
 COPY --from=build /usr/src/app/dist/ /usr/src/app/dist/
+COPY public/ ./public/
 COPY pages/ ./pages/
 COPY server/ ./server/
 COPY src/ ./src/
-COPY comics manifest.json next.config.js ./
+COPY comics next.config.js ./
 
 RUN yarn build
 

@@ -31,10 +31,7 @@ app.prepare().then(() => {
   server.use(morgan("tiny")); // Access logs
 
   // Static assets
-  server.use("/static", express.static("static"));
   server.use("/images", express.static("images"));
-  server.get("/manifest.json", require("./api/manifest"));
-  server.get("/favicon.ico", require("./api/favicon"));
   server.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, require("./api/imagecache"));
 
   server.all("*", (req, res) => {

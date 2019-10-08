@@ -110,37 +110,37 @@ function Header({ url, current, parent }) {
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <meta name="theme-color" content="#000000" />
 
-        <link rel="manifest" href={`/manifest.json`} />
+        <link rel="manifest" href="/manifest.json" />
         <link
           rel="icon"
           type="image/x-icon"
-          href={`/static/images/favicon.ico`}
+          href="/favicon.ico"
         />
         <link rel="apple-touch-icon" href={`/static/images/apple-touch.png`} />
         <link
           rel="apple-touch-icon"
           sizes="72x72"
-          href={`/static/images/apple-touch-72.png`}
+          href="/static/images/apple-touch-72.png"
         />
         <link
           rel="apple-touch-icon"
           sizes="114x114"
-          href={`/static/images/apple-touch-114.png`}
+          href="/static/images/apple-touch-114.png"
         />
         <link
           rel="apple-touch-icon"
           sizes="144x144"
-          href={`/static/images/apple-touch-144.png`}
+          href="/static/images/apple-touch-144.png"
         />
         <link
           rel="apple-touch-icon"
           sizes="256x156"
-          href={`/static/images/apple-touch-256.png`}
+          href="/static/images/apple-touch-256.png"
         />
         <link
           rel="apple-touch-icon"
           sizes="512x512"
-          href={`/static/images/apple-touch-512.png`}
+          href="/static/images/apple-touch-512.png"
         />
       </Head>
       <Headroom disableInlineStyles>
