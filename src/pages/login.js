@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-import Loading from "../src/components/Loading";
-import Layout from "../src/components/Layout";
-import useInput from "../src/hooks/useInput";
-import { login, tryLoginWithLocalStorage } from "../src/hoc/withAuth";
-import withDBMode from "../src/hoc/withDBMode";
-import apiFetch from "../src/fetch";
+import Loading from "../components/Loading";
+import Layout from "../components/Layout";
+import useInput from "../hooks/useInput";
+import { login, tryLoginWithLocalStorage } from "../hoc/withAuth";
+import withDBMode from "../hoc/withDBMode";
+import apiFetch from "../fetch";
 
 function Login() {
   const usernameField = useInput();

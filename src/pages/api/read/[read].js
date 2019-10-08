@@ -1,7 +1,7 @@
-import { authenticate } from "../../../server/auth";
-import comicsIndex from "../../../server/comics";
-import { fromUrl } from "../../../server/utils";
-import db from "../../../server/db";
+import { authenticate } from "../../../../server/auth";
+import comicsIndex from "../../../../server/comics";
+import { fromUrl } from "../../../../server/utils";
+import db from "../../../../server/db";
 
 export default async (req, res) => {
   if (!comicsIndex.isReady) {

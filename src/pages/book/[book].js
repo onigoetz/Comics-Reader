@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
-import { fetchWithAuth } from "../../src/fetch";
-import withAuth, { useAuth } from "../../src/hoc/withAuth";
-import withIndexReady from "../../src/hoc/withIndexReady";
-import Book from "../../src/components/Book";
-import Layout from "../../src/components/Layout";
-import { imageData, urlizeNode } from "../../src/utils";
+import { fetchWithAuth } from "../../fetch";
+import withAuth, { useAuth } from "../../hoc/withAuth";
+import withIndexReady from "../../hoc/withIndexReady";
+import Book from "../../components/Book";
+import Layout from "../../components/Layout";
+import { imageData, urlizeNode } from "../../utils";
 
 function markRead(token, book) {
   return fetchWithAuth(token, `read/${urlizeNode(book)}`, {

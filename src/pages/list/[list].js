@@ -1,11 +1,11 @@
 import React from "react";
 
-import withIndexReady from "../../src/hoc/withIndexReady";
-import withAuth from "../../src/hoc/withAuth";
-import Layout from "../../src/components/Layout";
-import List from "../../src/components/List";
-import { fetchWithAuth } from "../../src/fetch";
-import { imageData } from "../../src/utils";
+import withIndexReady from "../../hoc/withIndexReady";
+import withAuth from "../../hoc/withAuth";
+import Layout from "../../components/Layout";
+import List from "../../components/List";
+import { fetchWithAuth } from "../../fetch";
+import { imageData } from "../../utils";
 
 function ListManager({
   url,

@@ -1,8 +1,8 @@
 import React from "react";
 
-import Layout from "../src/components/Layout";
-import { fetchWithAuth } from "../src/fetch";
-import withAuth from "../src/hoc/withAuth";
+import Layout from "../components/Layout";
+import { fetchWithAuth } from "../fetch";
+import withAuth from "../hoc/withAuth";
 
 function Errors({ errors }) {
   return (

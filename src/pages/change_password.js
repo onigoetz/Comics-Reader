@@ -1,12 +1,12 @@
 /* global process */
 import React, { useState } from "react";
 
-import { fetchWithAuth } from "../src/fetch";
-import Layout from "../src/components/Layout";
-import Loading from "../src/components/Loading";
-import useInput from "../src/hooks/useInput";
-import withAuth, { useAuth, logout } from "../src/hoc/withAuth";
-import withDBMode from "../src/hoc/withDBMode";
+import { fetchWithAuth } from "../fetch";
+import Layout from "../components/Layout";
+import Loading from "../components/Loading";
+import useInput from "../hooks/useInput";
+import withAuth, { useAuth, logout } from "../hoc/withAuth";
+import withDBMode from "../hoc/withDBMode";
 
 function ChangePassword() {
   const currentPassword = useInput();

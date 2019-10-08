@@ -1,11 +1,11 @@
 /* global process */
 import path from "path";
-import comicsIndex from "../../../server/comics";
-import { getPages } from "../../../server/books";
-import { fromUrl } from "../../../server/utils";
-import cache from "../../../server/cache";
-import { authenticate } from "../../../server/auth";
-import db from "../../../server/db";
+import comicsIndex from "../../../../server/comics";
+import { getPages } from "../../../../server/books";
+import { fromUrl } from "../../../../server/utils";
+import cache from "../../../../server/cache";
+import { authenticate } from "../../../../server/auth";
+import db from "../../../../server/db";
 
 export default async (req, res) => {
   try {

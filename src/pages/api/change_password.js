@@ -1,6 +1,6 @@
-import { authenticate, checkPassword } from "../../server/auth";
-import comicsIndex from "../../server/comics";
-import db from "../../server/db";
+import { authenticate, checkPassword } from "../../../server/auth";
+import comicsIndex from "../../../server/comics";
+import db from "../../../server/db";
 
 export default async (req, res) => {
   if (!comicsIndex.isReady) {

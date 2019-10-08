@@ -1,7 +1,7 @@
-import comicsIndex from "../../../server/comics";
-import { fromUrl } from "../../../server/utils";
-import { authenticate } from "../../../server/auth";
-import db from "../../../server/db";
+import comicsIndex from "../../../../server/comics";
+import { fromUrl } from "../../../../server/utils";
+import { authenticate } from "../../../../server/auth";
+import db from "../../../../server/db";
 
 function isRead(readBooks, book) {
   return readBooks.indexOf(book) !== -1;

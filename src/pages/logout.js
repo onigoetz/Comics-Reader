@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Router from "next/router";
-import withAuth, { logout } from "../src/hoc/withAuth";
-import withDBMode from "../src/hoc/withDBMode";
+import withAuth, { logout } from "../hoc/withAuth";
+import withDBMode from "../hoc/withDBMode";
 
 function Logout() {
   useEffect(() => {

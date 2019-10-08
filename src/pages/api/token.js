@@ -1,5 +1,5 @@
 /* global process */
-import { checkPassword } from "../../server/auth";
+import { checkPassword } from "../../../server/auth";
 
 import jwt from "jwt-simple";
 
