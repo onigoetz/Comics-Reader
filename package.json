@@ -39,7 +39,7 @@
     "@types/compression": "^1.0.0",
     "@types/express": "^4.16.0",
     "@types/morgan": "^1.7.35",
-    "@types/sharp": "^0.22.2"
+    "@types/sharp": "^0.23.0"
   },
   "dependencies": {
     "@next/bundle-analyzer": "^9.0.6",
