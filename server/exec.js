@@ -41,7 +41,11 @@ class Queue {
       deferred
     } = item;
 
-    const opts = { timeout: processTimeout, ...(options || {}) };
+    const opts = {
+      all: true,
+      timeout: processTimeout,
+      ...(options || {})
+    };
 
     try {
       const subprocess = execa(cmd, args, opts);

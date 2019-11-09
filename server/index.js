@@ -1,6 +1,6 @@
 //@ts-check
 const next = require("next");
-const chalk = require("chalk").default;
+const chalk = require("chalk");
 const express = require("express");
 
 const loudRejection = require("loud-rejection");

@@ -1,4 +1,4 @@
-const chalk = require("chalk").default;
+const chalk = require("chalk");
 
 const IndexCreator = require("./tree/IndexCreator");
 
