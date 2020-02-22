@@ -46,7 +46,7 @@
     "@zeit/next-css": "^1.0.1",
     "archive-type": "^4.0.0",
     "basic-auth": "^2.0.0",
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^4.0.0",
     "better-sqlite3": "^5.4.3",
     "cache-manager": "^2.10.0",
     "cache-manager-fs-hash": "^0.0.7",
