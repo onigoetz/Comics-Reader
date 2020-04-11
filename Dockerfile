@@ -1,4 +1,4 @@
-FROM node:12.16.1 AS build
+FROM node:12.16.2 AS build
 
 WORKDIR /usr/src/app
 
@@ -12,7 +12,7 @@ COPY crafty.config.js /usr/src/app/crafty.config.js
 
 RUN yarn crafty:build
 
-FROM node:12.16.1
+FROM node:12.16.2
 
 # Install extensions : zip, rar, imagick
 RUN (sed -i "s/main/main contrib non-free/g" /etc/apt/sources.list) && \
