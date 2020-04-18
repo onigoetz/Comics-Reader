@@ -2520,12 +2520,11 @@ cache-loader@4.1.0:
     neo-async "^2.6.1"
     schema-utils "^2.0.0"
 
-cache-manager-fs-hash@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/cache-manager-fs-hash/-/cache-manager-fs-hash-0.0.7.tgz#297f34b9c1a2aaec7b526e7ae0742c4e3fae4888"
-  integrity sha512-7X+FPItAJf1tKKqJx6ljDJQc0fgSR5B+KPxFQLj+vYSL4q9XdrCbZldgsNb6wueRuIooj01wt0FubB08zaefRg==
+cache-manager-fs-hash@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/cache-manager-fs-hash/-/cache-manager-fs-hash-0.0.8.tgz#55484c4bd03c7bc4ef43008292dd32b6f7f8d9bc"
+  integrity sha512-U4N81RiwyUVSAutgfWxW1sV6YJRk9QgizCRXOqdEevMDNA+0uiXtnZTHYfg11RKyJnX+yXsaPsJHloIylk4ZhQ==
   dependencies:
-    es6-promisify "^6.0.0"
     lockfile "^1.0.4"
 
 cache-manager@^3.0.0:
@@ -3965,11 +3964,6 @@ es6-iterator@2.0.3, es6-iterator@^2.0.3, es6-iterator@~2.0.3:
     d "1"
     es5-ext "^0.10.35"
     es6-symbol "^3.1.1"
-
-es6-promisify@^6.0.0:
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/es6-promisify/-/es6-promisify-6.0.2.tgz#525c23725b8510f5f1f2feb5a1fbad93a93e29b4"
-  integrity sha512-eO6vFm0JvqGzjWIQA6QVKjxpmELfhWbDUWHm1rPfIbn55mhKPiAa5xpLmQWJrNa629ZIeQ8ZvMAi13kvrjK6Mg==
 
 es6-symbol@^3.1.1, es6-symbol@~3.1.2:
   version "3.1.3"
