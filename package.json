@@ -47,7 +47,7 @@
     "archive-type": "^4.0.0",
     "basic-auth": "^2.0.0",
     "bcrypt": "^4.0.0",
-    "better-sqlite3": "^6.0.0",
+    "better-sqlite3": "^7.0.0",
     "cache-manager": "^3.0.0",
     "cache-manager-fs-hash": "^0.0.8",
     "chalk": "^4.0.0",
