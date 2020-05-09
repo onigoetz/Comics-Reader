@@ -57,7 +57,7 @@
     "create-symlink": "^1.0.0",
     "debounce": "^1.2.0",
     "debug": "^4.1.0",
-    "execa": "4.0.0",
+    "execa": "4.0.1",
     "express": "^4.16.3",
     "iconv": "^3.0.0",
     "image-size": "^0.8.1",
