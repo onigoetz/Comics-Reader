@@ -21,10 +21,7 @@ function canGoBack(url) {
 function Home() {
   return (
     <Link href="/">
-      <a
-        className="Button Button--link"
-        title="Back to Home"
-      >
+      <a className="Button Button--link" title="Back to Home">
         <FiHome />
       </a>
     </Link>
@@ -111,11 +108,7 @@ function Header({ url, current, parent }) {
         <meta name="theme-color" content="#000000" />
 
         <link rel="manifest" href="/manifest.json" />
-        <link
-          rel="icon"
-          type="image/x-icon"
-          href="/favicon.ico"
-        />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href={`/static/images/apple-touch.png`} />
         <link
           rel="apple-touch-icon"

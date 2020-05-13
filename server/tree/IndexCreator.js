@@ -178,7 +178,7 @@ module.exports = class IndexCreator {
     };
 
     keys.forEach(key => {
-      const items = this.stats.filter(item => item.type == key);
+      const items = this.stats.filter(item => item.type === key);
       addRow(key, items);
     });
 
@@ -249,7 +249,7 @@ module.exports = class IndexCreator {
       if (previous == null) {
         return current;
       }
-      return sortNaturally(current, previous) == 1 ? previous : current;
+      return sortNaturally(current, previous) === 1 ? previous : current;
     }, null);
 
     return `${folder.getPath()}/${thumbnail}`;

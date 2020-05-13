@@ -19,10 +19,10 @@ const nextConfiguration = {
       config.externals = [];
     }
 
-    config.externals.push(function(context, request, callback) {
+    config.externals.push(function(basedir, request, callback) {
       resolve(
         request,
-        { basedir: context, preserveSymlinks: true },
+        { basedir, preserveSymlinks: true },
         (err, res) => {
           if (err) {
             return callback();

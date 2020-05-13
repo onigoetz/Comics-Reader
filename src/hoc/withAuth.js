@@ -54,7 +54,7 @@ export function useAuth() {
 }
 
 export default function withAuth(WrappedComponent) {
-  const component = ({ token, ...props }) => {
+  function Component({ token, ...props }) {
     useEffect(() => {
       const syncLogout = event => {
         if (event.key === LOGOUT_KEY) {
@@ -76,9 +76,9 @@ export default function withAuth(WrappedComponent) {
         <WrappedComponent {...props} />
       </AuthContext.Provider>
     );
-  };
+  }
 
-  component.getInitialProps = async ctx => {
+  Component.getInitialProps = async ctx => {
     const authMode = await getAuthMode();
 
     let token = null;
@@ -102,7 +102,7 @@ export default function withAuth(WrappedComponent) {
     return { ...componentProps, token };
   };
 
-  component.displayName = `withAuth(${getDisplayName(WrappedComponent)})`;
+  Component.displayName = `withAuth(${getDisplayName(WrappedComponent)})`;
 
-  return component;
+  return Component;
 }

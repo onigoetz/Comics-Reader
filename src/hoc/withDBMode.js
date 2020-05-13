@@ -4,9 +4,11 @@ import React from "react";
 import { redirect, getDisplayName, getAuthMode } from "../utils";
 
 export default function withDBMode(WrappedComponent) {
-  const component = props => <WrappedComponent {...props} />;
+  function Component(props) {
+    return <WrappedComponent {...props} />;
+  }
 
-  component.getInitialProps = async ctx => {
+  Component.getInitialProps = async ctx => {
     const authMode = await getAuthMode();
     // Can only use this page in DB Mode
     if (authMode !== "db") {
@@ -21,7 +23,7 @@ export default function withDBMode(WrappedComponent) {
     );
   };
 
-  component.displayName = `withDBMode(${getDisplayName(WrappedComponent)})`;
+  Component.displayName = `withDBMode(${getDisplayName(WrappedComponent)})`;
 
-  return component;
+  return Component;
 }

@@ -14,10 +14,12 @@ export async function getIndexReady() {
 }
 
 export default function withIndexReady(WrappedComponent) {
-  const component = ({ indexReady, indexReadyData, ...props }) =>
-    indexReady ? (
-      <WrappedComponent {...props} />
-    ) : (
+  function Component({ indexReady, indexReadyData, ...props }) {
+    if (indexReady) {
+      return <WrappedComponent {...props} />;
+    }
+
+    return (
       <RawLoading>
         {indexReadyData.phase === "NONE" && <h1>Scan will begin shortly</h1>}
         {indexReadyData.phase === "SCAN" && (
@@ -43,8 +45,9 @@ export default function withIndexReady(WrappedComponent) {
         <small>This might take a while, come back later...</small>
       </RawLoading>
     );
+  }
 
-  component.getInitialProps = async ctx => {
+  Component.getInitialProps = async ctx => {
     const indexReady = await getIndexReady();
 
     if (!indexReady) {
@@ -58,7 +61,7 @@ export default function withIndexReady(WrappedComponent) {
     return { ...componentProps, indexReady };
   };
 
-  component.displayName = `withIndexReady(${getDisplayName(WrappedComponent)})`;
+  Component.displayName = `withIndexReady(${getDisplayName(WrappedComponent)})`;
 
-  return component;
+  return Component;
 }
