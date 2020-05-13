@@ -1,0 +1,18 @@
+.headroom--scrolled {
+    will-change: transform;
+
+    position: fixed;
+    z-index: var(--zindex-header-fixed);
+    right: 0;
+    left: 0;
+    top: 0;
+}
+
+.headroom--scrolled.headroom--pinned {
+    transform: translateY(0);
+    transition: transform 0.25s ease-in-out;
+}
+
+.headroom--scrolled.headroom--unpinned {
+    transform: translateY(-100%);
+}

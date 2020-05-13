@@ -6,13 +6,13 @@
     margin-top: 2px;
     height: calc(var(--bar-height) - 1px);
     min-width: 30px;
+}
 
-    .Button {
-        position: absolute;
-        right: 0;
-        top: 0;
-        z-index: var(--zindex-header-search-icon);
-    }
+.Search :global(.Button) {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: var(--zindex-header-search-icon);
 }
 
 .SearchResult {
@@ -23,7 +23,7 @@
     bottom: 0;
 
     overflow-y: auto;
-    
+
     width: 70%;
     min-width: 500px;
     margin: 0 auto;
@@ -40,5 +40,5 @@
 
     border-bottom: 1px solid #aaa;
 
-    padding: .4em;
+    padding: 0.4em;
 }

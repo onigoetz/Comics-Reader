@@ -1,8 +1,9 @@
 import React from "react";
-import PropTypes from "prop-types";
 import debounce from "debounce";
 import { Portal } from "react-portal";
 import PhotoSwipe from "react-photoswipe/lib/PhotoSwipe";
+
+import styles from "./PhotoSwipeGallery.module.css";
 
 function getRowLimit(containerWidth) {
   if (containerWidth >= 1024) {
@@ -27,13 +28,6 @@ function elementInViewport(el) {
 }
 
 export default class PhotoSwipeGallery extends React.Component {
-  static propTypes = {
-    items: PropTypes.array.isRequired,
-    options: PropTypes.object,
-    onClose: PropTypes.func,
-    afterChange: PropTypes.func
-  };
-
   static defaultProps = {
     options: {},
     onClose: () => {},
@@ -179,7 +173,7 @@ export default class PhotoSwipeGallery extends React.Component {
     return (
       <div className="pswp-gallery">
         <div
-          className="Gallery"
+          className={styles.Gallery}
           ref={c => {
             this._gallery = c;
           }}
@@ -187,7 +181,7 @@ export default class PhotoSwipeGallery extends React.Component {
           {this.props.items.map((item, k) => (
             <div
               key={k}
-              className="Gallery__item"
+              className={styles.Gallery__item}
               onClick={this.showPhotoSwipe(k)}
             >
               <img
@@ -202,7 +196,7 @@ export default class PhotoSwipeGallery extends React.Component {
                 }}
                 {...this.getThumbSize(item.h, item.w)}
               />
-              <div className="Gallery__page">{k + 1}</div>
+              <div className={styles.Gallery__page}>{k + 1}</div>
             </div>
           ))}
         </div>

@@ -3,6 +3,8 @@ import LazyLoad from "react-lazyload";
 import Link from "next/link";
 import classnames from "classnames";
 
+import styles from "./List.module.css";
+
 import { image, createUrl, cleanName } from "../utils";
 import { TYPE_DIR } from "../types";
 
@@ -22,23 +24,26 @@ function bookCount(folder) {
 
 export default function List({ books, isRetina, supportsWebp }) {
   return (
-    <ul className="List">
+    <ul className={styles.List}>
       {books.filter(Boolean).map(folder => {
         const classes = {
-          "List__cell--allRead": allRead(folder),
-          "List__cell--unread": unread(folder)
+          [styles.List__cellAllRead]: allRead(folder),
+          [styles.List__cellUnread]: unread(folder)
         };
         return (
-          <li className={classnames("List__cell", classes)} key={folder.name}>
+          <li
+            className={classnames(styles.List__cell, classes)}
+            key={folder.name}
+          >
             <Link
               href={folder.type === TYPE_DIR ? "/list/[list]" : "/book/[book]"}
               as={createUrl(folder)}
             >
               <a>
-                <div className="List__cell__image">
+                <div className={styles.List__cell__image}>
                   {folder.type === TYPE_DIR &&
                     folder.booksInside !== folder.booksInsideRead && (
-                      <div className="List__cell__unreadCount">
+                      <div className={styles.List__cell__unreadCount}>
                         {folder.booksInside - folder.booksInsideRead}
                       </div>
                     )}
@@ -50,9 +55,13 @@ export default function List({ books, isRetina, supportsWebp }) {
                     />
                   </LazyLoad>
                 </div>
-                <div className="List__cell__name">{cleanName(folder.name)}</div>
+                <div className={styles.List__cell__name}>
+                  {cleanName(folder.name)}
+                </div>
                 {folder.type === TYPE_DIR && (
-                  <p className="List__cell__details">{bookCount(folder)}</p>
+                  <p className={styles.List__cell__details}>
+                    {bookCount(folder)}
+                  </p>
                 )}
               </a>
             </Link>

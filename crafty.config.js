@@ -1,16 +1,7 @@
 module.exports = {
-  browsers: "Safari >= 9, iOS >= 9, Chrome >= 33, Firefox >= 29, Edge >= 13",
-  img_basedir: "src/images",
-  presets: [
-    "@swissquote/crafty-preset-images-simple",
-    "@swissquote/crafty-preset-eslint",
-    "@swissquote/crafty-preset-postcss",
-    "@swissquote/crafty-runner-gulp"
-  ],
-  css: {
-    app: {
-      source: "src/css/app.scss",
-      watch: ["src/css/**"]
-    }
-  }
+    browsers: [">0.3%", "not ie 11", "not dead", "not op_mini all", "Safari >= 11", "iOS >= 11", "Chrome >= 70", "Firefox >= 60", "Edge >= 17"].join(", "),
+    presets: [
+        "@swissquote/crafty-preset-eslint",
+        "@swissquote/crafty-preset-postcss"
+    ]
 };

@@ -8,8 +8,7 @@ import { fetchWithAuth } from "../../fetch";
 import { imageData } from "../../utils";
 
 function ListManager({
-  url,
-  path,
+  currentUrl,
   dir,
   parent,
   books,
@@ -17,7 +16,7 @@ function ListManager({
   supportsWebp
 }) {
   return (
-    <Layout url={url} current={dir} parent={parent}>
+    <Layout url={currentUrl} current={dir} parent={parent}>
       <List books={books} isRetina={isRetina} supportsWebp={supportsWebp} />
     </Layout>
   );
@@ -25,7 +24,8 @@ function ListManager({
 
 ListManager.getInitialProps = async ({ query, req, token }) => {
   const path = query.list || "";
-  const url = path ? "" : `/book/${path}`;
+  const url = !!path ? `/list/${path}` : "";
+  console.log({url, query});
 
   const { isRetina, supportsWebp } = imageData(req);
 
@@ -37,8 +37,7 @@ ListManager.getInitialProps = async ({ query, req, token }) => {
   return {
     isRetina,
     supportsWebp,
-    url,
-    path,
+    currentUrl: url,
     dir,
     parent,
     books

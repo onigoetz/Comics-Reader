@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 
+import Form from "../components/Form";
 import Loading from "../components/Loading";
 import Layout from "../components/Layout";
+import Message from "../components/Message";
 import useInput from "../hooks/useInput";
 import { login, tryLoginWithLocalStorage } from "../hoc/withAuth";
 import withDBMode from "../hoc/withDBMode";
@@ -52,10 +54,8 @@ function Login() {
 
   return (
     <Layout current={{ name: "Login" }}>
-      <form className="Form" onSubmit={handleSubmit}>
-        {errorMessage && (
-          <div className="Message Message--error">{errorMessage}</div>
-        )}
+      <Form onSubmit={handleSubmit}>
+        {errorMessage && <Message>{errorMessage}</Message>}
 
         {loading && <Loading />}
 
@@ -77,7 +77,7 @@ function Login() {
         <div style={{ textAlign: "right" }}>
           <button className="Button Button--big">Submit</button>
         </div>
-      </form>
+      </Form>
     </Layout>
   );
 }

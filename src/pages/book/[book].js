@@ -14,7 +14,7 @@ function markRead(token, book) {
 }
 
 function BookManager({
-  url,
+  currentUrl,
   path,
   book,
   parent,
@@ -27,7 +27,7 @@ function BookManager({
   const { token } = useAuth();
 
   return (
-    <Layout url={url} current={book} parent={parent}>
+    <Layout url={currentUrl} current={book} parent={parent}>
       <div className="Content Content--gallery">
         <Book
           isRetina={isRetina}
@@ -59,7 +59,7 @@ BookManager.getInitialProps = async ({ query, req, token }) => {
   return {
     isRetina,
     supportsWebp,
-    url,
+    currentUrl: url,
     path,
     book,
     parent,

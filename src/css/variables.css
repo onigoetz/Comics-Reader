@@ -1,0 +1,40 @@
+/*
+ * Variables
+ * --------------------------------------------------
+ */
+
+:root {
+    /* Type
+   * -------------------------------------------------- */
+    --font-family-default: "Helvetica Neue", Helvetica, sans-serif;
+    --font-size-default: 18px;
+    --line-height-default: 1em;
+
+    --font-size-small: 0.75rem;
+    --font-size-medium: 1rem;
+    --font-size-big: 1.25rem;
+
+    /* Colors
+   * -------------------------------------------------- */
+    --primary-color: #ff9500;
+    --background-color: #222;
+    --background-color-light: #333;
+
+    --text-color: #fff;
+
+    --color-error: red;
+
+    /* Misc
+   * -------------------------------------------------- */
+    --border-radius: 4px;
+    --border-color-default: #888;
+
+    /* Z-Indexes
+   * -------------------------------------------------- */
+    --zindex-header-section: 5;
+    --zindex-header-action: 5;
+    --zindex-header-search: 5;
+    --zindex-header-search-icon: 6;
+    --zindex-header-fixed: 10;
+    --zindex-overlay: 100;
+}

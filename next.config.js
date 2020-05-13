@@ -1,7 +1,6 @@
 const path = require("path");
 
 const withPlugins = require("next-compose-plugins");
-const withCSS = require("@zeit/next-css");
 const resolve = require("next/dist/compiled/resolve/index.js");
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
@@ -47,6 +46,6 @@ const nextConfiguration = {
   }
 };
 
-const plugins = [withBundleAnalyzer, withCSS];
+const plugins = [withBundleAnalyzer];
 
 module.exports = withPlugins([...plugins], nextConfiguration);

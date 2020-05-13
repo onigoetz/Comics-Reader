@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { Portal } from "react-portal";
 import Link from "next/link";
 
+import styles from "./Search.module.css";
+
 import Loading from "../components/Loading";
 import { FiSearch } from "react-icons/fi";
 import useInput from "../hooks/useInput";
@@ -50,7 +52,7 @@ function Search() {
   };
 
   return (
-    <div className="Search">
+    <div className={styles.Search}>
       <button
         onClick={toggleSearch}
         className="Button Button--link"
@@ -67,7 +69,7 @@ function Search() {
       )}
       {searchVisible && searchField.value.length >= 3 && (
         <Portal>
-          <div className="SearchResult">
+          <div className={styles.SearchResult}>
             {loading && <Loading />}
             {bookList.length === 0 && (
               <span>No result matches your search</span>
@@ -81,7 +83,10 @@ function Search() {
                   as={createUrl(item)}
                   key={item.path}
                 >
-                  <a onClick={toggleSearch} className="SearchResult__item">
+                  <a
+                    onClick={toggleSearch}
+                    className={styles.SearchResult__item}
+                  >
                     <small>{item.parent}</small> / {item.name}
                   </a>
                 </Link>

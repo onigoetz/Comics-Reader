@@ -3,6 +3,8 @@ import React, { useRef } from "react";
 import PhotoSwipeGallery from "./PhotoSwipeGallery";
 import { image } from "../utils";
 
+import styles from "../containers/Header.module.css";
+
 export default function Book({ pages, read, onRead, isRetina, supportsWebp }) {
   const currentPage = useRef(-1);
 
@@ -38,7 +40,7 @@ export default function Book({ pages, read, onRead, isRetina, supportsWebp }) {
 
   return (
     <div>
-      <div className="BookInfo">
+      <div className={styles.BookInfo}>
         {read ? (
           "You read this book"
         ) : (

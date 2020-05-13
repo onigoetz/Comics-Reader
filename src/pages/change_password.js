@@ -2,8 +2,11 @@
 import React, { useState } from "react";
 
 import { fetchWithAuth } from "../fetch";
+import Form from "../components/Form";
 import Layout from "../components/Layout";
+import Label from "../components/Label";
 import Loading from "../components/Loading";
+import Message from "../components/Message";
 import useInput from "../hooks/useInput";
 import withAuth, { useAuth, logout } from "../hoc/withAuth";
 import withDBMode from "../hoc/withDBMode";
@@ -53,12 +56,12 @@ function ChangePassword() {
 
   return (
     <Layout current={{ name: "Change Password" }}>
-      <form className="Form" onSubmit={handleSubmit}>
-        {error && <div className="Message Message--error">{error}</div>}
+      <Form onSubmit={handleSubmit}>
+        {error && <Message>{error}</Message>}
 
         {loading && <Loading />}
 
-        <label className="Label">
+        <Label>
           Current Password
           <input
             className="Input"
@@ -66,10 +69,10 @@ function ChangePassword() {
             type="password"
             {...currentPassword.bind}
           />
-        </label>
+        </Label>
 
         <br />
-        <label className="Label">
+        <Label>
           New Password
           <input
             className="Input"
@@ -77,9 +80,15 @@ function ChangePassword() {
             type="password"
             {...password.bind}
           />
-        </label>
+        </Label>
 
-        <label className="Label">
+        <Label
+          error={
+            confirmPassword.value &&
+            arePasswordsDifferent() &&
+            "Passwords are different"
+          }
+        >
           Confirm Password
           <input
             className="Input"
@@ -87,10 +96,7 @@ function ChangePassword() {
             type="password"
             {...confirmPassword.bind}
           />
-          {confirmPassword.value && arePasswordsDifferent() && (
-            <span className="Label__text">Passwords are different</span>
-          )}
-        </label>
+        </Label>
 
         <div style={{ textAlign: "right" }}>
           <button
@@ -100,7 +106,7 @@ function ChangePassword() {
             Change
           </button>
         </div>
-      </form>
+      </Form>
     </Layout>
   );
 }

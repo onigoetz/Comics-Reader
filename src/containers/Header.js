@@ -10,6 +10,8 @@ import { cleanName, createUrl } from "../utils";
 import { FiChevronLeft, FiUser, FiHome } from "react-icons/fi";
 import { useAuth } from "../hoc/withAuth";
 
+import styles from "./Header.module.css";
+
 function isNotHome(url) {
   return url !== "/" && url !== "/list/";
 }
@@ -65,7 +67,7 @@ function Previous({ parent, previousUrl, history }) {
     : { href: "/" };
 
   return (
-    <div className="Header__Section pull-left">
+    <div className={`${styles.Header__Section} ${styles.pullLeft}`}>
       <Link {...linkProps}>
         <a
           className="Button Button--link Button--back"
@@ -81,9 +83,9 @@ function Previous({ parent, previousUrl, history }) {
 
 function User() {
   return (
-    <div className="Button Button--link">
+    <div className={`${styles.Dropdown__trigger} Button Button--link`}>
       <FiUser />
-      <div className="Dropdown__content">
+      <div className={styles.Dropdown__content}>
         <Link href="/change_password">
           <a className="Link">Change Password</a>
         </Link>
@@ -137,14 +139,14 @@ function Header({ url, current, parent }) {
         />
       </Head>
       <Headroom disableInlineStyles>
-        <header className="Header">
-          <div className="Header__Section pull-right">
+        <header className={styles.Header}>
+          <div className={`${styles.Header__Section} ${styles.pullRight}`}>
             {(token || url) && <Search />}
             {canGoBack(url) && <Home />}
             {token && <User />}
           </div>
           {canGoBack(url) && <Previous parent={parent} />}
-          <h1 className="Header__title">
+          <h1 className={styles.Header__title}>
             {current && cleanName(current.name)}
           </h1>
         </header>
