@@ -25,7 +25,6 @@ function ListManager({
 ListManager.getInitialProps = async ({ query, req, token }) => {
   const path = query.list || "";
   const url = !!path ? `/list/${path}` : "";
-  console.log({url, query});
 
   const { isRetina, supportsWebp } = imageData(req);
 
