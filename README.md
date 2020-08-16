@@ -98,3 +98,4 @@ location /BD/ {
 - The photo viewer is made with [PhotoSwipe](http://photoswipe.com/).
 - [Next.js](https://nextjs.org/) powers the server side with a hint of [Express](http://expressjs.com/).
 - [Sharp](http://sharp.pixelplumbing.com/en/stable/) is used to generate the thumbnails. 
+- Icon is from [GetDrawings](http://getdrawings.com/get-icon#comic-book-icon-68.jpg)

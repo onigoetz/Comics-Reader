@@ -7,29 +7,16 @@
     "background_color": "#999999",
     "icons": [
         {
-            "src": "/static/images/apple-touch-72.png",
+            "src": "/static/images/android-chrome-192x192.png",
+            "sizes": "192x192",
             "type": "image/png",
-            "sizes": "72x72"   
+            "purpose": "maskable any"
         },
         {
-            "src": "/static/images/apple-touch-114.png",
+            "src": "/static/images/android-chrome-512x512.png",
+            "sizes": "512x512",
             "type": "image/png",
-            "sizes": "114x114"   
-        },
-        {
-            "src": "/static/images/apple-touch-144.png",
-            "type": "image/png",
-            "sizes": "144x144"   
-        },
-        {
-            "src": "/static/images/apple-touch-256.png",
-            "type": "image/png",
-            "sizes": "256x256"   
-        },
-        {
-            "src": "/static/images/apple-touch-512.png",
-            "type": "image/png",
-            "sizes": "512x512"   
+            "purpose": "maskable any"
         }
     ]
 }
