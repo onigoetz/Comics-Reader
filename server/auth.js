@@ -72,7 +72,7 @@ class BasicAuth {
     // Basic auth is checked by Apache / Nginx, here we only use the username
 
     const authentication = auth(req);
-    return authentication ? authentication.name : "anonymous";
+    return { user: authentication ? authentication.name : "anonymous" };
   }
 
   async checkPassword(username, password) {
