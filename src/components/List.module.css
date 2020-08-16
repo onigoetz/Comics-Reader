@@ -21,6 +21,12 @@
     grid-gap: 1rem;
 }
 
+.List__heading {
+    margin: 1rem;
+    line-height: 1.5em;
+    border-bottom: 1px solid currentcolor;
+}
+
 /* Pad each table view item and add dividers */
 .List__cell {
     padding: 0;

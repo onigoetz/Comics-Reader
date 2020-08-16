@@ -10,7 +10,9 @@ import { TYPE_DIR } from "../types";
 
 function allRead(folder) {
   return (
-    folder.type === TYPE_DIR && folder.booksInside === folder.booksInsideRead
+    (folder.type === TYPE_DIR &&
+      folder.booksInside === folder.booksInsideRead) ||
+    (folder.type !== TYPE_DIR && folder.read)
   );
 }
 
@@ -22,13 +24,46 @@ function bookCount(folder) {
   return folder.booksInside === 1 ? "1 book" : `${folder.booksInside} books`;
 }
 
-export default function List({ books, isRetina, supportsWebp }) {
+export default function List({ books: rawBooks, isRetina, supportsWebp }) {
+  const readBooks = [];
+  const unreadBooks = [];
+
+  rawBooks.filter(Boolean).forEach((folder) => {
+    if (allRead(folder)) {
+      readBooks.push(folder);
+    } else {
+      unreadBooks.push(folder);
+    }
+  });
+
+  return (
+    <>
+      <SubList
+        books={unreadBooks}
+        isRetina={isRetina}
+        supportsWebp={supportsWebp}
+      />
+      {readBooks.length > 0 && (
+        <>
+          <h2 className={styles.List__heading}>Read</h2>
+          <SubList
+            books={readBooks}
+            isRetina={isRetina}
+            supportsWebp={supportsWebp}
+          />
+        </>
+      )}
+    </>
+  );
+}
+
+function SubList({ books, isRetina, supportsWebp }) {
   return (
     <ul className={styles.List}>
-      {books.filter(Boolean).map(folder => {
+      {books.map((folder) => {
         const classes = {
-          [styles.List__cellAllRead]: allRead(folder),
-          [styles.List__cellUnread]: unread(folder)
+          [styles["List__cell--allRead"]]: allRead(folder),
+          [styles["List__cell--unread"]]: unread(folder),
         };
         return (
           <li
