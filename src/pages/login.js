@@ -4,6 +4,8 @@ import Form from "../components/Form";
 import Loading from "../components/Loading";
 import Layout from "../components/Layout";
 import Message from "../components/Message";
+import Label from "../components/Label";
+import Input from "../components/Input";
 import useInput from "../hooks/useInput";
 import { login, tryLoginWithLocalStorage } from "../hoc/withAuth";
 import withDBMode from "../hoc/withDBMode";
@@ -59,20 +61,19 @@ function Login() {
 
         {loading && <Loading />}
 
-        <label className="Label">
+        <Label>
           Username
-          <input className="Input" name="username" {...usernameField.bind} />
-        </label>
+          <Input  name="username" {...usernameField.bind} />
+        </Label>
 
-        <label className="Label">
+        <Label>
           Password
-          <input
-            className="Input"
+          <Input
             name="password"
             type="password"
             {...passwordField.bind}
           />
-        </label>
+        </Label>
 
         <div style={{ textAlign: "right" }}>
           <button className="Button Button--big">Submit</button>

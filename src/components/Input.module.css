@@ -17,11 +17,12 @@
 
 .Input--search {
     position: relative;
-    top: 7px;
+    top: 5px;
     z-index: var(--zindex-header-search);
 
     padding-right: 1em;
     margin-top: 1px;
     margin-right: 0.4em;
     border-width: 0;
+    height: 2rem;
 }

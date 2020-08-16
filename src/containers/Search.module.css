@@ -3,8 +3,7 @@
 
     display: inline-block;
 
-    margin-top: 2px;
-    height: calc(var(--bar-height) - 1px);
+    height: 43px; /* calc(var(--bar-height) - 1px); */
     min-width: 30px;
 }
 
@@ -17,7 +16,7 @@
 
 .SearchResult {
     position: absolute;
-    top: var(--bar-height);
+    top: 44px; /* --bar-height */
     left: 0;
     right: 0;
     bottom: 0;

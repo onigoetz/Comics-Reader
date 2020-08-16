@@ -134,7 +134,7 @@ function Header({ url, current, parent }) {
       <Headroom disableInlineStyles>
         <header className={styles.Header}>
           <div className={`${styles.Header__Section} ${styles.pullRight}`}>
-            {(token || url) && <Search />}
+            {(token || typeof url === "string") && <Search />}
             {canGoBack(url) && <Home />}
             {token && <User />}
           </div>

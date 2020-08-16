@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import styles from "./Search.module.css";
 
+import Input from "../components/Input";
 import Loading from "../components/Loading";
 import { FiSearch } from "react-icons/fi";
 import useInput from "../hooks/useInput";
@@ -61,9 +62,9 @@ function Search() {
         <FiSearch width="28px" height="28px" />
       </button>
       {searchVisible && (
-        <input
+        <Input
           ref={inputEl}
-          className="Input Input--search"
+          isSearch
           {...searchField.bind}
         />
       )}

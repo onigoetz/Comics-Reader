@@ -3,10 +3,12 @@ import classnames from "classnames";
 
 import styles from "./Input.module.css";
 
-export function Input({ className, isSearch, ...props }) {
+const Input = React.forwardRef(({ className, isSearch, ...props }, ref) => {
   const classes = classnames(styles.Input, className, {
-    [styles.InputSearch]: isSearch
+    [styles["Input--search"]]: isSearch
   });
 
-  return <input className={classes} {...props} />;
-}
+  return <input className={classes} ref={ref} {...props} />;
+});
+
+export default Input;

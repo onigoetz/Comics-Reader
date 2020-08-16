@@ -3,6 +3,7 @@ import React, { useState } from "react";
 
 import { fetchWithAuth } from "../fetch";
 import Form from "../components/Form";
+import Input from "../components/Input";
 import Layout from "../components/Layout";
 import Label from "../components/Label";
 import Loading from "../components/Loading";
@@ -63,8 +64,7 @@ function ChangePassword() {
 
         <Label>
           Current Password
-          <input
-            className="Input"
+          <Input
             name="current_password"
             type="password"
             {...currentPassword.bind}
@@ -74,8 +74,7 @@ function ChangePassword() {
         <br />
         <Label>
           New Password
-          <input
-            className="Input"
+          <Input
             name="password"
             type="password"
             {...password.bind}
@@ -90,8 +89,7 @@ function ChangePassword() {
           }
         >
           Confirm Password
-          <input
-            className="Input"
+          <Input
             name="confirm_password"
             type="password"
             {...confirmPassword.bind}
