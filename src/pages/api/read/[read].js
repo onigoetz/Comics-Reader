@@ -11,6 +11,8 @@ export default async (req, res) => {
 
   const user = await authenticate(req, res);
   if (!user) {
+    res.setHeader("Cache-Control", "no-cache");
+    res.json({});
     return;
   }
 
