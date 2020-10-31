@@ -76,7 +76,7 @@
     "js-cookie": "^2.2.0",
     "jwt-simple": "^0.5.1",
     "loud-rejection": "^2.1.0",
-    "meow": "^7.0.0",
+    "meow": "^8.0.0",
     "morgan": "^1.9.1",
     "natural-sort": "^1.0.0",
     "next": "^10.0.0",
