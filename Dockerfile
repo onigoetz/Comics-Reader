@@ -1,4 +1,4 @@
-FROM node:12.19.0
+FROM node:12.19.1
 
 # Install extensions : zip, rar, imagick
 RUN (sed -i "s/main/main contrib non-free/g" /etc/apt/sources.list) && \
