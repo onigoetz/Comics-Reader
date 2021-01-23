@@ -1,25 +1,21 @@
 const path = require("path");
 const debug = require("debug")("comics:server");
 const sharp = require("sharp");
+const { promisify } = require("util");
+const imageSize = require("image-size");
 
 const { ensureDir } = require("../utils");
 const { getFile } = require("../books");
 const sizes = require("../sizes");
+const cache = require("../cache");
+
+const sizeOf = promisify(imageSize);
 
 const retinaRegex = /(.*)@2x\.(jpe?g|png|webp|gif)/;
 const webpConvertRegex = /(.*)\.webp\.png$/;
 
-module.exports = async function(req, res) {
-  const presetName = req.params[0];
-  const requestedFile = req.params[1];
+function getFilePath(requestedFile, presetName) {
   let sourceFile = requestedFile;
-
-  debug("Generating Image", req.params[0], req.params[1]);
-
-  if (!sizes.hasOwnProperty(presetName)) {
-    res.status(404).send("Preset not found");
-    return;
-  }
 
   // Clone preset if it has to be retinafied
   const preset = Object.assign({}, sizes[presetName]);
@@ -39,6 +35,49 @@ module.exports = async function(req, res) {
     sourceFile = sourceFile.replace(/\.webp\.png$/, ".webp");
   }
 
+  return { preset, sourceFile, convertToPNG };
+}
+
+async function loadFile(sourceFile) {
+  return getFile(path.join(process.env.DIR_COMICS, sourceFile));
+}
+
+async function getThumbnailSize(thumb) {
+  const key = `THUMBNAIL_SIZE:v1:${thumb}`;
+  return cache.wrap(key, async () => {
+    const { sourceFile, preset } = await getFilePath(thumb, "thumb");
+    const file = await loadFile(sourceFile);
+    const size = await sizeOf(file.path);
+    const ratio = size.height / size.width;
+
+    file.cleanup();
+
+    return { height: 140, width: Math.floor(140 / ratio) };
+  });
+}
+
+async function imagecache(req, res) {
+  const presetName = req.params[0];
+  const requestedFile = req.params[1];
+
+  debug("Generating Image", req.params[0], req.params[1]);
+
+  if (!sizes.hasOwnProperty(presetName)) {
+    res.status(404).send("Preset not found");
+    return;
+  }
+
+  const { sourceFile, preset, convertToPNG } = await getFilePath(requestedFile, presetName);
+
+  let file;
+  try {
+    file = await loadFile(sourceFile);
+  } catch (e) {
+    console.error("Cannot find image", e);
+    res.status(404).send("Could not find image");
+    return;
+  }
+
   const destination = path.join(
     process.env.DIR_COMICS,
     "cache",
@@ -47,15 +86,6 @@ module.exports = async function(req, res) {
   );
 
   await ensureDir(path.dirname(destination));
-
-  let file;
-  try {
-    file = await getFile(path.join(process.env.DIR_COMICS, sourceFile));
-  } catch (e) {
-    console.error("Cannot find image", e);
-    res.status(404).send("Could not find image");
-    return;
-  }
 
   try {
     let sharpObject = sharp(file.path).resize(
@@ -78,4 +108,9 @@ module.exports = async function(req, res) {
     file.cleanup();
     res.status(500).send("Could not compress image");
   }
+}
+
+module.exports = {
+  imagecache,
+  getThumbnailSize
 };

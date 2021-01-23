@@ -1,6 +1,6 @@
 import React from "react";
-import LazyLoad from "react-lazyload";
 import Link from "next/link";
+import Image from "next/image";
 import classnames from "classnames";
 
 import styles from "./List.module.css";
@@ -82,13 +82,13 @@ function SubList({ books, isRetina, supportsWebp }) {
                         {folder.booksInside - folder.booksInsideRead}
                       </div>
                     )}
-                  <LazyLoad height={140} offset={200}>
-                    <img
-                      src={image(folder.thumb, "thumb", isRetina, supportsWebp)}
-                      height="140"
-                      alt={folder.name}
-                    />
-                  </LazyLoad>
+                  <Image
+                    src={image(folder.thumb, "thumb", isRetina, supportsWebp)}
+                    height={140}
+                    width={folder.thumbWidth}
+                    loader={({ src }) => src}
+                    alt={folder.name}
+                  />
                 </div>
                 <div className={styles.List__cell__name}>
                   {cleanName(folder.name)}

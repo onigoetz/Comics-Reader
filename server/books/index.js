@@ -7,6 +7,7 @@ const archiveType = require("archive-type");
 const readChunk = require("read-chunk");
 const debug = require("debug")("comics:archive");
 
+const cache = require("../cache");
 const { isDirectory, isFile, getExtension } = require("../utils");
 const Zip = require("./Zip");
 const Rar = require("./Rar");
@@ -96,9 +97,13 @@ async function getFile(file) {
   throw new Error("Could not get file");
 }
 
-async function getPages(dirPath) {
-  const archive = await open(dirPath);
-  return archive.getPages();
+async function getPages(book) {
+  const dirPath = path.join(process.env.DIR_COMICS, book);
+  const key = `BOOK:v1:${dirPath}`;
+  return await cache.wrap(key, async () => {
+    const archive = await open(dirPath);
+    return archive.getPages();
+  });
 }
 
 module.exports = {

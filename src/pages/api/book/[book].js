@@ -30,9 +30,7 @@ export default async (req, res) => {
       return;
     }
 
-    const dirPath = path.join(process.env.DIR_COMICS, book);
-    const key = `BOOK:v1:${dirPath}`;
-    const pages = await cache.wrap(key, () => getPages(dirPath));
+    const pages = await getPages(book);
 
     const parent = node.parent ? node.parent.forClient() : null;
 

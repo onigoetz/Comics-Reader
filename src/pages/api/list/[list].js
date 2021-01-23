@@ -2,6 +2,7 @@ import comicsIndex from "../../../../server/comics";
 import { fromUrl } from "../../../../server/utils";
 import { authenticate } from "../../../../server/auth";
 import db from "../../../../server/db";
+import { getThumbnailSize } from "../../../../server/api/imagecache";
 
 function isRead(readBooks, book) {
   return readBooks.indexOf(book) !== -1;
@@ -38,20 +39,34 @@ export default async (req, res) => {
   if (node.children) {
     const allBooks = Object.keys(comicsIndex.walker.getBooks());
 
-    books = node.children.map(currentNode => {
-      const currentPath = currentNode.getPath();
-      const search = `${currentPath}/`;
-      const booksInside = allBooks.filter(item => item.indexOf(search) === 0);
+    books = await Promise.all(
+      node.children.map(async (currentNode) => {
+        const currentPath = currentNode.getPath();
+        const search = `${currentPath}/`;
+        const booksInside = allBooks.filter(
+          (item) => item.indexOf(search) === 0
+        );
 
-      return {
-        ...currentNode.forClient(),
-        read: isRead(readBooks, currentPath),
-        booksInsideRead: booksInside.filter(innerBook =>
-          isRead(readBooks, innerBook)
-        ).length,
-        booksInside: booksInside.length
-      };
-    });
+        const nodeInfo = currentNode.forClient();
+
+        let thumbWidth = 100;
+        try {
+          thumbWidth = (await getThumbnailSize(nodeInfo.thumb)).width;
+        } catch (e) {
+          console.error("Failed calculating thumbnail width", nodeInfo.thumb, e.message);
+        }
+
+        return {
+          ...nodeInfo,
+          thumbWidth,
+          read: isRead(readBooks, currentPath),
+          booksInsideRead: booksInside.filter((innerBook) =>
+            isRead(readBooks, innerBook)
+          ).length,
+          booksInside: booksInside.length,
+        };
+      })
+    );
   }
 
   res.json({ dir, parent, books });
