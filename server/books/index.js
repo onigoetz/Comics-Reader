@@ -100,7 +100,7 @@ async function getFile(file) {
 async function getPages(book) {
   const dirPath = path.join(process.env.DIR_COMICS, book);
   const key = `BOOK:v1:${dirPath}`;
-  return await cache.wrap(key, async () => {
+  return cache.wrap(key, async () => {
     const archive = await open(dirPath);
     return archive.getPages();
   });

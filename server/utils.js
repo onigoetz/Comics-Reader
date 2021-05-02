@@ -10,7 +10,7 @@ const sizes = require("./sizes");
 const mkdirAsync = promisify(fs.mkdir);
 
 function normalizePath(unsafeSuffix) {
-  return path.normalize(unsafeSuffix).replace(/^(\.\.(\/|\\|$))+/, '');
+  return path.normalize(unsafeSuffix).replace(/^(\.\.(\/|\\|$))+/, "");
 }
 
 function isFile(fullPath) {

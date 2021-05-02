@@ -76,7 +76,10 @@ module.exports = class PDF {
     // It would be better to keep it as a buffer
     // But libraries like image-size can't deal with it
     const file = await tmp.file({ postfix: ".png" });
-    await fs.promises.writeFile(file.path, Buffer.from(renderedImage, "base64"));
+    await fs.promises.writeFile(
+      file.path,
+      Buffer.from(renderedImage, "base64")
+    );
 
     return file;
   }

@@ -32,7 +32,10 @@ app.prepare().then(() => {
 
   // Static assets
   server.use("/images", express.static("images"));
-  server.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, require("./api/imagecache").imagecache);
+  server.get(
+    /\/images\/cache\/([a-zA-Z]*)\/(.*)/,
+    require("./api/imagecache").imagecache
+  );
 
   server.all("*", (req, res) => {
     handle(req, res);

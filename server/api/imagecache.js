@@ -45,7 +45,7 @@ async function loadFile(sourceFile) {
 async function getThumbnailSize(thumb) {
   const key = `THUMBNAIL_SIZE:v1:${thumb}`;
   return cache.wrap(key, async () => {
-    const { sourceFile, preset } = await getFilePath(thumb, "thumb");
+    const { sourceFile } = await getFilePath(thumb, "thumb");
     const file = await loadFile(sourceFile);
     const size = await sizeOf(file.path);
     const ratio = size.height / size.width;
@@ -67,7 +67,10 @@ async function imagecache(req, res) {
     return;
   }
 
-  const { sourceFile, preset, convertToPNG } = await getFilePath(requestedFile, presetName);
+  const { sourceFile, preset, convertToPNG } = await getFilePath(
+    requestedFile,
+    presetName
+  );
 
   let file;
   try {
