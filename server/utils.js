@@ -9,6 +9,10 @@ const sizes = require("./sizes");
 
 const mkdirAsync = promisify(fs.mkdir);
 
+function normalizePath(unsafeSuffix) {
+  return path.normalize(unsafeSuffix).replace(/^(\.\.(\/|\\|$))+/, '');
+}
+
 function isFile(fullPath) {
   return new Promise(resolve => {
     fs.stat(fullPath, (err, stat) => {
@@ -103,5 +107,6 @@ module.exports = {
   isFile,
   validImageFilter,
   fromUrl,
-  sortNaturally: natsort
+  sortNaturally: natsort,
+  normalizePath
 };

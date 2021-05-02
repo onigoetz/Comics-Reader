@@ -4,15 +4,15 @@ const sharp = require("sharp");
 const { promisify } = require("util");
 const imageSize = require("image-size");
 
-const { ensureDir } = require("../utils");
+const { ensureDir, normalizePath } = require("../utils");
 const { getFile } = require("../books");
 const sizes = require("../sizes");
 const cache = require("../cache");
 
 const sizeOf = promisify(imageSize);
 
-const retinaRegex = /(.*)@2x\.(jpe?g|png|webp|gif)/;
-const webpConvertRegex = /(.*)\.webp\.png$/;
+const retinaRegex = /@2x\.(jpe?g|png|webp|gif)$/;
+const webpConvertRegex = /\.webp\.png$/;
 
 function getFilePath(requestedFile, presetName) {
   let sourceFile = requestedFile;
@@ -58,7 +58,7 @@ async function getThumbnailSize(thumb) {
 
 async function imagecache(req, res) {
   const presetName = req.params[0];
-  const requestedFile = req.params[1];
+  const requestedFile = normalizePath(req.params[1]);
 
   debug("Generating Image", req.params[0], req.params[1]);
 
