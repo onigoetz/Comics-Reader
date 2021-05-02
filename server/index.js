@@ -6,13 +6,15 @@ const express = require("express");
 const loudRejection = require("loud-rejection");
 const compression = require("compression");
 const morgan = require("morgan");
+const cron = require("node-cron");
 
 require("./env");
 
 // Kickstart index creation
-require("./comics");
+const comicsIndex = require("./comics");
 
 const title = chalk.underline.bold;
+const error = chalk.red;
 
 const app = next({
   dev: process.env.NODE_ENV !== "production",
@@ -23,6 +25,15 @@ const handle = app.getRequestHandler();
 loudRejection();
 
 console.log(title("Starting server"));
+
+cron.schedule(process.env.REFRESH_SCHEDULE, () => {
+  comicsIndex.reindex().then(  () => {
+    console.log(title("Index ready ! Have a good read !"));
+  },
+  e => {
+    console.error(error("Could not create index"), e);
+  });
+});
 
 app.prepare().then(() => {
   const server = express();

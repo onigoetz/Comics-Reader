@@ -31,3 +31,11 @@ process.env.DIR_CACHE = path.join(process.cwd(), "cache");
  */
 process.env.SERVER_PORT = 8080;
 process.env.SERVER_URL = `http://localhost:${process.env.SERVER_PORT}/`;
+
+/**
+ * The Schedule at which to refresh the library
+ * You can continue reading while the refresh is in progress
+ * 
+ * You can easily create cron schedules at here : https://crontab.guru/#25_3_*_*_*
+ */
+process.env.REFRESH_SCHEDULE = '25 3 * * *';
