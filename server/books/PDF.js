@@ -4,7 +4,7 @@ const { promisify } = require("util");
 
 const tmp = require("tmp-promise");
 require("pdfjs-dist/lib/examples/node/domstubs").setStubs(global);
-const pdfjs = require("pdfjs-dist/es5/build/pdf.js");
+const pdfjs = require("pdfjs-dist/build/pdf.js");
 
 const { exec, createTempSymlink } = require("../exec");
 const { getBigatureSize } = require("../utils");

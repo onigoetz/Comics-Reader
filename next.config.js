@@ -9,9 +9,6 @@ require("./server/env");
 const serverPath = path.join(process.cwd(), "server");
 
 const nextConfiguration = {
-  future: {
-    webpack5: true
-  },
   env: {},
   webpack(config, options) {
     if (!config.externals) {
