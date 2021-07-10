@@ -60,7 +60,7 @@
     "bcrypt": "^5.0.0",
     "better-sqlite3": "^7.0.0",
     "cache-manager": "^3.0.0",
-    "cache-manager-fs-hash": "^0.0.9",
+    "cache-manager-fs-hash": "^1.0.0",
     "chalk": "^4.0.0",
     "classnames": "^2.2.6",
     "cli-table": "^0.3.1",
