@@ -31,9 +31,7 @@ jobs:
         with:
           images: ${{ secrets.DOCKER_HUB_USERNAME }}/comicsreader
           tags: |
-            # master
-            type=match,pattern=master,value=latest
-            # tags
+            type=ref,event=branch
             type=match,pattern=\d.\d.\d
 
       - name: Build and push
