@@ -11,7 +11,7 @@ const cache = require("../cache");
 
 const sizeOf = promisify(imageSize);
 
-const retinaRegex = /@2x\.(jpe?g|png|webp|gif)$/;
+const retinaRegex = /(.*)@2x\.(jpe?g|png|webp|gif)$/;
 const webpConvertRegex = /\.webp\.png$/;
 
 function getFilePath(requestedFile, presetName) {
