@@ -55,4 +55,7 @@ app.prepare().then(() => {
   server.listen(process.env.SERVER_PORT);
 
   console.log(title(`Started server on ${process.env.SERVER_URL}`));
+}).catch(e => {
+  console.error("Failed to start", e);
+  process.exit(1);
 });
