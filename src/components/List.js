@@ -88,6 +88,7 @@ function SubList({ books, isRetina, supportsWebp }) {
                     width={folder.thumbWidth}
                     loader={({ src }) => src}
                     alt={folder.name}
+                    unoptimized
                   />
                 </div>
                 <div className={styles.List__cell__name}>
