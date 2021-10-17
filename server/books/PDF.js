@@ -86,7 +86,8 @@ module.exports = class PDF {
 
   async extractPage(pageNum) {
     try {
-      return this.extractPageWithLib(pageNum);
+      // We must await here otherwise the error will bubble up
+      return await this.extractPageWithLib(pageNum);
     } catch (e) {
       console.error(`Could not extract file ${e.message}`);
     }
@@ -106,7 +107,8 @@ module.exports = class PDF {
     ];
 
     try {
-      await exec(command);
+      // PDF Conversion can be very slow
+      await exec(command, { timeout: 15000 });
       cleanup();
     } catch (e) {
       console.error("Failed extracting image", e);
