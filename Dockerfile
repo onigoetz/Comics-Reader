@@ -9,6 +9,9 @@ RUN (sed -i "s/main/main contrib non-free/g" /etc/apt/sources.list) && \
 		ghostscript \
 	&& rm -rf /var/lib/apt/lists/*
 
+# Enable PDF compression
+RUN sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
+
 WORKDIR /usr/src/app
 
 # Symlink volume
