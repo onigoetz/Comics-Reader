@@ -1,4 +1,4 @@
-FROM node:16.12.0
+FROM node:16.13.0
 
 # Install extensions : zip, rar, imagick
 RUN (sed -i "s/main/main contrib non-free/g" /etc/apt/sources.list) && \
