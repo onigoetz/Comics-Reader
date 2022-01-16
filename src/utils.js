@@ -1,8 +1,8 @@
 /* global process */
 import Router from "next/router";
-import { TYPE_DIR } from "./types";
 
-import apiFetch from "./fetch";
+import { TYPE_DIR } from "./types.js";
+import apiFetch from "./fetch.js";
 
 const serverSide = typeof window === "undefined";
 

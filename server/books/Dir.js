@@ -1,22 +1,22 @@
 //@ts-check
 
-const path = require("path");
-const fs = require("fs");
-const { promisify } = require("util");
+import path from "path";
+import fs from "fs";
+import { promisify } from "util";
 
-const imageSize = require("image-size");
+import imageSize from "image-size";
 
-const {
+import {
   getBigatureSize,
   validImageFilter,
   isDirectorySync,
   sortNaturally
-} = require("../utils");
+} from "../utils.js";
 
 const readdir = promisify(fs.readdir);
 const sizeOf = promisify(imageSize);
 
-module.exports = class Dir {
+export default class Dir {
   constructor(dirPath) {
     this.dir = dirPath;
   }

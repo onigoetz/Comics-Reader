@@ -1,17 +1,19 @@
 //@ts-check
-const fs = require("fs");
-const { promisify } = require("util");
+import fs from "fs";
+import { promisify } from "util";
 
-const tmp = require("tmp-promise");
-require("pdfjs-dist/lib/examples/node/domstubs").setStubs(global);
-const pdfjs = require("pdfjs-dist/legacy/build/pdf.js");
+import tmp from "tmp-promise";
+import stubs from "pdfjs-dist/lib/examples/node/domstubs.js"; 
+import pdfjs from "pdfjs-dist/legacy/build/pdf.js";
 
-const { exec, createTempSymlink } = require("../exec");
-const { getBigatureSize } = require("../utils");
+import { exec, createTempSymlink } from "../exec.js";
+import { getBigatureSize } from "../utils.js";
+
+stubs.setStubs(global);
 
 const readFileAsync = promisify(fs.readFile);
 
-module.exports = class PDF {
+export default class PDF {
   constructor(file) {
     this.file = file;
   }

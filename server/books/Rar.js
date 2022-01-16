@@ -1,10 +1,10 @@
 //@ts-check
-const pathLib = require("path");
+import pathLib from "path";
 
-const tmp = require("tmp-promise");
+import tmp from "tmp-promise";
 
-const Compressed = require("./Compressed");
-const { exec, createTempSymlink } = require("../exec");
+import Compressed from "./Compressed.js";
+import { exec, createTempSymlink } from "../exec.js";
 
 /**
  * Documentation of the unrar command :
@@ -14,7 +14,7 @@ const { exec, createTempSymlink } = require("../exec");
 // TODO :: investigate alternative
 // https://www.npmjs.com/package/@huanjiesm/nodeunrar
 // https://www.npmjs.com/package/node-unrar-js
-module.exports = class Rar extends Compressed {
+export default class Rar extends Compressed {
   async getFileNames() {
     const { filePath, cleanup } = await createTempSymlink(this.path);
 

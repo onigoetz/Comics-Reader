@@ -1,6 +1,6 @@
-const chalk = require("chalk");
+import chalk from "chalk";
 
-const IndexCreator = require("./tree/IndexCreator");
+import IndexCreator from "./tree/IndexCreator.js";
 
 const error = chalk.red;
 const title = chalk.underline.bold;
@@ -17,4 +17,4 @@ comicsIndex.getList().then(
   }
 );
 
-module.exports = comicsIndex;
+export default comicsIndex;

@@ -1,14 +1,14 @@
 //@ts-check
-const pathLib = require("path");
-const fs = require("fs");
+import pathLib from "path";
+import fs from "fs";
 
-const unzipper = require("unzipper");
-const tmp = require("tmp-promise");
-const Iconv = require("iconv").Iconv;
-const { timeout: promiseTimeout } = require("promise-timeout");
+import unzipper from "unzipper";
+import tmp from "tmp-promise";
+import { Iconv } from "iconv";
+import { timeout as promiseTimeout } from "promise-timeout";
 
-const Compressed = require("./Compressed");
-const { exec, createTempSymlink } = require("../exec");
+import Compressed from "./Compressed.js";
+import { exec, createTempSymlink } from "../exec.js";
 
 const iconv = new Iconv("UTF-8", "UTF-8//IGNORE");
 
@@ -124,7 +124,7 @@ class ExecZip {
   }
 }
 
-module.exports = class Zip extends Compressed {
+export default class Zip extends Compressed {
   constructor(filePath) {
     super(filePath);
 

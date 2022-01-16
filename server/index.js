@@ -1,17 +1,19 @@
 //@ts-check
-const next = require("next");
-const chalk = require("chalk");
-const express = require("express");
+import next from "next";
+import chalk from "chalk";
+import express from "express";
 
-const loudRejection = require("loud-rejection");
-const compression = require("compression");
-const morgan = require("morgan");
-const cron = require("node-cron");
+import loudRejection from "loud-rejection";
+import compression from "compression";
+import morgan from "morgan";
+import cron from "node-cron";
 
-require("./env");
+import "./env.mjs";
 
 // Kickstart index creation
-const comicsIndex = require("./comics");
+import comicsIndex from "./comics.js";
+
+import { imagecache } from "./api/imagecache.js";
 
 const title = chalk.underline.bold;
 const error = chalk.red;
@@ -43,10 +45,7 @@ app.prepare().then(() => {
 
   // Static assets
   server.use("/images", express.static("images"));
-  server.get(
-    /\/images\/cache\/([a-zA-Z]*)\/(.*)/,
-    require("./api/imagecache").imagecache
-  );
+  server.get(/\/images\/cache\/([a-zA-Z]*)\/(.*)/, imagecache);
 
   server.all("*", (req, res) => {
     handle(req, res);

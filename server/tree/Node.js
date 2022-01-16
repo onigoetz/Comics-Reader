@@ -1,6 +1,6 @@
 //@ts-check
 
-module.exports = class Node {
+export default class Node {
   constructor(name, parent, type) {
     this.name = name;
     this.parent = parent;

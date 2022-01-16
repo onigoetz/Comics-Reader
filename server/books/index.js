@@ -1,18 +1,20 @@
 //@ts-check
 
-const path = require("path");
-const fs = require("fs");
+import path from "path";
+import fs from "fs";
 
-const archiveType = require("archive-type");
-const readChunk = require("read-chunk");
-const debug = require("debug")("comics:archive");
+import archiveType from "archive-type";
+import { readChunk } from "read-chunk";
+import createDebug from "debug";
 
-const cache = require("../cache");
-const { isDirectory, isFile, getExtension } = require("../utils");
-const Zip = require("./Zip");
-const Rar = require("./Rar");
-const PDF = require("./PDF");
-const Dir = require("./Dir");
+import cache from "../cache.js";
+import { isDirectory, isFile, getExtension } from "../utils.js";
+import Zip from "./Zip.js";
+import Rar from "./Rar.js";
+import PDF from "./PDF.js";
+import Dir from "./Dir.js";
+
+const debug = createDebug("comics:archive");
 
 const archives = [".cbr", ".cbz", ".zip", ".rar", ".pdf"];
 
@@ -70,13 +72,13 @@ async function getSourceFile(file) {
   return false;
 }
 
-async function getFileNames(dirPath) {
+export async function getFileNames(dirPath) {
   const archive = await open(dirPath);
 
   return archive.getFileNames();
 }
 
-async function getFile(file) {
+export async function getFile(file) {
   const sourceFile = await getSourceFile(file);
 
   if (!sourceFile) {
@@ -97,7 +99,7 @@ async function getFile(file) {
   throw new Error("Could not get file");
 }
 
-async function getPages(book) {
+export async function getPages(book) {
   const dirPath = path.join(process.env.DIR_COMICS, book);
   const key = `BOOK:v1:${dirPath}`;
   return cache.wrap(key, async () => {
@@ -105,9 +107,3 @@ async function getPages(book) {
     return archive.getPages();
   });
 }
-
-module.exports = {
-  getFileNames,
-  getFile,
-  getPages
-};

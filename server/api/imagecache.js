@@ -1,13 +1,15 @@
-const path = require("path");
-const debug = require("debug")("comics:server");
-const sharp = require("sharp");
-const { promisify } = require("util");
-const imageSize = require("image-size");
+import path from "path";
+import debugCreate from "debug";
+import sharp from "sharp";
+import { promisify } from "util";
+import imageSize from "image-size";
 
-const { ensureDir, normalizePath } = require("../utils");
-const { getFile } = require("../books");
-const sizes = require("../sizes");
-const cache = require("../cache");
+import { ensureDir, normalizePath } from "../utils.js";
+import { getFile } from "../books/index.js";
+import sizes from "../sizes.js";
+import cache from "../cache.js";
+
+const debug = debugCreate("comics:server");
 
 const sizeOf = promisify(imageSize);
 
@@ -42,7 +44,7 @@ async function loadFile(sourceFile) {
   return getFile(path.join(process.env.DIR_COMICS, sourceFile));
 }
 
-async function getThumbnailSize(thumb) {
+export async function getThumbnailSize(thumb) {
   const key = `THUMBNAIL_SIZE:v1:${thumb}`;
   return cache.wrap(key, async () => {
     const { sourceFile } = await getFilePath(thumb, "thumb");
@@ -56,7 +58,7 @@ async function getThumbnailSize(thumb) {
   });
 }
 
-async function imagecache(req, res) {
+export async function imagecache(req, res) {
   const presetName = req.params[0];
   const requestedFile = normalizePath(req.params[1]);
 
@@ -112,8 +114,3 @@ async function imagecache(req, res) {
     res.status(500).send("Could not compress image");
   }
 }
-
-module.exports = {
-  imagecache,
-  getThumbnailSize
-};

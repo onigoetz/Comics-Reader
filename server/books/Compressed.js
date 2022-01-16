@@ -1,15 +1,17 @@
 //@ts-check
 
-const path = require("path");
-const { promisify } = require("util");
+import path from "path";
+import { promisify } from "util";
 
-const sizeOf = promisify(require("image-size"));
-const tmp = require("tmp-promise");
-const rimraf = require("rimraf");
+import imageSize from "image-size";
+import tmp from "tmp-promise";
+import rimraf from "rimraf";
 
-const { getValidImages, getBigatureSize, sortNaturally } = require("../utils");
+import { getValidImages, getBigatureSize, sortNaturally } from "../utils.js";
 
-module.exports = class Compressed {
+const sizeOf = promisify(imageSize);
+
+export default class Compressed {
   constructor(filePath) {
     this.path = filePath;
   }

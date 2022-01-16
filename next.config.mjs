@@ -1,10 +1,12 @@
-const path = require("path");
-const withPlugins = require("next-compose-plugins");
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
+import path from "path";
+import withPlugins from "next-compose-plugins";
+import bundleAnalyzer from "@next/bundle-analyzer";
+
+import "./server/env.mjs";
+
+const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true"
 });
-
-require("./server/env");
 
 const serverPath = path.join(process.cwd(), "server");
 
@@ -39,4 +41,4 @@ const nextConfiguration = {
 
 const plugins = [withBundleAnalyzer];
 
-module.exports = withPlugins([...plugins], nextConfiguration);
+export default withPlugins([...plugins], nextConfiguration);

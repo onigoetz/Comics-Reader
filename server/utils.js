@@ -1,19 +1,18 @@
 //@ts-check
 
-const fs = require("fs");
-const path = require("path");
-const { promisify } = require("util");
-const natsort = require("natural-sort")();
+import fs from "fs";
+import path from "path";
+import natsortFactory from "natural-sort";
 
-const sizes = require("./sizes");
+import sizes from "./sizes.js";
 
-const mkdirAsync = promisify(fs.mkdir);
+export const sortNaturally = natsortFactory();
 
-function normalizePath(unsafeSuffix) {
+export function normalizePath(unsafeSuffix) {
   return path.normalize(unsafeSuffix).replace(/^(\.\.(\/|\\|$))+/, "");
 }
 
-function isFile(fullPath) {
+export function isFile(fullPath) {
   return new Promise(resolve => {
     fs.stat(fullPath, (err, stat) => {
       if (err) {
@@ -25,15 +24,15 @@ function isFile(fullPath) {
   });
 }
 
-function fromUrl(url) {
+export function fromUrl(url) {
   return url.replace(/\|/g, "/");
 }
 
-function isDirectorySync(dirPath) {
+export function isDirectorySync(dirPath) {
   return fs.statSync(dirPath).isDirectory();
 }
 
-function isDirectory(fullPath) {
+export function isDirectory(fullPath) {
   return new Promise(resolve => {
     fs.stat(fullPath, (err, stat) => {
       if (err) {
@@ -45,11 +44,11 @@ function isDirectory(fullPath) {
   });
 }
 
-function getExtension(file) {
+export function getExtension(file) {
   return path.extname(file).toLowerCase();
 }
 
-function validImageFilter(item) {
+export function validImageFilter(item) {
   const filename = item.replace(/^.*[\\\/]/, "");
   return (
     filename.substring(0, 1) !== "." &&
@@ -58,11 +57,11 @@ function validImageFilter(item) {
   );
 }
 
-function getValidImages(files) {
+export function getValidImages(files) {
   return files.filter(validImageFilter);
 }
 
-function getBigatureSize(data) {
+export function getBigatureSize(data) {
   const newWidth = sizes.big.width;
   const ratio = data.width / data.height;
 
@@ -72,7 +71,7 @@ function getBigatureSize(data) {
   };
 }
 
-async function ensureDir(pathToCreate) {
+export async function ensureDir(pathToCreate) {
   const parts = pathToCreate.split(path.sep);
 
   let fullPath = "";
@@ -83,7 +82,7 @@ async function ensureDir(pathToCreate) {
       if (!(await isDirectory(fullPath))) {
         try {
           // eslint-disable-next-line no-await-in-loop
-          await mkdirAsync(fullPath);
+          await fs.promises.mkdir(fullPath);
         } catch (e) {
           // If the error is EEXIST, we probably created the
           // folder at the same time as another request
@@ -96,17 +95,3 @@ async function ensureDir(pathToCreate) {
     }
   }
 }
-
-module.exports = {
-  ensureDir,
-  getExtension,
-  getBigatureSize,
-  getValidImages,
-  isDirectorySync,
-  isDirectory,
-  isFile,
-  validImageFilter,
-  fromUrl,
-  sortNaturally: natsort,
-  normalizePath
-};

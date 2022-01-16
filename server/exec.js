@@ -1,12 +1,15 @@
 //@ts-check
 
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import { cpus } from "os";
 
-const createSymlink = require("create-symlink");
-const execa = require("execa");
-const tmp = require("tmp-promise");
-const debug = require("debug")("comics:execQueue");
+import createSymlink from "create-symlink";
+import { execa } from "execa";
+import tmp from "tmp-promise";
+import createDebug from "debug";
+
+const debug = createDebug("comics:execQueue");
 
 const processTimeout = 5000;
 // unrar, unzip and friends is more I/O bound in general,
@@ -14,7 +17,7 @@ const processTimeout = 5000;
 // As we don't want this value to become too big, we're keeping it between 1 and 3
 const maxProcess = Math.min(
   3,
-  Math.max(1, Math.floor(require("os").cpus().length / 2))
+  Math.max(1, Math.floor(cpus().length / 2))
 );
 
 function defer() {
@@ -111,7 +114,7 @@ const queue = new Queue();
  * @param {string[]} cmd The command to run
  * @param {*} options Options for child_process.exec
  */
-function exec(cmd, options = {}) {
+export function exec(cmd, options = {}) {
   const deferred = defer();
 
   queue.add({ cmd, options, deferred });
@@ -126,7 +129,7 @@ function exec(cmd, options = {}) {
  *
  * @param {*} file
  */
-async function createTempSymlink(file) {
+export async function createTempSymlink(file) {
   var filePath = await tmp.tmpName({
     prefix: "symlink-",
     postfix: path.extname(file).toLowerCase()
@@ -145,8 +148,3 @@ async function createTempSymlink(file) {
     }
   };
 }
-
-module.exports = {
-  exec,
-  createTempSymlink
-};

@@ -1,23 +1,22 @@
 //@ts-check
 
-const fs = require("fs");
-const path = require("path");
-const { promisify } = require("util");
-const Table = require("cli-table");
-const percentile = require("percentile");
+import fs from "fs";
+import path from "path";
+import { promisify } from "util";
+import Table from "cli-table";
+import percentile from "percentile";
 
-const debug = require("debug")("comics:index");
+import createDebug from "debug";
 
-const cache = require("../cache");
-const { TYPE_DIR, TYPE_BOOK } = require("./types");
-const Node = require("./Node");
-const RootNode = require("./RootNode");
-const Walker = require("./Walker");
-const { getFileNames } = require("../books");
-const { getValidImages, isDirectory, sortNaturally } = require("../utils");
+import cache from "../cache.js";
+import { TYPE_DIR, TYPE_BOOK } from "./types.js";
+import Node from "./Node.js";
+import RootNode from "./RootNode.js";
+import Walker from  "./Walker.js";
+import { getFileNames } from "../books/index.js";
+import { getValidImages, isDirectory, sortNaturally } from "../utils.js";
 
-const readdir = promisify(fs.readdir);
-const stat = promisify(fs.stat);
+const debug = createDebug("comics:index");
 
 // Directories to ignore when listing output.
 const ignore = ["cgi-bin", ".", "..", "cache", ".DS_Store", "Thumbs.db"];
@@ -35,7 +34,7 @@ function forEachAsync(items, cb) {
   }, Promise.resolve());
 }
 
-module.exports = class IndexCreator {
+export default class IndexCreator {
   constructor(dirPath) {
     this.dirPath = dirPath;
     this.isReady = false;
@@ -64,7 +63,7 @@ module.exports = class IndexCreator {
     const maybeThumbnails = [];
 
     const hrstart = process.hrtime();
-    const files = await readdir(dirPath);
+    const files = await fs.promises.readdir(dirPath);
 
     await forEachAsync(files, async item => {
       const itemPath = path.join(dirPath, item);
@@ -283,7 +282,7 @@ module.exports = class IndexCreator {
    */
   async getCacheKey(node) {
     const cacheKeyVersion = 1;
-    const fileStat = await stat(`${process.env.DIR_COMICS}/${node.getPath()}`);
+    const fileStat = await fs.promises.stat(`${process.env.DIR_COMICS}/${node.getPath()}`);
     return `thumb:${cacheKeyVersion}:${node.getPath()}:${fileStat.size}:${
       fileStat.mtimeMs
     }`;

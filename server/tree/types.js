@@ -1,4 +1,2 @@
-module.exports = {
-  TYPE_BOOK: "book",
-  TYPE_DIR: "dir"
-};
+export const TYPE_BOOK = "book";
+export const TYPE_DIR = "dir";
