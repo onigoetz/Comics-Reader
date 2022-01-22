@@ -63,16 +63,12 @@ function Login() {
 
         <Label>
           Username
-          <Input  name="username" {...usernameField.bind} />
+          <Input name="username" {...usernameField.bind} />
         </Label>
 
         <Label>
           Password
-          <Input
-            name="password"
-            type="password"
-            {...passwordField.bind}
-          />
+          <Input name="password" type="password" {...passwordField.bind} />
         </Label>
 
         <div style={{ textAlign: "right" }}>

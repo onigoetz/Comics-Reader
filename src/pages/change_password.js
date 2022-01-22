@@ -74,11 +74,7 @@ function ChangePassword() {
         <br />
         <Label>
           New Password
-          <Input
-            name="password"
-            type="password"
-            {...password.bind}
-          />
+          <Input name="password" type="password" {...password.bind} />
         </Label>
 
         <Label

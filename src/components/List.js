@@ -28,7 +28,7 @@ export default function List({ books: rawBooks, isRetina, supportsWebp }) {
   const readBooks = [];
   const unreadBooks = [];
 
-  rawBooks.filter(Boolean).forEach((folder) => {
+  rawBooks.filter(Boolean).forEach(folder => {
     if (allRead(folder)) {
       readBooks.push(folder);
     } else {
@@ -60,10 +60,10 @@ export default function List({ books: rawBooks, isRetina, supportsWebp }) {
 function SubList({ books, isRetina, supportsWebp }) {
   return (
     <ul className={styles.List}>
-      {books.map((folder) => {
+      {books.map(folder => {
         const classes = {
           [styles["List__cell--allRead"]]: allRead(folder),
-          [styles["List__cell--unread"]]: unread(folder),
+          [styles["List__cell--unread"]]: unread(folder)
         };
         return (
           <li

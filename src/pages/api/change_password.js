@@ -24,6 +24,7 @@ export default async (req, res) => {
   try {
     await checkPassword(user.user, currentPassword);
   } catch (e) {
+    /* eslint-disable-next-line no-console */
     console.error(e);
     res.sendStatus(401);
     return;

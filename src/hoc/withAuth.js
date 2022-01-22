@@ -39,6 +39,7 @@ export function tryLoginWithLocalStorage() {
         login(token);
       })
       .catch(err => {
+        /* eslint-disable-next-line no-console */
         console.error(err);
         window.localStorage.removeItem(COOKIE_NAME);
       });
@@ -58,7 +59,6 @@ export default function withAuth(WrappedComponent) {
     useEffect(() => {
       const syncLogout = event => {
         if (event.key === LOGOUT_KEY) {
-          console.log("logged out from storage!");
           Router.push("/login");
         }
       };

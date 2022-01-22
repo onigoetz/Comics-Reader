@@ -40,12 +40,10 @@ export default async (req, res) => {
     const allBooks = Object.keys(comicsIndex.walker.getBooks());
 
     books = await Promise.all(
-      node.children.map(async (currentNode) => {
+      node.children.map(async currentNode => {
         const currentPath = currentNode.getPath();
         const search = `${currentPath}/`;
-        const booksInside = allBooks.filter(
-          (item) => item.indexOf(search) === 0
-        );
+        const booksInside = allBooks.filter(item => item.indexOf(search) === 0);
 
         const nodeInfo = currentNode.forClient();
 
@@ -53,17 +51,22 @@ export default async (req, res) => {
         try {
           thumbWidth = (await getThumbnailSize(nodeInfo.thumb)).width;
         } catch (e) {
-          console.error("Failed calculating thumbnail width", nodeInfo.thumb, e.message);
+          /* eslint-disable-next-line no-console */
+          console.error(
+            "Failed calculating thumbnail width",
+            nodeInfo.thumb,
+            e.message
+          );
         }
 
         return {
           ...nodeInfo,
           thumbWidth,
           read: isRead(readBooks, currentPath),
-          booksInsideRead: booksInside.filter((innerBook) =>
+          booksInsideRead: booksInside.filter(innerBook =>
             isRead(readBooks, innerBook)
           ).length,
-          booksInside: booksInside.length,
+          booksInside: booksInside.length
         };
       })
     );

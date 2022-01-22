@@ -46,7 +46,7 @@ function Search() {
         setLoading(false);
       });
     }
-  }, [searchField.value]);
+  }, [searchField.value, token]);
 
   const toggleSearch = () => {
     setVisiblity(!searchVisible);
@@ -61,13 +61,7 @@ function Search() {
       >
         <FiSearch width="28px" height="28px" />
       </button>
-      {searchVisible && (
-        <Input
-          ref={inputEl}
-          isSearch
-          {...searchField.bind}
-        />
-      )}
+      {searchVisible && <Input ref={inputEl} isSearch {...searchField.bind} />}
       {searchVisible && searchField.value.length >= 3 && (
         <Portal>
           <div className={styles.SearchResult}>
