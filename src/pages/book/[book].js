@@ -5,7 +5,9 @@ import withAuth, { useAuth } from "../../hoc/withAuth";
 import withIndexReady from "../../hoc/withIndexReady";
 import Book from "../../components/Book";
 import Layout from "../../components/Layout";
+import Loading from "../../components/Loading";
 import { imageData, urlizeNode } from "../../utils";
+import useFetch from "../../hooks/useFetch";
 
 function markRead(token, book) {
   return fetchWithAuth(token, `read/${urlizeNode(book)}`, {
@@ -13,58 +15,60 @@ function markRead(token, book) {
   });
 }
 
-function BookManager({
-  currentUrl,
-  path,
-  book,
-  parent,
-  pages,
-  read,
-  isRetina,
-  supportsWebp
-}) {
-  const [isRead, setRead] = useState(read);
+function BookManager({ currentUrl, path, isRetina, supportsWebp }) {
+  const [isRead, setRead] = useState(false);
   const { token } = useAuth();
 
+  const { data, loading, error, retry } = useFetch(
+    `book/${encodeURIComponent(path)}`
+  );
+
   return (
-    <Layout url={currentUrl} current={book} parent={parent}>
-      <div className="Content Content--gallery">
-        <Book
-          isRetina={isRetina}
-          supportsWebp={supportsWebp}
-          pages={pages}
-          read={isRead}
-          onRead={() => {
-            markRead(token, path).then(() => {
-              setRead(true);
-            });
-          }}
-        />
-      </div>
+    <Layout
+      url={currentUrl}
+      current={data ? data.dir : null}
+      parent={data ? data.parent : null}
+    >
+      {loading && <Loading inline />}
+      {error && (
+        <>
+          An error occured while loading this page
+          <br />
+          <button className="Button" onClick={retry}>
+            Retry
+          </button>
+        </>
+      )}
+      {data && !loading && (
+        <div className="Content Content--gallery">
+          <Book
+            isRetina={isRetina}
+            supportsWebp={supportsWebp}
+            pages={data.pages}
+            read={data.read || isRead}
+            onRead={() => {
+              markRead(token, path).then(() => {
+                setRead(true);
+              });
+            }}
+          />
+        </div>
+      )}
     </Layout>
   );
 }
 
-BookManager.getInitialProps = async ({ query, req, token }) => {
+BookManager.getInitialProps = async ({ query, req }) => {
   const path = query.book;
   const url = `/book/${path}`;
 
   const { isRetina, supportsWebp } = imageData(req);
 
-  const { book, parent, pages, read } = await fetchWithAuth(
-    token,
-    `book/${encodeURIComponent(path)}`
-  );
-
   return {
     isRetina,
     supportsWebp,
     currentUrl: url,
-    path,
-    book,
-    parent,
-    pages,
-    read
+    path
   };
 };
 
