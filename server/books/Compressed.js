@@ -14,6 +14,9 @@ module.exports = class Compressed {
     this.path = filePath;
   }
 
+  /**
+   * @returns string[]
+   */
   async getFileNames() {
     throw new Error("Missing implementation");
   }

@@ -107,6 +107,7 @@ async function getPages(book) {
 }
 
 module.exports = {
+  open,
   getFileNames,
   getFile,
   getPages
