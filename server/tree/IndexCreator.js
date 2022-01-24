@@ -220,25 +220,24 @@ module.exports = class IndexCreator {
 
   async getList() {
     if (!this.rootNode) {
-      this.rootNode = this.getRootNode()
-        .then(rootNode => {
-          this.walker = new Walker(rootNode);
+      this.rootNode = this.getRootNode().then(rootNode => {
+        this.walker = new Walker(rootNode);
 
-          return rootNode;
-        });
+        return rootNode;
+      });
     }
 
     return this.rootNode;
   }
 
   async reindex() {
-    if (this.phase != "DONE") {
+    if (this.phase !== "DONE") {
       console.log("Cancelling reindex, one is already running");
     }
 
     this.initStats();
 
-    const newRootNode = await this.getRootNode()
+    const newRootNode = await this.getRootNode();
 
     this.walker = new Walker(newRootNode);
     this.rootNode = Promise.resolve(newRootNode);

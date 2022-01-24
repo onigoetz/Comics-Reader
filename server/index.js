@@ -27,35 +27,40 @@ loudRejection();
 console.log(title("Starting server"));
 
 cron.schedule(process.env.REFRESH_SCHEDULE, () => {
-  comicsIndex.reindex().then(  () => {
-    console.log(title("Index ready ! Have a good read !"));
-  },
-  e => {
-    console.error(error("Could not create index"), e);
-  });
-});
-
-app.prepare().then(() => {
-  const server = express();
-
-  server.use(compression()); // Enable Gzip
-  server.use(morgan("tiny")); // Access logs
-
-  // Static assets
-  server.use("/images", express.static("images"));
-  server.get(
-    /\/images\/cache\/([a-zA-Z]*)\/(.*)/,
-    require("./api/imagecache").imagecache
+  comicsIndex.reindex().then(
+    () => {
+      console.log(title("Index ready ! Have a good read !"));
+    },
+    e => {
+      console.error(error("Could not create index"), e);
+    }
   );
-
-  server.all("*", (req, res) => {
-    handle(req, res);
-  });
-
-  server.listen(process.env.SERVER_PORT);
-
-  console.log(title(`Started server on ${process.env.SERVER_URL}`));
-}).catch(e => {
-  console.error("Failed to start", e);
-  process.exit(1);
 });
+
+app
+  .prepare()
+  .then(() => {
+    const server = express();
+
+    server.use(compression()); // Enable Gzip
+    server.use(morgan("tiny")); // Access logs
+
+    // Static assets
+    server.use("/images", express.static("images"));
+    server.get(
+      /\/images\/cache\/([a-zA-Z]*)\/(.*)/,
+      require("./api/imagecache").imagecache
+    );
+
+    server.all("*", (req, res) => {
+      handle(req, res);
+    });
+
+    server.listen(process.env.SERVER_PORT);
+
+    console.log(title(`Started server on ${process.env.SERVER_URL}`));
+  })
+  .catch(e => {
+    console.error("Failed to start", e);
+    process.exit(1);
+  });

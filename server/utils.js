@@ -9,6 +9,16 @@ const sizes = require("./sizes");
 
 const mkdirAsync = promisify(fs.mkdir);
 
+function createDeferred() {
+  var deferred = {};
+  var promise = new Promise((resolve, reject) => {
+    deferred.resolve = resolve;
+    deferred.reject = reject;
+  });
+  deferred.promise = promise;
+  return deferred;
+}
+
 function normalizePath(unsafeSuffix) {
   return path.normalize(unsafeSuffix).replace(/^(\.\.(\/|\\|$))+/, "");
 }
@@ -98,6 +108,7 @@ async function ensureDir(pathToCreate) {
 }
 
 module.exports = {
+  createDeferred,
   ensureDir,
   getExtension,
   getBigatureSize,

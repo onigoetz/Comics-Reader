@@ -8,6 +8,8 @@ const execa = require("execa");
 const tmp = require("tmp-promise");
 const debug = require("debug")("comics:execQueue");
 
+const { createDeferred } = require("./utils");
+
 const processTimeout = 5000;
 // unrar, unzip and friends is more I/O bound in general,
 // however it still gives a rough indication of what the server might support.
@@ -16,16 +18,6 @@ const maxProcess = Math.min(
   3,
   Math.max(1, Math.floor(require("os").cpus().length / 2))
 );
-
-function defer() {
-  var deferred = {};
-  var promise = new Promise((resolve, reject) => {
-    deferred.resolve = resolve;
-    deferred.reject = reject;
-  });
-  deferred.promise = promise;
-  return deferred;
-}
 
 class Queue {
   constructor() {
@@ -112,7 +104,7 @@ const queue = new Queue();
  * @param {*} options Options for child_process.exec
  */
 function exec(cmd, options = {}) {
-  const deferred = defer();
+  const deferred = createDeferred();
 
   queue.add({ cmd, options, deferred });
 

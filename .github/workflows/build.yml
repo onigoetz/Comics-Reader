@@ -17,5 +17,9 @@ jobs:
         cache: 'yarn'
     - name: yarn install
       run: yarn install
-    - name: Linting
+    - name: Lint server
+      run: yarn lint:server
+    - name: Lint client
+      run: yarn lint:client
+    - name: Tests
       run: yarn test:ci
