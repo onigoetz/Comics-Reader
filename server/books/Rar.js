@@ -2,90 +2,132 @@
 const pathLib = require("path");
 const fs = require("fs");
 
-const toBuffer = require('typedarray-to-buffer');
+const toBuffer = require("typedarray-to-buffer");
 
-const unrar = require('node-unrar-js');
+const unrar = require("node-unrar-js");
 const tmp = require("tmp-promise");
-
-const Compressed = require("./Compressed");
-const { exec, createTempSymlink } = require("../exec");
 
 const sizeOf = require("image-size");
 
-const { validImageFilter, getBigatureSize, sortNaturally } = require("../utils");
+const {
+  validImageFilter,
+  getBigatureSize,
+  sortNaturally
+} = require("../utils");
 
 // Documentation of the unrar command :
 // http://acritum.com/winrar/console-rar-manual
 
-module.exports = class Rar extends Compressed {
+class RarBatch {
+  async read(path) {
+    const data = await fs.promises.readFile(path);
+    return unrar.createExtractorFromData({ data });
+  }
+
+  async run(openedFile, actions) {
+    const actionsByPath = actions.reduce((acc, action) => {
+      if (!acc.hasOwnProperty(action.subPath)) {
+        acc[action.subPath] = [];
+      }
+
+      acc[action.subPath].push(action);
+
+      return acc;
+    }, {});
+
+    const list = openedFile.extract({ files: Object.keys(actionsByPath) });
+
+    for (const file of list.files) {
+      for (const action of actionsByPath[file.fileHeader.name]) {
+        action.handled = true;
+        try {
+          /* eslint-disable-next-line no-await-in-loop */
+          action.deferred.resolve(await action.action(file));
+        } catch (e) {
+          console.error("Rar action failed", e);
+          action.deferred.reject(e);
+        }
+      }
+    }
+
+    // If an action wasn't treated it wouldn't have the "action.handled" flag set to true
+    // This means the file wasn't found and we need to reject the deferred promise
+    Object.values(actionsByPath).forEach(actionsForPath => {
+      actionsForPath.forEach(action => {
+        if (!action.handled) {
+          action.deferred.reject(new Error("File not found"));
+        }
+      });
+    });
+
+    console.log("Treated", actions.length, "actions in batch");
+  }
+}
+
+module.exports = class Rar {
+  constructor(filePath, batchWorker) {
+    this.path = filePath;
+    this.batchWorker = batchWorker;
+  }
+
   async getFileNames() {
-    const extractor = await unrar.createExtractorFromFile({ filepath: this.path });
+    const extractor = await unrar.createExtractorFromFile({
+      filepath: this.path
+    });
 
     const list = extractor.getFileList();
-    return  [...list.fileHeaders].map(file => file.name);
+    return [...list.fileHeaders].map(file => file.name);
   }
 
   async extractFile(file) {
-    const buf = await fs.promises.readFile(this.path)
-    const extractor = await unrar.createExtractorFromData({ data: buf });
+    return this.batchWorker.addTask(this.path, RarBatch, {
+      subPath: file,
+      async action(extractedFile) {
+        const { path, cleanup } = await tmp.file({
+          postfix: pathLib.extname(file).toLowerCase()
+        });
 
-    const list = extractor.extract({
-      // Only extract actual files
-      files: (fileHeader) => validImageFilter(fileHeader.name)
+        await fs.promises.writeFile(path, extractedFile.extraction);
+
+        return {
+          path,
+          cleanup
+        };
+      }
     });
-
-    const extractedFile = list.files.next();
-    
-    const { path, cleanup } = await tmp.file({
-      postfix: pathLib.extname(file).toLowerCase()
-    });
-
-    await fs.promises.writeFile(path, extractedFile.value.extraction);
-
-    return {
-      path,
-      cleanup
-    };
-  }
-
-  async extractAll(destination) {
-    const { filePath, cleanup } = await createTempSymlink(this.path);
-
-    await exec(["unrar", "x", filePath, destination]);
-
-    cleanup();
   }
 
   /**
    * This function is a bit slower than using unrar directly in direct benchmark.
-   * But in exchange it's memory only, uses no separate binary and 
+   * But in exchange it's memory only, uses no separate binary and
    * doesn't write files to a temporary folder
-   * @returns 
+   * @returns
    */
   async getPages() {
-    const buf = await fs.promises.readFile(this.path)
+    const buf = await fs.promises.readFile(this.path);
     const extractor = await unrar.createExtractorFromData({ data: buf });
 
     const list = extractor.extract({
       // Only extract actual files
-      files: (fileHeader) => validImageFilter(fileHeader.name)
+      files: fileHeader => validImageFilter(fileHeader.name)
     });
 
     const pages = [];
-    for (let file of list.files) {
+    for (const file of list.files) {
       const data = sizeOf(toBuffer(file.extraction));
 
       const size = getBigatureSize(data);
 
       pages.push({
-        src: `${this.path}/${file.fileHeader.name}`.replace(process.env.DIR_COMICS, ""),
+        src: `${this.path}/${file.fileHeader.name}`.replace(
+          process.env.DIR_COMICS,
+          ""
+        ),
         width: size.width,
         height: size.height
       });
-
     }
 
     return pages.sort((a, b) => sortNaturally(a.src, b.src));
-
   }
 };

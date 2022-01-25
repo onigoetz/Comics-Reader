@@ -13,8 +13,11 @@ const Zip = require("./Zip");
 const Rar = require("./Rar");
 const PDF = require("./PDF");
 const Dir = require("./Dir");
+const BatchWorker = require("../batch-worker");
 
 const archives = [".cbr", ".cbz", ".zip", ".rar", ".pdf"];
+
+const batchWorker = new BatchWorker();
 
 function isArchive(extension) {
   return archives.indexOf(extension.toLowerCase()) !== -1;
@@ -37,9 +40,9 @@ async function open(file) {
 
   switch (type.mime) {
     case "application/zip":
-      return new Zip(file);
+      return new Zip(file, batchWorker);
     case "application/x-rar-compressed":
-      return new Rar(file);
+      return new Rar(file, batchWorker);
     default:
       throw new Error(`Could not open archive of type ${type.mime}`);
   }

@@ -5,10 +5,10 @@ const fs = require("fs");
 const unzipper = require("unzipper");
 const tmp = require("tmp-promise");
 const Iconv = require("iconv").Iconv;
-const { timeout: promiseTimeout } = require("promise-timeout");
 
-const Compressed = require("./Compressed");
-const { exec, createTempSymlink } = require("../exec");
+const sizeOf = require("image-size");
+
+const { validImageFilter, getBigatureSize, sortNaturally } = require("../utils");
 
 const iconv = new Iconv("UTF-8", "UTF-8//IGNORE");
 
@@ -21,15 +21,61 @@ function getPath({ path, isUnicode, pathBuffer }) {
   return isUnicode ? path : cleanupName(pathBuffer);
 }
 
-const outerTimeout = 15000;
+class ZipBatch {
+  async read(path) {
+    const data = await fs.promises.readFile(path);
+    return unzipper.Open.buffer(data);
+  }
 
-const failedFiles = new Set();
+  async run(openedFile, actions) {
+    const actionsByPath = actions.reduce((acc, action) => {
+      if (!acc.hasOwnProperty(action.subPath)) {
+        acc[action.subPath] = [];
+      }
 
-const options = { encoding: "utf8" };
+      acc[action.subPath].push(action);
 
-class NodeZip {
-  constructor(filePath) {
+      return acc;
+    }, {});
+
+    for (const file of openedFile.files) {
+
+      const filePath = getPath(file);
+
+      if (!actionsByPath.hasOwnProperty(filePath)) {
+        continue;
+      }
+
+      for (const action of actionsByPath[filePath]) {
+        action.handled = true;
+        try {
+          /* eslint-disable-next-line no-await-in-loop */
+          action.deferred.resolve(await action.action(file));
+        } catch (e) {
+          console.error("Zip action failed", e);
+          action.deferred.reject(e);
+        }
+      }
+    }
+
+    // If an action wasn't treated it wouldn't have the "action.handled" flag set to true
+    // This means the file wasn't found and we need to reject the deferred promise
+    Object.values(actionsByPath).forEach(actionsForPath => {
+      actionsForPath.forEach(action => {
+        if (!action.handled) {
+          action.deferred.reject(new Error("File not found"));
+        }
+      });
+    });
+
+    console.log("Treated", actions.length, "actions in batch");
+  }
+}
+
+module.exports = class Zip {
+  constructor(filePath, batchWorker) {
     this.path = filePath;
+    this.batchWorker = batchWorker;
   }
 
   async openFile() {
@@ -42,130 +88,54 @@ class NodeZip {
   }
 
   async extractFile(file) {
-    const { path, cleanup } = await tmp.file({
-      postfix: pathLib.extname(file).toLowerCase()
+    return this.batchWorker.addTask(this.path, ZipBatch, {
+      subPath: file,
+      async action(entry) {
+        const { path, cleanup } = await tmp.file({
+          postfix: pathLib.extname(file).toLowerCase()
+        });
+
+        await new Promise((resolve, reject) => {
+          entry
+            .stream()
+            .pipe(fs.createWriteStream(path))
+            .on("error", reject)
+            .on("finish", resolve);
+        });
+
+        return {
+          path,
+          cleanup
+        };
+      }
     });
-
-    const directory = await this.openFile();
-    const entry = directory.files.find(
-      currentFile => getPath(currentFile) === file
-    );
-
-    if (!entry) {
-      throw new Error(`${file} not found in ${this.path}`);
-    }
-
-    await new Promise((resolve, reject) => {
-      entry
-        .stream()
-        .pipe(fs.createWriteStream(path))
-        .on("error", reject)
-        .on("finish", resolve);
-    });
-
-    return {
-      path,
-      cleanup
-    };
   }
 
-  async extractAll(destination) {
-    const directory = await this.openFile();
-    return directory.extract({ path: destination });
+   async getPages() {
+    const list = await this.openFile();
+
+    const pages = [];
+    for (const file of list.files) {
+
+      if (!validImageFilter(file.path)) {
+        continue;
+      }
+
+      const data = sizeOf(await file.buffer());
+
+      const size = getBigatureSize(data);
+
+      pages.push({
+        src: `${this.path}/${getPath(file)}`.replace(
+          process.env.DIR_COMICS,
+          ""
+        ),
+        width: size.width,
+        height: size.height
+      });
+    }
+
+    return pages.sort((a, b) => sortNaturally(a.src, b.src));
   }
 }
 
-class ExecZip {
-  constructor(filePath) {
-    this.path = filePath;
-  }
-
-  async getFileNames() {
-    const { filePath, cleanup } = await createTempSymlink(this.path);
-
-    const { stdout: filenames } = await exec(
-      ["zipinfo", "-1", filePath],
-      options
-    );
-
-    cleanup();
-
-    return filenames.split("\n");
-  }
-
-  async extractFile(file) {
-    const { filePath, cleanup: cleanupSymlink } = await createTempSymlink(
-      this.path
-    );
-
-    const { path, cleanup } = await tmp.file({
-      postfix: pathLib.extname(file).toLowerCase()
-    });
-
-    await exec(["unzip", "-p", filePath, file], {
-      ...options,
-      stdoutFile: path
-    });
-
-    cleanupSymlink();
-
-    return {
-      path,
-      cleanup
-    };
-  }
-
-  async extractAll(destination) {
-    const { filePath, cleanup } = await createTempSymlink(this.path);
-
-    await exec(["unzip", "-o", filePath, "-d", destination], options);
-
-    cleanup();
-  }
-}
-
-module.exports = class Zip extends Compressed {
-  constructor(filePath) {
-    super(filePath);
-
-    this.exec = new ExecZip(filePath);
-    this.node = new NodeZip(filePath);
-  }
-
-  async runExec(fn, args) {
-    return this.exec[fn](...args);
-  }
-
-  async runNode(fn, args) {
-    return promiseTimeout(this.node[fn](...args), outerTimeout);
-  }
-
-  async run(fn, ...args) {
-    if (failedFiles.has(this.path)) {
-      return this.runExec(fn, args);
-    }
-
-    try {
-      return await this.runNode(fn, args);
-    } catch (e) {
-      failedFiles.add(this.path);
-      console.error(
-        `Failed to run '${fn}', for '${this.path}', retrying through unzip command, original error: ${e}`
-      );
-    }
-
-    return this.runExec(fn, args);
-  }
-
-  async getFileNames() {
-    return this.run("getFileNames");
-  }
-
-  async extractFile(file) {
-    return this.run("extractFile", file);
-  }
-
-  async extractAll(destination) {
-    return this.run("extractAll", destination);
-  }
-};
