@@ -1,6 +1,5 @@
 //@ts-check
 const fs = require("fs");
-const { promisify } = require("util");
 
 const tmp = require("tmp-promise");
 require("pdfjs-dist/lib/examples/node/domstubs").setStubs(global);
@@ -9,7 +8,6 @@ const pdfjs = require("pdfjs-dist/legacy/build/pdf.js");
 const { exec, createTempSymlink } = require("../exec");
 const { getBigatureSize } = require("../utils");
 
-const readFileAsync = promisify(fs.readFile);
 
 module.exports = class PDF {
   constructor(file) {
@@ -25,9 +23,8 @@ module.exports = class PDF {
   }
 
   async getDocument() {
-    return pdfjs.getDocument({
-      data: new Uint8Array(await readFileAsync(this.file))
-    }).promise;
+    const data = new Uint8Array(await fs.promises.readFile(this.file));
+    return pdfjs.getDocument({ data }).promise;
   }
 
   async extractPageWithLib(pageNum) {
@@ -92,18 +89,21 @@ module.exports = class PDF {
       console.error(`Could not extract file ${e.message}`);
     }
 
-    // the convert command takes zero-indexed page numbers
-    const page = pageNum - 1;
     const file = await tmp.file({ postfix: ".png" });
 
     const { filePath, cleanup } = await createTempSymlink(this.file);
 
     const command = [
-      "convert",
-      "-density",
-      "400",
-      `${filePath}[${page}]`,
-      file.path
+      "mutool",
+      "draw",
+      "-c",
+      "rgb",
+      "-r",
+      "200",
+      "-o",
+      file.path,
+      filePath,
+      pageNum
     ];
 
     try {

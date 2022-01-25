@@ -28,8 +28,7 @@ Will start the comics reader using your comic books at `/your-images-dir` and be
 
 First, you need
 - Nodejs
-- Imagemagick installed on the machine. (for PDF support)
-- `unrar` and `unzip` commands installed. (for CBR and CBZ support)
+- [MuPDF](https://mupdf.com/docs/mutool.html) for PDF support (`brew install mupdf-tools` / `apt install mupdf-tools`)
 
 - Download/clone this repository on your server
 - Symlink your comics to `images` in the app's directory
