@@ -44,7 +44,7 @@ export default async (req, res) => {
       pages
     });
   } catch (e) {
-    res.status(500).json({error: "An error occured, please retry later"});
+    res.status(500).json({ error: "An error occured, please retry later" });
 
     /* eslint-disable-next-line no-console */
     console.error("ERROR", e);

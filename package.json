@@ -40,9 +40,9 @@
     "crafty:build": "crafty run",
     "crafty:watch": "crafty watch",
     "clear-cache": "rm -rf cache images/cache",
-    "lint:server": "crafty jsLint server next.config.js --preset recommended --preset node --fix",
-    "lint:client": "crafty jsLint src --preset recommended --fix",
-    "lint:css": "crafty cssLint src/**/*.css --preset legacy --fix"
+    "lint:server": "crafty jsLint server next.config.js --preset recommended --preset node",
+    "lint:client": "crafty jsLint src --preset recommended",
+    "lint:css": "crafty cssLint src/**/*.css --preset legacy"
   },
   "devDependencies": {
     "@swissquote/crafty": "^1.14.0",

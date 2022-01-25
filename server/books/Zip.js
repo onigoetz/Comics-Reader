@@ -8,7 +8,11 @@ const Iconv = require("iconv").Iconv;
 
 const sizeOf = require("image-size");
 
-const { validImageFilter, getBigatureSize, sortNaturally } = require("../utils");
+const {
+  validImageFilter,
+  getBigatureSize,
+  sortNaturally
+} = require("../utils");
 
 const iconv = new Iconv("UTF-8", "UTF-8//IGNORE");
 
@@ -39,7 +43,6 @@ class ZipBatch {
     }, {});
 
     for (const file of openedFile.files) {
-
       const filePath = getPath(file);
 
       if (!actionsByPath.hasOwnProperty(filePath)) {
@@ -111,16 +114,16 @@ module.exports = class Zip {
     });
   }
 
-   async getPages() {
+  async getPages() {
     const list = await this.openFile();
 
     const pages = [];
     for (const file of list.files) {
-
       if (!validImageFilter(file.path)) {
         continue;
       }
 
+      /* eslint-disable-next-line no-await-in-loop */
       const data = sizeOf(await file.buffer());
 
       const size = getBigatureSize(data);
@@ -137,5 +140,4 @@ module.exports = class Zip {
 
     return pages.sort((a, b) => sortNaturally(a.src, b.src));
   }
-}
-
+};
