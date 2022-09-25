@@ -53,7 +53,7 @@
     "@types/compression": "^1.0.0",
     "@types/express": "^4.16.0",
     "@types/morgan": "^1.7.35",
-    "@types/sharp": "^0.30.0",
+    "@types/sharp": "^0.31.0",
     "ava": "^4.0.1",
     "c8": "^7.11.0"
   },
@@ -102,7 +102,7 @@
     "react-portal": "^4.1.5",
     "read-chunk": "^3.0.0",
     "rimraf": "^3.0.0",
-    "sharp": "^0.30.0",
+    "sharp": "^0.31.0",
     "tmp-promise": "^3.0.2",
     "typedarray-to-buffer": "^4.0.0",
     "unzipper": "^0.10.5"

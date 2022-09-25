@@ -713,10 +713,10 @@
     "@types/mime" "^1"
     "@types/node" "*"
 
-"@types/sharp@^0.30.0":
-  version "0.30.4"
-  resolved "https://registry.yarnpkg.com/@types/sharp/-/sharp-0.30.4.tgz#7430b5fcf37f35dd860112c4cf6dcd6a1ba0011b"
-  integrity sha512-6oJEzKt7wZeS7e+6x9QFEOWGs0T/6of00+0onZGN1zSmcSjcTDZKgIGZ6YWJnHowpaKUCFBPH52mYljWqU32Eg==
+"@types/sharp@^0.31.0":
+  version "0.31.0"
+  resolved "https://registry.yarnpkg.com/@types/sharp/-/sharp-0.31.0.tgz#c4af03a7e1d126f0d428a265e126fabd86ab6d0f"
+  integrity sha512-nwivOU101fYInCwdDcH/0/Ru6yIRXOpORx25ynEOc6/IakuCmjOAGpaO5VfUl4QkDtUC6hj+Z2eCQvgXOioknw==
   dependencies:
     "@types/node" "*"
 
@@ -5567,7 +5567,7 @@ prebuild-install@^7.0.0:
     tar-fs "^2.0.0"
     tunnel-agent "^0.6.0"
 
-prebuild-install@^7.1.0:
+prebuild-install@^7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-7.1.1.tgz#de97d5b34a70a0c81334fd24641f2a1702352e45"
   integrity sha512-jAXscXWMcCK8GgCoHOfIr0ODh5ai8mj63L2nWrjuAgXE6tDyYGnx4/8o/rCgU+B4JSyZBKbeZqzhtwtC3ovxjw==
@@ -6185,15 +6185,15 @@ shallowequal@^1.1.0:
   resolved "https://registry.yarnpkg.com/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
   integrity sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==
 
-sharp@^0.30.0:
-  version "0.30.6"
-  resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.30.6.tgz#02264e9826b5f1577509f70bb627716099778873"
-  integrity sha512-lSdVxFxcndzcXggDrak6ozdGJgmIgES9YVZWtAFrwi+a/H5vModaf51TghBtMPw+71sLxUsTy2j+aB7qLIODQg==
+sharp@^0.31.0:
+  version "0.31.0"
+  resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.31.0.tgz#ce9b5202a5667486721cf07fd5b52360b1c2275a"
+  integrity sha512-ft96f8WzGxavg0rkLpMw90MTPMUZDyf0tHjPPh8Ob59xt6KzX8EqtotcqZGUm7kwqpX2pmYiyYX2LL0IZ/FDEw==
   dependencies:
     color "^4.2.3"
     detect-libc "^2.0.1"
     node-addon-api "^5.0.0"
-    prebuild-install "^7.1.0"
+    prebuild-install "^7.1.1"
     semver "^7.3.7"
     simple-get "^4.0.1"
     tar-fs "^2.1.1"
