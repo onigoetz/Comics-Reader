@@ -15,4 +15,4 @@ module.exports = {
 
     return cache.wrap(key, fn, options);
   }
-}
+};
