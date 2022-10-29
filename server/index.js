@@ -60,9 +60,10 @@ app
       handle(req, res);
     });
 
-    server.listen(process.env.SERVER_PORT);
-
-    console.log(title(`Started server on ${process.env.SERVER_URL}`));
+    server.listen(process.env.SERVER_PORT, err => {
+      if (err) throw err;
+      console.log(`> Started server on ${process.env.SERVER_URL}`);
+    });
   })
   .catch(e => {
     console.error("Failed to start", e);

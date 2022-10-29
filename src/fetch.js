@@ -1,6 +1,4 @@
 /* global process */
-import fetch from "isomorphic-unfetch";
-
 function onlySuccess(v) {
   if (v.status !== 200) {
     throw new Error(
