@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import Router from "next/router";
 import withAuth, { logout } from "../hoc/withAuth";
-import withDBMode from "../hoc/withDBMode";
 
 function Logout() {
   useEffect(() => {
@@ -12,4 +11,4 @@ function Logout() {
   return null;
 }
 
-export default withDBMode(withAuth(Logout));
+export default withAuth(Logout);

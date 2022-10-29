@@ -10,7 +10,6 @@ import Loading from "../components/Loading";
 import Message from "../components/Message";
 import useInput from "../hooks/useInput";
 import withAuth, { useAuth, logout } from "../hoc/withAuth";
-import withDBMode from "../hoc/withDBMode";
 
 function ChangePassword() {
   const currentPassword = useInput();
@@ -105,4 +104,4 @@ function ChangePassword() {
   );
 }
 
-export default withDBMode(withAuth(ChangePassword));
+export default withAuth(ChangePassword);

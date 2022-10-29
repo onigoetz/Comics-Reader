@@ -16,9 +16,13 @@ const comicsIndex = require("./comics");
 const title = chalk.underline.bold;
 const error = chalk.red;
 
+const url = new URL(process.env.SERVER_URL);
+
 const app = next({
   dev: process.env.NODE_ENV !== "production",
-  dir: process.cwd()
+  dir: process.cwd(),
+  port: process.env.SERVER_PORT,
+  hostname: url.hostname
 });
 const handle = app.getRequestHandler();
 

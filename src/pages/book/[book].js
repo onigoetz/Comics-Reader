@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 import { fetchWithAuth } from "../../fetch";
 import withAuth, { useAuth } from "../../hoc/withAuth";
-import withIndexReady from "../../hoc/withIndexReady";
 import Book from "../../components/Book";
 import Layout from "../../components/Layout";
 import Loading from "../../components/Loading";
@@ -72,4 +71,4 @@ BookManager.getInitialProps = async ({ query, req }) => {
   };
 };
 
-export default withAuth(withIndexReady(BookManager));
+export default withAuth(BookManager);

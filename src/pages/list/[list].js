@@ -1,6 +1,5 @@
 import React from "react";
 
-import withIndexReady from "../../hoc/withIndexReady";
 import withAuth from "../../hoc/withAuth";
 import Layout from "../../components/Layout";
 import List from "../../components/List";
@@ -54,4 +53,4 @@ ListManager.getInitialProps = async ({ query, req, token }) => {
   };
 };
 
-export default withAuth(withIndexReady(ListManager));
+export default withAuth(ListManager);

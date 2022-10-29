@@ -8,10 +8,9 @@ import Label from "../components/Label";
 import Input from "../components/Input";
 import useInput from "../hooks/useInput";
 import { login, tryLoginWithLocalStorage } from "../hoc/withAuth";
-import withDBMode from "../hoc/withDBMode";
 import apiFetch from "../fetch";
 
-function Login() {
+export default function Login() {
   const usernameField = useInput();
   const passwordField = useInput();
 
@@ -78,5 +77,3 @@ function Login() {
     </Layout>
   );
 }
-
-export default withDBMode(Login);
