@@ -22,10 +22,8 @@ function canGoBack(url) {
 
 function Home() {
   return (
-    <Link href="/">
-      <a className="Button Button--link" title="Back to Home">
-        <FiHome />
-      </a>
+    <Link href="/" className="Button Button--link" title="Back to Home">
+      <FiHome />
     </Link>
   );
 }
@@ -59,23 +57,15 @@ function Previous({ parent, previousUrl, history }) {
     );
   }*/
 
-  const linkProps = parent.path
-    ? {
-        href: "/list/[list]",
-        as: createUrl(parent)
-      }
-    : { href: "/" };
-
   return (
     <div className={`${styles.Header__Section} ${styles.pullLeft}`}>
-      <Link {...linkProps}>
-        <a
-          className="Button Button--link Button--back"
-          title={`Back to ${title}`}
-        >
-          <FiChevronLeft />
-          {title}
-        </a>
+      <Link
+        href={parent.path ? createUrl(parent) : "/"}
+        className="Button Button--link Button--back"
+        title={`Back to ${title}`}
+      >
+        <FiChevronLeft />
+        {title}
       </Link>
     </div>
   );
@@ -86,11 +76,11 @@ function User() {
     <div className={`${styles.Dropdown__trigger} Button Button--link`}>
       <FiUser />
       <div className={styles.Dropdown__content}>
-        <Link href="/change_password">
-          <a className="Link">Change Password</a>
+        <Link href="/change_password" className="Link">
+          Change Password
         </Link>
-        <Link href="/logout">
-          <a className="Link">Logout</a>
+        <Link href="/logout" className="Link">
+          Logout
         </Link>
       </div>
     </div>

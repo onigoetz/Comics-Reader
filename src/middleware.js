@@ -21,13 +21,19 @@ export async function middleware(request) {
   }
 
   // These pages shouldn't be accessible when DB auth is disabled
-  if (authMode !== "db" && accountManagementURLs.test(request.nextUrl.pathname)) {
+  if (
+    authMode !== "db" &&
+    accountManagementURLs.test(request.nextUrl.pathname)
+  ) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
   // Make sure the index is ready before showing the page
   const indexData = await apiFetch("indexready");
-  if (!indexData.ready && !accountManagementURLs.test(request.nextUrl.pathname)) {
+  if (
+    !indexData.ready &&
+    !accountManagementURLs.test(request.nextUrl.pathname)
+  ) {
     return NextResponse.redirect(new URL("/index_not_ready", request.url));
   }
 

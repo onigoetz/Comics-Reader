@@ -70,36 +70,31 @@ function SubList({ books, isRetina, supportsWebp }) {
             className={classnames(styles.List__cell, classes)}
             key={folder.name}
           >
-            <Link
-              href={folder.type === TYPE_DIR ? "/list/[list]" : "/book/[book]"}
-              as={createUrl(folder)}
-            >
-              <a>
-                <div className={styles.List__cell__image}>
-                  {folder.type === TYPE_DIR &&
-                    folder.booksInside !== folder.booksInsideRead && (
-                      <div className={styles.List__cell__unreadCount}>
-                        {folder.booksInside - folder.booksInsideRead}
-                      </div>
-                    )}
-                  <Image
-                    src={image(folder.thumb, "thumb", isRetina, supportsWebp)}
-                    height={140}
-                    width={folder.thumbWidth}
-                    loader={({ src }) => src}
-                    alt={folder.name}
-                    unoptimized
-                  />
-                </div>
-                <div className={styles.List__cell__name}>
-                  {cleanName(folder.name)}
-                </div>
-                {folder.type === TYPE_DIR && (
-                  <p className={styles.List__cell__details}>
-                    {bookCount(folder)}
-                  </p>
-                )}
-              </a>
+            <Link href={createUrl(folder)}>
+              <div className={styles.List__cell__image}>
+                {folder.type === TYPE_DIR &&
+                  folder.booksInside !== folder.booksInsideRead && (
+                    <div className={styles.List__cell__unreadCount}>
+                      {folder.booksInside - folder.booksInsideRead}
+                    </div>
+                  )}
+                <Image
+                  src={image(folder.thumb, "thumb", isRetina, supportsWebp)}
+                  height={140}
+                  width={folder.thumbWidth}
+                  loader={({ src }) => src}
+                  alt={folder.name}
+                  unoptimized
+                />
+              </div>
+              <div className={styles.List__cell__name}>
+                {cleanName(folder.name)}
+              </div>
+              {folder.type === TYPE_DIR && (
+                <p className={styles.List__cell__details}>
+                  {bookCount(folder)}
+                </p>
+              )}
             </Link>
           </li>
         );

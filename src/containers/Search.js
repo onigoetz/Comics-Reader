@@ -11,7 +11,6 @@ import useInput from "../hooks/useInput";
 import { useAuth } from "../hoc/withAuth";
 import { fetchWithAuth } from "../fetch";
 import { createUrl } from "../utils";
-import { TYPE_DIR } from "../types";
 
 function Search() {
   const { token } = useAuth();
@@ -72,18 +71,12 @@ function Search() {
             {bookList.map(item => {
               return (
                 <Link
-                  href={
-                    item.type === TYPE_DIR ? "/list/[list]" : "/book/[book]"
-                  }
-                  as={createUrl(item)}
+                  href={createUrl(item)}
                   key={item.path}
+                  onClick={toggleSearch}
+                  className={styles.SearchResult__item}
                 >
-                  <a
-                    onClick={toggleSearch}
-                    className={styles.SearchResult__item}
-                  >
-                    <small>{item.parent}</small> / {item.name}
-                  </a>
+                  <small>{item.parent}</small> / {item.name}
                 </Link>
               );
             })}
