@@ -39,7 +39,7 @@ class DBAuth {
 
     const token = fromAuthHeaderAsBearerToken(req.headers.authorization);
 
-    const payload = jwt.decode(token, process.env.JWT_SECRET);
+    const payload = this.validateToken(token);
 
     try {
       return await findUser(payload);
@@ -47,6 +47,10 @@ class DBAuth {
       console.error("Failed authentication", err);
       return res.status(400).json({ error: "Failed" });
     }
+  }
+
+  validateToken(token) {
+    return jwt.decode(token, process.env.JWT_SECRET);
   }
 
   async checkPassword(username, password) {
@@ -73,6 +77,10 @@ class BasicAuth {
 
     const authentication = auth(req);
     return { user: authentication ? authentication.name : "anonymous" };
+  }
+
+  validateToken(token) {
+    return true;
   }
 
   async checkPassword(username, password) {

@@ -1,6 +1,6 @@
 import comicsIndex from "../../../../server/comics";
 import { fromUrl } from "../../../../server/utils";
-import { authenticate } from "../../../../server/auth";
+import auth from "../../../../server/auth";
 import db from "../../../../server/db";
 import { getThumbnailSize } from "../../../../server/api/imagecache";
 
@@ -14,7 +14,7 @@ export default async (req, res) => {
     return;
   }
 
-  const user = await authenticate(req, res);
+  const user = await auth.authenticate(req, res);
   if (!user) {
     return;
   }

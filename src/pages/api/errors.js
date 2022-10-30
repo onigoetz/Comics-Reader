@@ -1,8 +1,8 @@
 import comicsIndex from "../../../server/comics";
-import { authenticate } from "../../../server/auth";
+import auth from "../../../server/auth";
 
 export default async (req, res) => {
-  const user = await authenticate(req, res);
+  const user = await auth.authenticate(req, res);
   if (!user) {
     return;
   }

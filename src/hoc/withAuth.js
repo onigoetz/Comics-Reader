@@ -10,10 +10,10 @@ import { redirect, getDisplayName, getAuthMode } from "../utils";
 const LOGOUT_KEY = "comics_logout";
 const COOKIE_NAME = "comics_token";
 
-export function login(token) {
+export function login(token, router) {
   cookie.set(COOKIE_NAME, token, { expires: 1 });
   window.localStorage.setItem(COOKIE_NAME, token);
-  Router.push("/");
+  router.push("/");
 }
 
 export function logout() {
@@ -31,12 +31,12 @@ export function logout() {
  * If this token exists, we do a query on the server to check if it's valid and then we set the cookie's
  * value again so that server rendered pages can be rendered. Since SSR can't access localStorage
  */
-export function tryLoginWithLocalStorage() {
+export function tryLoginWithLocalStorage(router) {
   const token = window.localStorage.getItem(COOKIE_NAME);
   if (token) {
     fetchWithAuth(token, "list")
       .then(() => {
-        login(token);
+        login(token, router);
       })
       .catch(err => {
         /* eslint-disable-next-line no-console */

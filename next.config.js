@@ -9,6 +9,7 @@ require("./server/env");
 const serverPath = path.join(process.cwd(), "server");
 
 const nextConfiguration = {
+  experimental: { appDir: true },
   env: {},
   webpack(config, options) {
     if (!config.externals) {

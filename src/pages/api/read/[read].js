@@ -1,4 +1,4 @@
-import { authenticate } from "../../../../server/auth";
+import auth from "../../../../server/auth";
 import comicsIndex from "../../../../server/comics";
 import { fromUrl } from "../../../../server/utils";
 import db from "../../../../server/db";
@@ -9,7 +9,7 @@ export default async (req, res) => {
     return;
   }
 
-  const user = await authenticate(req, res);
+  const user = await auth.authenticate(req, res);
   if (!user) {
     res.setHeader("Cache-Control", "no-cache");
     res.json({});

@@ -1,4 +1,4 @@
-import { authenticate, checkPassword } from "../../../server/auth";
+import auth from "../../../server/auth";
 import comicsIndex from "../../../server/comics";
 import db from "../../../server/db";
 
@@ -8,7 +8,7 @@ export default async (req, res) => {
     return;
   }
 
-  const user = await authenticate(req, res);
+  const user = await auth.authenticate(req, res);
   if (!user) {
     return;
   }
@@ -22,7 +22,7 @@ export default async (req, res) => {
   }
 
   try {
-    await checkPassword(user.user, currentPassword);
+    await auth.checkPassword(user.user, currentPassword);
   } catch (e) {
     /* eslint-disable-next-line no-console */
     console.error(e);

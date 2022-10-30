@@ -13,6 +13,7 @@ export default function apiFetch(url, options = {}) {
   const fetchOptions = {
     method: "GET",
     credentials: "include",
+    cache: "no-store",
     ...options,
     headers: { Accept: "application/json", ...(options.headers || {}) }
   };

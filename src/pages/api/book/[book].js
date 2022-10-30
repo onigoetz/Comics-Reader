@@ -2,7 +2,7 @@
 import comicsIndex from "../../../../server/comics";
 import { getPages } from "../../../../server/books";
 import { fromUrl } from "../../../../server/utils";
-import { authenticate } from "../../../../server/auth";
+import auth from "../../../../server/auth";
 import db from "../../../../server/db";
 
 export default async (req, res) => {
@@ -12,7 +12,7 @@ export default async (req, res) => {
       return;
     }
 
-    const user = await authenticate(req, res);
+    const user = await auth.authenticate(req, res);
     if (!user) {
       return;
     }

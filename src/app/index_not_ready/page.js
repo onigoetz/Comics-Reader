@@ -1,10 +1,23 @@
 import React from "react";
+import { redirect } from "next/navigation";
 
-import { RawLoading } from "../components/Loading";
-import { redirect } from "../utils";
-import apiFetch from "../fetch";
+import { RawLoading } from "../../components/Loading";
+import comicsIndex from "../../../server/comics";
 
-export default function Page({ indexReadyData }) {
+export default function Page() {
+  checkAuth();
+
+  const indexReadyData = {
+    ready: comicsIndex.isReady,
+    books: comicsIndex.foundBooks,
+    thumbs: comicsIndex.foundThumbs,
+    phase: comicsIndex.phase
+  };
+
+  if (indexReadyData.ready) {
+    redirect("/");
+  }
+
   return (
     <RawLoading>
       {indexReadyData.phase === "NONE" && <h1>Scan will begin shortly</h1>}
@@ -32,14 +45,3 @@ export default function Page({ indexReadyData }) {
     </RawLoading>
   );
 }
-
-Page.getInitialProps = async ctx => {
-  const indexReadyData = await apiFetch("indexready");
-
-  if (indexReadyData.ready) {
-    redirect(ctx.res, "/");
-    return {};
-  }
-
-  return { indexReadyData };
-};
