@@ -2,8 +2,8 @@
 const fs = require("fs");
 
 const tmp = require("tmp-promise");
-require("pdfjs-dist/lib/examples/node/domstubs").setStubs(global);
-const pdfjs = require("pdfjs-dist/legacy/build/pdf.js");
+require("core-js/actual/structured-clone"); // can be removed when moving to Node 18
+const pdfjs = require("pdfjs-dist/build/pdf.js");
 
 const { exec, createTempSymlink } = require("../exec");
 const { getBigatureSize } = require("../utils");

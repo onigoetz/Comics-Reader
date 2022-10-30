@@ -69,6 +69,7 @@
     "classnames": "^2.2.6",
     "cli-table": "^0.3.1",
     "compression": "^1.7.1",
+    "core-js": "^3.26.0",
     "create-symlink": "^1.0.0",
     "debounce": "^1.2.0",
     "debug": "^4.1.0",
