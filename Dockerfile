@@ -1,4 +1,4 @@
-FROM node:18.12.0-alpine
+FROM node:20.2.0-alpine
 
 RUN apk add --no-cache mupdf-tools
 
