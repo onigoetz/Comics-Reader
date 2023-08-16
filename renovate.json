@@ -3,6 +3,7 @@
     "config:base",
     "group:allNonMajor",
     ":preserveSemverRanges",
+    ":automergeMinor",
     "schedule:weekends"
   ]
 }
