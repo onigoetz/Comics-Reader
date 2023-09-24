@@ -1,4 +1,11 @@
 # Comics reader
+
+[![Latest Version](https://img.shields.io/github/release/onigoetz/Comics-Reader.svg?style=flat-square)](https://github.com/onigoetz/Comics-Reader/releases)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/onigoetz/Comics-Reader/blob/master/LICENSE.md)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/onigoetz/Comics-Reader/build.yml?style=flat-square&logo=github)
+[![Docker Pulls](https://img.shields.io/docker/pulls/onigoetz/comicsreader?style=flat-square&logo=docker)](https://hub.docker.com/r/onigoetz/comicsreader)
+
+
 Read your comics on your tablet
 
 ## What is it ?
