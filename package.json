@@ -58,7 +58,7 @@
     "c8": "^8.0.0"
   },
   "dependencies": {
-    "@next/bundle-analyzer": "^13.0.0",
+    "@next/bundle-analyzer": "^14.0.0",
     "archive-type": "^4.0.0",
     "basic-auth": "^2.0.0",
     "bcrypt": "^5.0.0",
