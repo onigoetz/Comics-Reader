@@ -108,5 +108,5 @@
     "unzipper": "^0.10.5",
     "web-streams-polyfill": "^3.2.1"
   },
-  "packageManager": "yarn@4.0.0"
+  "packageManager": "yarn@4.0.1"
 }
