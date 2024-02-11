@@ -1,6 +1,6 @@
 //@ts-check
 const next = require("next");
-const chalk = require("chalk");
+const { red, underline, bold } = require("colorette");
 const express = require("express");
 
 const loudRejection = require("loud-rejection");
@@ -12,9 +12,6 @@ require("./env");
 
 // Kickstart index creation
 const comicsIndex = require("./comics");
-
-const title = chalk.underline.bold;
-const error = chalk.red;
 
 const url = new URL(process.env.SERVER_URL);
 
@@ -28,15 +25,15 @@ const handle = app.getRequestHandler();
 
 loudRejection();
 
-console.log(title("Starting server"));
+console.log(underline(bold("Starting server")));
 
 cron.schedule(process.env.REFRESH_SCHEDULE, () => {
   comicsIndex.reindex().then(
     () => {
-      console.log(title("Index ready ! Have a good read !"));
+      console.log(underline(bold("Index ready ! Have a good read !")));
     },
     e => {
-      console.error(error("Could not create index"), e);
+      console.error(red("Could not create index"), e);
     }
   );
 });

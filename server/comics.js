@@ -1,19 +1,16 @@
-const chalk = require("chalk");
+const { red, underline, bold } = require("colorette");
 
 const IndexCreator = require("./tree/IndexCreator");
 
-const error = chalk.red;
-const title = chalk.underline.bold;
-
 const comicsIndex = new IndexCreator(process.env.DIR_COMICS);
 
-console.log(title("Generating index"));
+console.log(underline(bold("Generating index")));
 comicsIndex.getList().then(
   () => {
-    console.log(title("Index ready ! Have a good read !"));
+    console.log(underline(bold("Index ready ! Have a good read !")));
   },
   e => {
-    console.error(error("Could not create index"), e);
+    console.error(red("Could not create index"), e);
   }
 );
 
