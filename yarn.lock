@@ -1758,7 +1758,7 @@ __metadata:
     compression: "npm:^1.7.1"
     core-js: "npm:^3.26.0"
     create-symlink: "npm:^1.0.0"
-    debounce: "npm:^1.2.0"
+    debounce: "npm:^2.0.0"
     debug: "npm:^4.1.0"
     execa: "npm:^5.0.0"
     express: "npm:^4.16.3"
@@ -1970,10 +1970,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debounce@npm:^1.2.0, debounce@npm:^1.2.1":
+"debounce@npm:^1.2.1":
   version: 1.2.1
   resolution: "debounce@npm:1.2.1"
   checksum: 10c0/6c9320aa0973fc42050814621a7a8a78146c1975799b5b3cc1becf1f77ba9a5aa583987884230da0842a03f385def452fad5d60db97c3d1c8b824e38a8edf500
+  languageName: node
+  linkType: hard
+
+"debounce@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "debounce@npm:2.0.0"
+  checksum: 10c0/35a492f7f4f346f0539d486d7e68a68bd2eaa0c7fb159df8e59f89a20afd9b0ed024d0dc5a6f283b6963f5f032dacd66d805a325e9d8338511e77b505b76f26e
   languageName: node
   linkType: hard
 
