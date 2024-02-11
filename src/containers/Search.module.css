@@ -16,6 +16,7 @@
 
 .SearchResult {
     position: absolute;
+    z-index: 2;
     inset: 44px 0 0 0; /* --bar-height */
 
     overflow-y: auto;
