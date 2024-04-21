@@ -64,7 +64,7 @@
     "bcrypt": "^5.0.0",
     "better-sqlite3": "^9.4.1",
     "cache-manager": "^5.0.0",
-    "cache-manager-fs-hash": "^1.0.0",
+    "cache-manager-fs-hash": "^2.0.0",
     "classnames": "^2.2.6",
     "cli-table": "^0.3.1",
     "colorette": "^2.0.20",

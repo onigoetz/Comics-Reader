@@ -1415,12 +1415,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cache-manager-fs-hash@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "cache-manager-fs-hash@npm:1.0.0"
+"cache-manager-fs-hash@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "cache-manager-fs-hash@npm:2.0.0"
   dependencies:
     lockfile: "npm:^1.0.4"
-  checksum: 10c0/bb39e62e47c8e4a546aef7cf9e0f5b1599427478f2cf59732e5c57b5c8ff97c61045b46c598bbb93c90dc8ab23eee1923973f3c592b92c9e9282274f967cd4c1
+  checksum: 10c0/fce7033cd58cef807bb57cc3f50988b6f196fb0c3b0c9bb018172e903eb9e064acd8ef4df9479dc6e8616660e9294106cf5d5134b5ded8288d7f4a7f3f8f3987
   languageName: node
   linkType: hard
 
@@ -1733,7 +1733,7 @@ __metadata:
     better-sqlite3: "npm:^9.4.1"
     c8: "npm:^9.0.0"
     cache-manager: "npm:^5.0.0"
-    cache-manager-fs-hash: "npm:^1.0.0"
+    cache-manager-fs-hash: "npm:^2.0.0"
     classnames: "npm:^2.2.6"
     cli-table: "npm:^0.3.1"
     colorette: "npm:^2.0.20"
