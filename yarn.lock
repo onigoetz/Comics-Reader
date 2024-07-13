@@ -1797,7 +1797,7 @@ __metadata:
     tmp-promise: "npm:^3.0.2"
     typedarray-to-buffer: "npm:^4.0.0"
     unzipper: "npm:^0.12.0"
-    web-streams-polyfill: "npm:^3.2.1"
+    web-streams-polyfill: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
 
@@ -6092,10 +6092,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web-streams-polyfill@npm:^3.2.1":
-  version: 3.3.2
-  resolution: "web-streams-polyfill@npm:3.3.2"
-  checksum: 10c0/623c2fced2ef77d5afdbc43acef64b8af609a32125b691eae286d534a36004c8a71030f0e78068516774a97fd90dbfb3726b10fd569a2d158e60c83a539c489e
+"web-streams-polyfill@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "web-streams-polyfill@npm:4.0.0"
+  checksum: 10c0/c570cea10db4c88eb630e1ddc2b3390eaf215527ab1229258ac6d1eb6ed3bb095312d4ce5c35090b590c051e1a94043b11d00fe4188413c67112bdf61e554b87
   languageName: node
   linkType: hard
 
