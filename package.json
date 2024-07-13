@@ -83,7 +83,7 @@
     "meow": "^9.0.0",
     "morgan": "^1.9.1",
     "natural-sort": "^1.0.0",
-    "next": "14.2.3",
+    "next": "14.2.5",
     "next-compose-plugins": "^2.2.0",
     "next-cookies": "2.0.3",
     "node-cron": "^3.0.0",
@@ -105,8 +105,8 @@
     "sharp": "^0.33.0",
     "tmp-promise": "^3.0.2",
     "typedarray-to-buffer": "^4.0.0",
-    "unzipper": "^0.11.0",
+    "unzipper": "^0.12.0",
     "web-streams-polyfill": "^3.2.1"
   },
-  "packageManager": "yarn@4.2.2"
+  "packageManager": "yarn@4.3.1"
 }
