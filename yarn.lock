@@ -1270,14 +1270,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"better-sqlite3@npm:^9.4.1":
-  version: 9.4.1
-  resolution: "better-sqlite3@npm:9.4.1"
+"better-sqlite3@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "better-sqlite3@npm:11.0.0"
   dependencies:
     bindings: "npm:^1.5.0"
     node-gyp: "npm:latest"
     prebuild-install: "npm:^7.1.1"
-  checksum: 10c0/dc9ca07240d63222901a838ec0bd49b72e8bee1d7355e8b2c148958e204e7629b476894395259d44cf3234d8ed18c44a85dde0bff826c87510ecd8f7fa9f2aa7
+  checksum: 10c0/5a55f8c171055d0fd589b88da58b9e8d9de60ae701ca189270d98a0c25cdabae01abcc27bef26cc2f0b6a8f119d86373089b0a89199df5ac06382d0193651598
   languageName: node
   linkType: hard
 
@@ -1752,7 +1752,7 @@ __metadata:
     ava: "npm:^6.0.0"
     basic-auth: "npm:^2.0.0"
     bcrypt: "npm:^5.0.0"
-    better-sqlite3: "npm:^9.4.1"
+    better-sqlite3: "npm:^11.0.0"
     c8: "npm:^9.0.0"
     cache-manager: "npm:^5.0.0"
     cache-manager-fs-hash: "npm:^1.0.0"
