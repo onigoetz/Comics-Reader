@@ -1,11 +1,9 @@
 /* global process */
-import React, { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect } from "react";
 import Router from "next/router";
-import nextCookie from "next-cookies";
 import cookie from "js-cookie";
 
 import { fetchWithAuth } from "../fetch";
-import { redirect, getDisplayName, getAuthMode } from "../utils";
 
 const LOGOUT_KEY = "comics_logout";
 const COOKIE_NAME = "comics_token";
@@ -54,55 +52,20 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-export default function withAuth(WrappedComponent) {
-  function Component({ token, ...props }) {
-    useEffect(() => {
-      const syncLogout = event => {
-        if (event.key === LOGOUT_KEY) {
-          Router.push("/login");
-        }
-      };
-
-      window.addEventListener("storage", syncLogout);
-
-      return () => {
-        window.removeEventListener("storage", syncLogout);
-        window.localStorage.removeItem(LOGOUT_KEY);
-      };
-    }, []);
-
-    return (
-      <AuthContext.Provider value={{ token }}>
-        <WrappedComponent {...props} />
-      </AuthContext.Provider>
-    );
-  }
-
-  Component.getInitialProps = async ctx => {
-    const authMode = await getAuthMode();
-
-    let token = null;
-    if (authMode === "db") {
-      const cookies = nextCookie(ctx);
-      token = cookies[COOKIE_NAME];
-
-      // We're logged out when the password change is applied
-      if (!token) {
-        redirect(ctx.res, "/login");
-        return {};
+// TODO :: re-add this to the layout
+export function LogoutListener() {
+  useEffect(() => {
+    const syncLogout = event => {
+      if (event.key === LOGOUT_KEY) {
+        Router.push("/login");
       }
-    }
+    };
 
-    ctx.token = token;
+    window.addEventListener("storage", syncLogout);
 
-    const componentProps =
-      WrappedComponent.getInitialProps &&
-      (await WrappedComponent.getInitialProps(ctx));
-
-    return { ...componentProps, token };
-  };
-
-  Component.displayName = `withAuth(${getDisplayName(WrappedComponent)})`;
-
-  return Component;
+    return () => {
+      window.removeEventListener("storage", syncLogout);
+      window.localStorage.removeItem(LOGOUT_KEY);
+    };
+  }, []);
 }

@@ -3,13 +3,11 @@ import { checkPassword } from "../../../server/auth";
 
 import jwt from "jwt-simple";
 
-export default async (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
+export async function POST(request) {
+  const { username, password } = await request.json();
 
   if (!username || !password) {
-    res.sendStatus(401);
-    return;
+    return new Response("", { status: 401 });
   }
 
   try {
@@ -17,17 +15,16 @@ export default async (req, res) => {
   } catch (e) {
     /* eslint-disable-next-line no-console */
     console.error(e);
-    res.sendStatus(401);
-    return;
+    return new Response("", { status: 401 });
   }
 
   const payload = {
-    username
+    username,
   };
 
   const token = jwt.encode(payload, process.env.JWT_SECRET);
 
-  res.json({
-    token
+  return Response.json({
+    token,
   });
-};
+}

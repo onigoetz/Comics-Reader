@@ -82,7 +82,7 @@ function SubList({ books, isRetina, supportsWebp }) {
                   src={image(folder.thumb, "thumb", isRetina, supportsWebp)}
                   height={140}
                   width={folder.thumbWidth}
-                  loader={({ src }) => src}
+                  //loader={({ src }) => src}
                   alt={folder.name}
                   unoptimized
                 />

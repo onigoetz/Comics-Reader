@@ -200,7 +200,7 @@ export default class PhotoSwipeGallery extends React.Component {
           ))}
         </div>
         <Portal>
-          <PhotoSwipe /*{...eventProps}*/
+          <PhotoSwipe
             isOpen={isOpen}
             items={items}
             options={options}

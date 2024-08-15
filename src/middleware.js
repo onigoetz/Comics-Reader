@@ -1,14 +1,12 @@
 import { NextResponse } from "next/server";
-//import type { NextRequest } from 'next/server'
 
-import { getAuthMode } from "./utils";
 import apiFetch from "./fetch";
 
 const accountManagementURLs = /^\/(login|logout|change_password).*/;
 const loginURLs = /^\/login.*/;
 
 export async function middleware(request) {
-  const authMode = await getAuthMode();
+  const { authMode, indexReady } = await apiFetch(`status`);
 
   // Make sure a valid token is in the cookies for all pages except the login page
   if (authMode === "db" && !loginURLs.test(request.nextUrl.pathname)) {
@@ -29,9 +27,8 @@ export async function middleware(request) {
   }
 
   // Make sure the index is ready before showing the page
-  const indexData = await apiFetch("indexready");
   if (
-    !indexData.ready &&
+    !indexReady &&
     !accountManagementURLs.test(request.nextUrl.pathname)
   ) {
     return NextResponse.redirect(new URL("/index_not_ready", request.url));

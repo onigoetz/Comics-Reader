@@ -1,8 +1,6 @@
 /* global process */
-import Router from "next/router";
-import { TYPE_DIR } from "./types";
 
-import apiFetch from "./fetch";
+import { TYPE_DIR } from "./types";
 
 const serverSide = typeof window === "undefined";
 
@@ -34,10 +32,6 @@ let supportsWebp = false;
       );
   }
 })();
-
-export function getDisplayName(Component) {
-  return Component.displayName || Component.name || "Component";
-}
 
 export function imageData(req) {
   if (serverSide) {
@@ -84,22 +78,4 @@ export function urlizeNode(node) {
 
 export function createUrl(node) {
   return (node.type === TYPE_DIR ? "/list/" : "/book/") + urlizeNode(node.path);
-}
-
-export function redirect(res, url) {
-  if (res) {
-    res.redirect(url);
-  } else {
-    Router.push(url);
-  }
-}
-
-let authMode;
-export async function getAuthMode() {
-  if (!authMode) {
-    const { mode } = await apiFetch("auth_mode");
-    authMode = mode;
-  }
-
-  return authMode;
 }
