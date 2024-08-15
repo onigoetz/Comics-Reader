@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 // This is provided by nextjs at runtime
-require("web-streams-polyfill");
+require("web-streams-polyfill/polyfill");
 
 const PDF = require("../../../server/books/PDF.js");
 const BatchWorker = require("../../../server/batch-worker.js");

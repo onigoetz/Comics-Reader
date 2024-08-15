@@ -1366,9 +1366,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"c8@npm:^9.0.0":
-  version: 9.1.0
-  resolution: "c8@npm:9.1.0"
+"c8@npm:^10.0.0":
+  version: 10.1.2
+  resolution: "c8@npm:10.1.2"
   dependencies:
     "@bcoe/v8-coverage": "npm:^0.2.3"
     "@istanbuljs/schema": "npm:^0.1.3"
@@ -1377,13 +1377,18 @@ __metadata:
     istanbul-lib-coverage: "npm:^3.2.0"
     istanbul-lib-report: "npm:^3.0.1"
     istanbul-reports: "npm:^3.1.6"
-    test-exclude: "npm:^6.0.0"
+    test-exclude: "npm:^7.0.1"
     v8-to-istanbul: "npm:^9.0.0"
     yargs: "npm:^17.7.2"
     yargs-parser: "npm:^21.1.1"
+  peerDependencies:
+    monocart-coverage-reports: ^2
+  peerDependenciesMeta:
+    monocart-coverage-reports:
+      optional: true
   bin:
     c8: bin/c8.js
-  checksum: 10c0/f09d8650497f919eb974365f8079d9b6096edad116a7d538e95df66adee430a5503ea5307e7fcdc5d58dffac04329c151e839cd4c587ac48d68ffbfa1986907d
+  checksum: 10c0/882903f22c08f9053b7b274ba31c374cf141d027c46cda57e6472798f82437c5d73fe25bd25b60d6b01c9de383615ae932e6c4d7d4acd7ea231216215f207217
   languageName: node
   linkType: hard
 
@@ -1407,12 +1412,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cache-manager-fs-hash@npm:^1.0.0":
-  version: 1.1.0
-  resolution: "cache-manager-fs-hash@npm:1.1.0"
+"cache-manager-fs-hash@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "cache-manager-fs-hash@npm:2.0.0"
   dependencies:
     lockfile: "npm:^1.0.4"
-  checksum: 10c0/b2337591e9f2ce35d0113f9ea0e0f046da43f19e659af32f390b96c3a03dd51557356b30a4b1fa6d1095168a5ce545a3aba8407cb19df280ba6bc2a59345ed26
+  checksum: 10c0/fce7033cd58cef807bb57cc3f50988b6f196fb0c3b0c9bb018172e903eb9e064acd8ef4df9479dc6e8616660e9294106cf5d5134b5ded8288d7f4a7f3f8f3987
   languageName: node
   linkType: hard
 
@@ -1718,16 +1723,16 @@ __metadata:
     basic-auth: "npm:^2.0.0"
     bcrypt: "npm:^5.0.0"
     better-sqlite3: "npm:^9.4.1"
-    c8: "npm:^9.0.0"
+    c8: "npm:^10.0.0"
     cache-manager: "npm:^5.0.0"
-    cache-manager-fs-hash: "npm:^1.0.0"
+    cache-manager-fs-hash: "npm:^2.0.0"
     classnames: "npm:^2.2.6"
     cli-table: "npm:^0.3.1"
     colorette: "npm:^2.0.20"
     compression: "npm:^1.7.1"
     core-js: "npm:^3.26.0"
     create-symlink: "npm:^1.0.0"
-    debounce: "npm:^1.2.0"
+    debounce: "npm:^2.0.0"
     debug: "npm:^4.1.0"
     execa: "npm:^5.0.0"
     express: "npm:^4.16.3"
@@ -1757,12 +1762,11 @@ __metadata:
     react-photoswipe: "npm:^1.3.0"
     react-portal: "npm:^4.1.5"
     read-chunk: "npm:^3.0.0"
-    rimraf: "npm:^3.0.0"
     sharp: "npm:^0.33.0"
     tmp-promise: "npm:^3.0.2"
     typedarray-to-buffer: "npm:^4.0.0"
     unzipper: "npm:^0.12.0"
-    web-streams-polyfill: "npm:^3.2.1"
+    web-streams-polyfill: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
 
@@ -1939,10 +1943,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debounce@npm:^1.2.0, debounce@npm:^1.2.1":
+"debounce@npm:^1.2.1":
   version: 1.2.1
   resolution: "debounce@npm:1.2.1"
   checksum: 10c0/6c9320aa0973fc42050814621a7a8a78146c1975799b5b3cc1becf1f77ba9a5aa583987884230da0842a03f385def452fad5d60db97c3d1c8b824e38a8edf500
+  languageName: node
+  linkType: hard
+
+"debounce@npm:^2.0.0":
+  version: 2.1.0
+  resolution: "debounce@npm:2.1.0"
+  checksum: 10c0/15ef40fc5c402053ca5ab1b2c23cf25eb8f2f3246977793846561b0c87321cbb627075897f69bbcffa5a5a7d07c161c9ba0bfcb4a80ee6898844c5b11bf1a76e
   languageName: node
   linkType: hard
 
@@ -2773,7 +2784,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^10.2.2, glob@npm:^10.3.10":
+"glob@npm:^10.2.2, glob@npm:^10.3.10, glob@npm:^10.4.1":
   version: 10.4.5
   resolution: "glob@npm:10.4.5"
   dependencies:
@@ -2789,7 +2800,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^7.1.3, glob@npm:^7.1.4":
+"glob@npm:^7.1.3":
   version: 7.2.3
   resolution: "glob@npm:7.2.3"
   dependencies:
@@ -3884,7 +3895,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^3.0.4, minimatch@npm:^3.0.5, minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
+"minimatch@npm:^3.0.5, minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
   version: 3.1.2
   resolution: "minimatch@npm:3.1.2"
   dependencies:
@@ -5127,7 +5138,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:^3.0.0, rimraf@npm:^3.0.2":
+"rimraf@npm:^3.0.2":
   version: 3.0.2
   resolution: "rimraf@npm:3.0.2"
   dependencies:
@@ -5797,14 +5808,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"test-exclude@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "test-exclude@npm:6.0.0"
+"test-exclude@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "test-exclude@npm:7.0.1"
   dependencies:
     "@istanbuljs/schema": "npm:^0.1.2"
-    glob: "npm:^7.1.4"
-    minimatch: "npm:^3.0.4"
-  checksum: 10c0/019d33d81adff3f9f1bfcff18125fb2d3c65564f437d9be539270ee74b994986abb8260c7c2ce90e8f30162178b09dbbce33c6389273afac4f36069c48521f57
+    glob: "npm:^10.4.1"
+    minimatch: "npm:^9.0.4"
+  checksum: 10c0/6d67b9af4336a2e12b26a68c83308c7863534c65f27ed4ff7068a56f5a58f7ac703e8fc80f698a19bb154fd8f705cdf7ec347d9512b2c522c737269507e7b263
   languageName: node
   linkType: hard
 
@@ -6101,10 +6112,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web-streams-polyfill@npm:^3.2.1":
-  version: 3.3.3
-  resolution: "web-streams-polyfill@npm:3.3.3"
-  checksum: 10c0/64e855c47f6c8330b5436147db1c75cb7e7474d924166800e8e2aab5eb6c76aac4981a84261dd2982b3e754490900b99791c80ae1407a9fa0dcff74f82ea3a7f
+"web-streams-polyfill@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "web-streams-polyfill@npm:4.0.0"
+  checksum: 10c0/c570cea10db4c88eb630e1ddc2b3390eaf215527ab1229258ac6d1eb6ed3bb095312d4ce5c35090b590c051e1a94043b11d00fe4188413c67112bdf61e554b87
   languageName: node
   linkType: hard
 
