@@ -1,7 +1,6 @@
 import React from "react";
 import debounce from "debounce";
-import { Portal } from "react-portal";
-import PhotoSwipe from "react-photoswipe/lib/PhotoSwipe";
+import PhotoSwipeLightbox from "photoswipe/lightbox";
 
 import styles from "./PhotoSwipeGallery.module.css";
 
@@ -30,49 +29,37 @@ function elementInViewport(el) {
 export default class PhotoSwipeGallery extends React.Component {
   static defaultProps = {
     options: {},
-    onClose: () => {},
-    afterChange: () => {}
+    onClose: () => {}
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      isOpen: false,
-      options: this.props.options,
       containerWidth: 0
     };
 
     this.thumbnails = [];
   }
 
-  showPhotoSwipe = itemIndex => e => {
-    e.preventDefault();
-    const getThumbBoundsFn = index => {
-      const img = this.thumbnails[index];
-      const pageYScroll =
-        window.pageYOffset || document.documentElement.scrollTop;
-      const rect = img.getBoundingClientRect();
-      return {
-        x: rect.left,
-        y: rect.top + pageYScroll,
-        w: rect.width
-      };
-    };
-    const { options } = this.state;
-    options.index = itemIndex;
-    options.getThumbBoundsFn = options.getThumbBoundsFn || getThumbBoundsFn;
-    this.setState({
-      isOpen: true,
-      options
-    });
-  };
-
   componentDidMount() {
     window.addEventListener("resize", this.handleResize);
     window.addEventListener("scroll", this.handleScroll);
     this.handleResize();
     this.handleScroll();
+
+    this.lightbox = new PhotoSwipeLightbox({
+      gallery: this._gallery,
+      children: "a.pswp-item",
+      bgOpacity: 1,
+      pswpModule: () => import("photoswipe")
+    });
+
+    this.lightbox.on("close", () => {
+      this.props.onClose(this.lightbox.pswp.currIndex);
+    });
+
+    this.lightbox.init();
   }
 
   componentDidUpdate() {
@@ -84,6 +71,9 @@ export default class PhotoSwipeGallery extends React.Component {
   componentWillUnmount() {
     window.removeEventListener("resize", this.handleResize, false);
     window.removeEventListener("scroll", this.handleScroll, false);
+
+    this.lightbox.destroy();
+    this.lightbox = null;
   }
 
   loadImages() {
@@ -102,11 +92,6 @@ export default class PhotoSwipeGallery extends React.Component {
     this.resizeGallery(Math.floor(this._gallery.clientWidth));
     this.loadImages();
   }, 10);
-
-  handleClose = () => {
-    this.setState({ isOpen: false });
-    this.props.onClose();
-  };
 
   handleScroll = debounce(() => this.loadImages(), 10);
 
@@ -168,7 +153,6 @@ export default class PhotoSwipeGallery extends React.Component {
 
   render() {
     const { items } = this.props;
-    const { isOpen, options } = this.state;
     return (
       <div className="pswp-gallery">
         <div
@@ -177,37 +161,31 @@ export default class PhotoSwipeGallery extends React.Component {
             this._gallery = c;
           }}
         >
-          {this.props.items.map((item, k) => (
-            <div
-              key={k}
-              className={styles.Gallery__item}
-              onClick={this.showPhotoSwipe(k)}
-            >
-              <img
-                data-src={item.thumbnail}
-                data-key={k}
-                alt={`Page ${k}`}
-                onLoad={this.handleResize}
-                ref={node => {
-                  if (node) {
-                    this.thumbnails[node.getAttribute("data-key")] = node;
-                  }
-                }}
-                {...this.getThumbSize(item.h, item.w)}
-              />
+          {items.map((item, k) => (
+            <div key={k} className={`${styles.Gallery__item} pswp-item`}>
+              <a
+                className="pswp-item"
+                href={item.src}
+                data-pswp-width={item.w}
+                data-pswp-height={item.h}
+              >
+                <img
+                  data-src={item.thumbnail}
+                  data-key={k}
+                  alt={`Page ${k}`}
+                  onLoad={this.handleResize}
+                  ref={node => {
+                    if (node) {
+                      this.thumbnails[node.getAttribute("data-key")] = node;
+                    }
+                  }}
+                  {...this.getThumbSize(item.h, item.w)}
+                />
+              </a>
               <div className={styles.Gallery__page}>{k + 1}</div>
             </div>
           ))}
         </div>
-        <Portal>
-          <PhotoSwipe /*{...eventProps}*/
-            isOpen={isOpen}
-            items={items}
-            options={options}
-            onClose={this.handleClose}
-            afterChange={this.props.afterChange}
-          />
-        </Portal>
       </div>
     );
   }

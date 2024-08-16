@@ -1,8 +1,7 @@
 import React from "react";
 
 import "normalize.css/normalize.css";
-import "photoswipe/dist/photoswipe.css";
-import "photoswipe/dist/default-skin/default-skin.css";
+import "photoswipe/style.css";
 import "../css/variables.css";
 import "../css/base.css";
 import "../css/headroom.css";

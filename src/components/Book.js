@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 
 import PhotoSwipeGallery from "./PhotoSwipeGallery";
 import { image } from "../utils";
@@ -6,19 +6,13 @@ import { image } from "../utils";
 import styles from "../containers/Header.module.css";
 
 export default function Book({ pages, read, onRead, isRetina, supportsWebp }) {
-  const currentPage = useRef(-1);
-
-  const afterChange = instance => {
-    currentPage.current = instance.items.indexOf(instance.currItem);
-  };
-
-  const handleClose = () => {
+  const handleClose = lastPageIndex => {
     const count = pages.length;
 
     // Add + 1 for the 0-indexed list
     // The -3 is to count for the last pages that are generally the
     // back cover, that is often skipped
-    if (currentPage.current + 1 > count - 3 && !read) {
+    if (lastPageIndex + 1 > count - 3 && !read) {
       onRead();
     }
   };
@@ -32,11 +26,6 @@ export default function Book({ pages, read, onRead, isRetina, supportsWebp }) {
       aspectRatio: page.width / page.height
     };
   });
-
-  const options = {
-    history: false,
-    shareEl: false
-  };
 
   return (
     <div>
@@ -52,12 +41,7 @@ export default function Book({ pages, read, onRead, isRetina, supportsWebp }) {
           </div>
         )}
       </div>
-      <PhotoSwipeGallery
-        items={items}
-        options={options}
-        afterChange={afterChange}
-        onClose={handleClose}
-      />
+      <PhotoSwipeGallery items={items} onClose={handleClose} />
     </div>
   );
 }
