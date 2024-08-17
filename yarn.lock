@@ -1761,7 +1761,7 @@ __metadata:
     react-headroom: "npm:^3.0.0"
     react-icons: "npm:^5.0.0"
     react-portal: "npm:^4.1.5"
-    read-chunk: "npm:^3.0.0"
+    read-chunk: "npm:^5.0.0"
     sharp: "npm:^0.33.0"
     tmp-promise: "npm:^3.0.2"
     typedarray-to-buffer: "npm:^4.0.0"
@@ -4432,13 +4432,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"p-finally@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "p-finally@npm:1.0.0"
-  checksum: 10c0/6b8552339a71fe7bd424d01d8451eea92d379a711fc62f6b2fe64cad8a472c7259a236c9a22b4733abca0b5666ad503cb497792a0478c5af31ded793d00937e7
-  languageName: node
-  linkType: hard
-
 "p-limit@npm:^2.2.0":
   version: 2.3.0
   resolution: "p-limit@npm:2.3.0"
@@ -4491,7 +4484,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"p-try@npm:^2.0.0, p-try@npm:^2.1.0":
+"p-try@npm:^2.0.0":
   version: 2.2.0
   resolution: "p-try@npm:2.2.0"
   checksum: 10c0/c36c19907734c904b16994e6535b02c36c2224d433e01a2f1ab777237f4d86e6289fd5fd464850491e940379d4606ed850c03e0f9ab600b0ebddb511312e177f
@@ -4663,13 +4656,6 @@ __metadata:
   version: 3.0.1
   resolution: "picomatch@npm:3.0.1"
   checksum: 10c0/70ec738569f1864658378b7abdab8939d15dae0718c1df994eae3346fd33daf6a3c1ff4e0c1a0cd1e2c0319130985b63a2cff34d192f2f2acbb78aca76111736
-  languageName: node
-  linkType: hard
-
-"pify@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "pify@npm:4.0.1"
-  checksum: 10c0/6f9d404b0d47a965437403c9b90eca8bb2536407f03de165940e62e72c8c8b75adda5516c6b9b23675a5877cc0bcac6bdfb0ef0e39414cd2476d5495da40e7cf
   languageName: node
   linkType: hard
 
@@ -4973,13 +4959,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"read-chunk@npm:^3.0.0":
-  version: 3.2.0
-  resolution: "read-chunk@npm:3.2.0"
-  dependencies:
-    pify: "npm:^4.0.1"
-    with-open-file: "npm:^0.1.6"
-  checksum: 10c0/cf62522dc85a96d54f1e0886cadcdfdd491bdcd250408695c8d63cea2eae5b1a31da8317c9a58a095ee9b15c67e84e0bed1a917c820bcccf1c74749a9fcad797
+"read-chunk@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "read-chunk@npm:5.0.0"
+  checksum: 10c0/6717addddb6fc75b07206da6c54297bf8a632d79b089a580b4b671168b68f88e0d85f0f00572792cba0f0c33bb701922d04fe697014fbd5c82e46e3b46a97167
   languageName: node
   linkType: hard
 
@@ -6175,17 +6158,6 @@ __metadata:
   dependencies:
     string-width: "npm:^1.0.2 || 2 || 3 || 4"
   checksum: 10c0/1d9c2a3e36dfb09832f38e2e699c367ef190f96b82c71f809bc0822c306f5379df87bab47bed27ea99106d86447e50eb972d3c516c2f95782807a9d082fbea95
-  languageName: node
-  linkType: hard
-
-"with-open-file@npm:^0.1.6":
-  version: 0.1.7
-  resolution: "with-open-file@npm:0.1.7"
-  dependencies:
-    p-finally: "npm:^1.0.0"
-    p-try: "npm:^2.1.0"
-    pify: "npm:^4.0.1"
-  checksum: 10c0/28a0c67718f0b9f14669636d5a69fa66bc87a4bdbc5913a245b68f0cbd0c96a3f83559147d647dc30332f3eee76688924654587cc58e4d5b944ef04155f9fe36
   languageName: node
   linkType: hard
 

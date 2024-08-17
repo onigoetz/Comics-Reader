@@ -100,7 +100,7 @@
     "react-headroom": "^3.0.0",
     "react-icons": "^5.0.0",
     "react-portal": "^4.1.5",
-    "read-chunk": "^3.0.0",
+    "read-chunk": "^5.0.0",
     "sharp": "^0.33.0",
     "tmp-promise": "^3.0.2",
     "typedarray-to-buffer": "^4.0.0",
