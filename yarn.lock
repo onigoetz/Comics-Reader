@@ -1750,7 +1750,7 @@ __metadata:
     node-cron: "npm:^3.0.0"
     node-unrar-js: "npm:^2.0.0"
     normalize.css: "npm:^8.0.1"
-    pdfjs-dist: "npm:^3.0.279"
+    pdfjs-dist: "npm:^4.0.0"
     percentile: "npm:^1.2.2"
     photoswipe: "npm:^5.0.0"
     promise-timeout: "npm:^1.3.0"
@@ -4602,25 +4602,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path2d-polyfill@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "path2d-polyfill@npm:2.0.1"
-  checksum: 10c0/b6d8c0764f65438cd884ef3b62c5af07d4f526b379c4c804effc26dd17936f18076941941f9e804c0df96d39720f155e9f0723e4b30feaee152ea4a441df023e
+"path2d@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "path2d@npm:0.2.1"
+  checksum: 10c0/6fc743b24af146fd140339af717c2f874651377dc0cb215d5e761b5bdc5528cb9458f473fff896de54e23f0374dc6819d43740daf7cfed5fd430fc82791510a6
   languageName: node
   linkType: hard
 
-"pdfjs-dist@npm:^3.0.279":
-  version: 3.11.174
-  resolution: "pdfjs-dist@npm:3.11.174"
+"pdfjs-dist@npm:^4.0.0":
+  version: 4.5.136
+  resolution: "pdfjs-dist@npm:4.5.136"
   dependencies:
     canvas: "npm:^2.11.2"
-    path2d-polyfill: "npm:^2.0.1"
+    path2d: "npm:^0.2.1"
   dependenciesMeta:
     canvas:
       optional: true
-    path2d-polyfill:
+    path2d:
       optional: true
-  checksum: 10c0/0cb26561fd9bea90f2c1c8029d4cf972d338838de0f7f7aa3f369b2e555b99a2d8bbf1b81cc682fb26331241201a432726ae356a7ad3a930d86a308ca941d29c
+  checksum: 10c0/9142665f44fec6a1b7709439fc32bd309d1359caba48c1bdf4a1107c00a1d784b718c860d0490361062c8df900d1eb53d38526fa5b9853131dd5b95973b35bf2
   languageName: node
   linkType: hard
 
