@@ -9,6 +9,8 @@ require("./server/env");
 const serverPath = path.join(process.cwd(), "server");
 
 const nextConfiguration = {
+  // can't use standalone output as we have a custom server
+  //output: "standalone",
   env: {},
   webpack(config, options) {
     if (!config.externals) {

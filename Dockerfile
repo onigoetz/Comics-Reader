@@ -1,30 +1,38 @@
-FROM node:18.20.4-alpine
+FROM node:20.17.0-alpine AS base 
+
+RUN corepack enable
+
+WORKDIR /app
+
+FROM base AS builder
+
+# Run yarn install early to allow a quick
+# rebuild if the package.json didn't change
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn .yarn
+
+RUN apk add --no-cache --virtual .gyp g++ make python3 && yarn install
+
+COPY comics next.config.js ./
+COPY public/ ./public/
+COPY server/ ./server/
+COPY src/ ./src/
+
+RUN yarn build
+
+FROM base AS runner
 
 RUN apk add --no-cache mupdf-tools
-
-WORKDIR /usr/src/app
 
 # Symlink volume
 VOLUME /comics
 VOLUME /cache
-RUN ln -s /comics /usr/src/app/images && ln -s /cache /usr/src/app/cache
+RUN ln -s /comics /app/images && ln -s /cache /app/cache
 
-# Run yarn install early to allow a quick
-# rebuild if the package.json didn't change
-COPY package.json yarn.lock ./
-RUN apk add --no-cache --virtual .gyp python3 make g++ \
-    && yarn install --production --non-interactive \
-    && apk del .gyp \
-	&& yarn cache clean
+ENV NODE_ENV production
 
-# Copy files
-COPY public/ ./public/
-COPY server/ ./server/
-COPY src/ ./src/
-COPY comics next.config.js ./
-
-RUN yarn build
+COPY --from=builder /app ./
 
 EXPOSE 8080
 
-CMD [ "yarn", "start" ]
+CMD [ "node", "server/index.js" ]
