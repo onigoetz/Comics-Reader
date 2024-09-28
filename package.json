@@ -51,7 +51,7 @@
     "@swissquote/crafty-preset-postcss": "1.27.0",
     "@swissquote/crafty-runner-gulp": "1.27.0",
     "@types/compression": "^1.0.0",
-    "@types/express": "^4.16.0",
+    "@types/express": "^5.0.0",
     "@types/morgan": "^1.7.35",
     "@types/sharp": "^0.32.0",
     "ava": "^6.0.0",
