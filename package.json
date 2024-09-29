@@ -63,7 +63,7 @@
     "basic-auth": "^2.0.0",
     "bcrypt": "^5.0.0",
     "better-sqlite3": "^11.0.0",
-    "cache-manager": "^5.0.0",
+    "cache-manager": "^6.0.0",
     "cache-manager-fs-hash": "^2.0.0",
     "classnames": "^2.2.6",
     "cli-table": "^0.3.1",
