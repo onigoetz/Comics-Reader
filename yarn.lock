@@ -344,12 +344,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keyv/serialize@npm:*":
-  version: 1.0.1
-  resolution: "@keyv/serialize@npm:1.0.1"
-  dependencies:
-    buffer: "npm:^6.0.3"
-  checksum: 10c0/948fadc632f6050b67cb8ea664192a98d7743015e1b449d383addacbce371414b9cd7129b33ab36d5d81b558744ab0a56c2753b287e7c4f5b2c46401c486cbd0
+"@keyv/serialize@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@keyv/serialize@npm:1.1.0"
+  checksum: 10c0/30e34adf4fff52374c2c531e3ff215eed6414350ee56eebcb98c422feaff171b4900c73082a72399a6bfbc5ce60fbb6f968594110c960521923499146bc68c20
   languageName: node
   linkType: hard
 
@@ -1358,16 +1356,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"buffer@npm:^6.0.3":
-  version: 6.0.3
-  resolution: "buffer@npm:6.0.3"
-  dependencies:
-    base64-js: "npm:^1.3.1"
-    ieee754: "npm:^1.2.1"
-  checksum: 10c0/2a905fbbcde73cc5d8bd18d1caa23715d5f83a5935867c2329f0ac06104204ba7947be098fe1317fbd8830e26090ff8e764f08cd14fefc977bb248c3487bcbd0
-  languageName: node
-  linkType: hard
-
 "busboy@npm:1.6.0":
   version: 1.6.0
   resolution: "busboy@npm:1.6.0"
@@ -1446,12 +1434,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cache-manager@npm:^6.0.0":
-  version: 6.1.0
-  resolution: "cache-manager@npm:6.1.0"
+"cache-manager@npm:^7.0.0":
+  version: 7.2.0
+  resolution: "cache-manager@npm:7.2.0"
   dependencies:
-    keyv: "npm:^5.0.3"
-  checksum: 10c0/65ad4ca4e9eca97df8689166a992d66f566bdd8d1e2d1136ee1151e59cf95c92c7ed32edc32cfb8062671504d63b694da9f6ee729716463b47f859f3762f76fd
+    keyv: "npm:^5.5.0"
+  checksum: 10c0/c256ee7b3acee6c981ae472f094b50ecb6277f96a079ff8f65c07568d8849a59908e555c683b5535d6eefea4c92bb0152001aeca6b129d6de4931829b6625684
   languageName: node
   linkType: hard
 
@@ -1753,7 +1741,7 @@ __metadata:
     bcrypt: "npm:^5.0.0"
     better-sqlite3: "npm:^11.0.0"
     c8: "npm:^10.0.0"
-    cache-manager: "npm:^6.0.0"
+    cache-manager: "npm:^7.0.0"
     cache-manager-fs-hash: "npm:^2.0.0"
     classnames: "npm:^2.2.6"
     cli-table: "npm:^0.3.1"
@@ -3065,7 +3053,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ieee754@npm:^1.1.13, ieee754@npm:^1.2.1":
+"ieee754@npm:^1.1.13":
   version: 1.2.1
   resolution: "ieee754@npm:1.2.1"
   checksum: 10c0/b0782ef5e0935b9f12883a2e2aa37baa75da6e66ce6515c168697b42160807d9330de9a32ec1ed73149aea02e0d822e572bca6f1e22bdcbd2149e13b050b17bb
@@ -3471,12 +3459,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"keyv@npm:^5.0.3":
-  version: 5.0.3
-  resolution: "keyv@npm:5.0.3"
+"keyv@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "keyv@npm:5.5.0"
   dependencies:
-    "@keyv/serialize": "npm:*"
-  checksum: 10c0/0fb822178d012225767a7d3d1020b0c587095e107a8cee9c3aefa3a195514fe361baa75831aeadf6b2314fb47852d4400343ecfba5632562a16851b822acd247
+    "@keyv/serialize": "npm:^1.1.0"
+  checksum: 10c0/2db63fd2abcdf71929f032569673b6edd0de111edb012411658e2589dc5f49793a98aecd56c67fafda3f90a31f32e35555a97f8621040728260c66ad8daeea48
   languageName: node
   linkType: hard
 
