@@ -88,7 +88,7 @@ export default function withAuth(WrappedComponent) {
 
       // We're logged out when the password change is applied
       if (!token) {
-        redirect(ctx.res, "/login");
+        redirect(ctx.res, Router, "/login");
         return {};
       }
     }

@@ -1,5 +1,4 @@
 /* global process */
-import Router from "next/router";
 import { TYPE_DIR } from "./types";
 
 import apiFetch from "./fetch";
@@ -86,10 +85,11 @@ export function createUrl(node) {
   return (node.type === TYPE_DIR ? "/list/" : "/book/") + urlizeNode(node.path);
 }
 
-export function redirect(res, url) {
+export function redirect(res, Router, url) {
   if (res) {
     res.redirect(url);
   } else {
+    // This might be executer client side
     Router.push(url);
   }
 }

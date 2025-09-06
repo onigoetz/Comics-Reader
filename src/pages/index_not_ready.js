@@ -1,5 +1,7 @@
 import React from "react";
 
+import Router from "next/router";
+
 import { RawLoading } from "../components/Loading";
 import { redirect } from "../utils";
 import apiFetch from "../fetch";
@@ -37,7 +39,7 @@ Page.getInitialProps = async ctx => {
   const indexReadyData = await apiFetch("indexready");
 
   if (indexReadyData.ready) {
-    redirect(ctx.res, "/");
+    redirect(ctx.res, Router, "/");
     return {};
   }
 
