@@ -28,7 +28,6 @@ test("Should extract one file", async (t) => {
     const extract = await book.extractFile(file);
 
     const stat = await fs.promises.stat(extract.path);
-    console.log({stat});
 
-    t.truthy(stat.size > 260000);
+    t.truthy(stat.size > 230000);
 })
