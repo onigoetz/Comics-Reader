@@ -1,6 +1,6 @@
-const { red, underline, bold } = require("colorette");
+import { red, underline, bold } from "colorette";
 
-const IndexCreator = require("./tree/IndexCreator");
+import IndexCreator from "./tree/IndexCreator.mjs";
 
 const comicsIndex = new IndexCreator(process.env.DIR_COMICS);
 
@@ -14,4 +14,4 @@ comicsIndex.getList().then(
   }
 );
 
-module.exports = comicsIndex;
+export default comicsIndex;

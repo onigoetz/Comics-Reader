@@ -1,23 +1,21 @@
 //@ts-check
 
-const fs = require("fs");
-const path = require("path");
-const { promisify } = require("util");
-const Table = require("cli-table");
-const percentile = require("percentile");
+import fs from "node:fs/promises";
+import path from "node:path";
+import Table from "cli-table";
+import percentile from "percentile";
 
-const debug = require("debug")("comics:index");
+import debugFn from "debug"; 
 
-const cache = require("../cache");
-const { TYPE_DIR, TYPE_BOOK } = require("./types");
-const Node = require("./Node");
-const RootNode = require("./RootNode");
-const Walker = require("./Walker");
-const { getFileNames } = require("../books");
-const { getValidImages, isDirectory, sortNaturally } = require("../utils");
+import cache from "../cache.js";
+import { TYPE_DIR, TYPE_BOOK } from "./types.mjs";
+import Node from "./Node.mjs";
+import RootNode from "./RootNode.mjs";
+import Walker from "./Walker.mjs";
+import { getFileNames } from "../books/index.js";
+import { getValidImages, isDirectory, sortNaturally } from "../utils.js";
 
-const readdir = promisify(fs.readdir);
-const stat = promisify(fs.stat);
+const debug = debugFn("comics:index");
 
 // Directories to ignore when listing output.
 const ignore = ["cgi-bin", ".", "..", "cache", ".DS_Store", "Thumbs.db"];
@@ -35,15 +33,19 @@ function forEachAsync(items, cb) {
   }, Promise.resolve());
 }
 
-module.exports = class IndexCreator {
+export default class IndexCreator {
+  isReady = false;
+  phase = "NONE"; // NONE, SCAN, THUMBS, DONE
+    foundThumbs = 0;
+    foundBooks = 0;
+    errors = [];
+    stats = [];
+
   constructor(dirPath) {
     this.dirPath = dirPath;
-    this.isReady = false;
-    this.phase = "NONE";
-    this.initStats();
   }
 
-  initStats() {
+  resetStats() {
     this.foundThumbs = 0;
     this.foundBooks = 0;
     this.errors = [];
@@ -64,7 +66,7 @@ module.exports = class IndexCreator {
     const maybeThumbnails = [];
 
     const hrstart = process.hrtime();
-    const files = await readdir(dirPath);
+    const files = await fs.readdir(dirPath);
 
     await forEachAsync(files, async item => {
       const itemPath = path.join(dirPath, item);
@@ -235,7 +237,7 @@ module.exports = class IndexCreator {
       console.log("Cancelling reindex, one is already running");
     }
 
-    this.initStats();
+    this.resetStats();
 
     const newRootNode = await this.getRootNode();
 
@@ -282,7 +284,7 @@ module.exports = class IndexCreator {
    */
   async getCacheKey(node) {
     const cacheKeyVersion = 1;
-    const fileStat = await stat(`${process.env.DIR_COMICS}/${node.getPath()}`);
+    const fileStat = await fs.stat(`${process.env.DIR_COMICS}/${node.getPath()}`);
     return `thumb:${cacheKeyVersion}:${node.getPath()}:${fileStat.size}:${
       fileStat.mtimeMs
     }`;

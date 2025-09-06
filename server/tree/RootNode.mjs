@@ -1,8 +1,8 @@
 //@ts-check
 
-const Node = require("./Node");
+import Node from "./Node.mjs";
 
-module.exports = class RootNode extends Node {
+export default class RootNode extends Node {
   getNode(key) {
     let node = this;
 

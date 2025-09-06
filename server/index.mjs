@@ -1,17 +1,18 @@
 //@ts-check
-const next = require("next");
-const { red, underline, bold } = require("colorette");
-const express = require("express");
+import next from "next";
+import { red, underline, bold } from "colorette";
+import express from "express";
 
-const loudRejection = require("loud-rejection");
-const compression = require("compression");
-const morgan = require("morgan");
-const cron = require("node-cron");
+import loudRejection from "loud-rejection";
+import compression from "compression";
+import morgan from "morgan";
+import cron from "node-cron";
 
-require("./env");
+import "./env.js";
 
+import { imagecache } from "./api/imagecache.js";
 // Kickstart index creation
-const comicsIndex = require("./comics");
+import comicsIndex from "./comics.mjs";
 
 const url = new URL(process.env.SERVER_URL);
 
@@ -50,7 +51,7 @@ app
     server.use("/images", express.static("images"));
     server.get(
       /\/images\/cache\/([a-zA-Z]*)\/(.*)/,
-      require("./api/imagecache").imagecache
+      imagecache
     );
 
     server.all("*", (req, res) => {

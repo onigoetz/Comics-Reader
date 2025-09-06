@@ -32,11 +32,11 @@
     "Edge >= 17"
   ],
   "scripts": {
-    "dev": "node server/index.js",
+    "dev": "node server/index.mjs",
     "test": "ava",
     "test:ci": "c8 --clean --all --reporter=text --reporter=lcov --reporter=html --include=server ava",
     "build": "next build",
-    "start": "NODE_ENV=production node server/index.js",
+    "start": "NODE_ENV=production node server/index.mjs",
     "crafty:build": "crafty run",
     "crafty:watch": "crafty watch",
     "clear-cache": "rm -rf cache images/cache",

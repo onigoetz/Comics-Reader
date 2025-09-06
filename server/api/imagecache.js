@@ -5,7 +5,7 @@ const { promisify } = require("util");
 const imageSize = require("image-size");
 
 const { ensureDir, normalizePath } = require("../utils");
-const { getFile } = require("../books");
+const { getFile } = require("../books/index.js");
 const sizes = require("../sizes");
 const cache = require("../cache");
 

@@ -1,9 +1,9 @@
 //@ts-check
 
-const { TYPE_DIR } = require("./types");
-const { sortNaturally } = require("../utils");
+import { TYPE_DIR } from "./types.mjs";
+import { sortNaturally } from "../utils.js";
 
-module.exports = class TreeWalker {
+export default class TreeWalker {
   constructor(tree) {
     this.tree = tree;
     this.routes = {};
