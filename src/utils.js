@@ -1,4 +1,3 @@
-/* global process */
 import { TYPE_DIR } from "./types";
 
 import apiFetch from "./fetch";

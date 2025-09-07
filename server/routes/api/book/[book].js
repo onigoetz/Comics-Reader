@@ -22,7 +22,6 @@ export default async (req, res) => {
     try {
       node = await comicsIndex.getNode(book);
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(e);
       res.status(404).send("Book not found");
       return;
@@ -45,7 +44,6 @@ export default async (req, res) => {
   } catch (e) {
     res.status(500).json({ error: "An error occured, please retry later" });
 
-    /* eslint-disable-next-line no-console */
     console.error("ERROR", e);
   }
 };

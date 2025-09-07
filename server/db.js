@@ -63,6 +63,7 @@ let version;
 
 try {
   version = getVersion();
+  // eslint-disable-next-line no-unused-vars
 } catch (e) {
   // If we don't have a version, the DB wasn't created
   createMigrationTable();

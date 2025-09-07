@@ -1,6 +1,3 @@
-/* global process */
-import React from "react";
-import PropTypes from "prop-types";
 import Link from "next/link";
 import Headroom from "react-headroom";
 import Head from "next/head";
@@ -176,11 +173,5 @@ function Header({ url, current, parent }) {
     </>
   );
 }
-
-Header.propTypes = {
-  current: PropTypes.any,
-  parent: PropTypes.any,
-  url: PropTypes.any
-};
 
 export default Header;

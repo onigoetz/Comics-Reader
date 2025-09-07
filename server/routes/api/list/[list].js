@@ -24,6 +24,7 @@ export default async (req, res) => {
   let node;
   try {
     node = await comicsIndex.getNode(book);
+    // eslint-disable-next-line no-unused-vars
   } catch (e) {
     res.status(404).send("Book not found");
     return;
@@ -51,7 +52,6 @@ export default async (req, res) => {
         try {
           thumbWidth = (await getThumbnailSize(nodeInfo.thumb)).width;
         } catch (e) {
-          /* eslint-disable-next-line no-console */
           console.error(
             "Failed calculating thumbnail width",
             nodeInfo.thumb,

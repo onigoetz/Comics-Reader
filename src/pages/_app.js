@@ -1,5 +1,3 @@
-import React from "react";
-
 import "normalize.css/normalize.css";
 import "photoswipe/style.css";
 import "../css/variables.css";

@@ -1,8 +1,9 @@
+// eslint-disable-next-line no-unused-vars
 import React from "react";
 
 import styles from "./Label.module.css";
 
-export default function Message({ children, error }) {
+export default function Label({ children, error }) {
   return (
     <label className={styles.Label}>
       {children}

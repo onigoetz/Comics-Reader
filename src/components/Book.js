@@ -1,5 +1,3 @@
-import React from "react";
-
 import PhotoSwipeGallery from "./PhotoSwipeGallery";
 import { image } from "../utils";
 
@@ -35,7 +33,7 @@ export default function Book({ pages, read, onRead, isRetina, supportsWebp }) {
         ) : (
           <div>
             You did not read this book{" "}
-            <button className="Button" onClick={onRead}>
+            <button type="button" className="Button" onClick={onRead}>
               Mark as read
             </button>
           </div>

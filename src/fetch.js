@@ -1,4 +1,3 @@
-/* global process */
 function onlySuccess(v) {
   if (v.status !== 200) {
     throw new Error(

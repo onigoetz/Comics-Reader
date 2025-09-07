@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Portal } from "react-portal";
 import Link from "next/link";
 
@@ -54,6 +54,7 @@ function Search() {
   return (
     <div className={styles.Search}>
       <button
+        type="button"
         onClick={toggleSearch}
         className="Button Button--link"
         title="Search"

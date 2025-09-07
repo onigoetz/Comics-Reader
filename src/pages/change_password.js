@@ -1,5 +1,4 @@
-/* global process */
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { fetchWithAuth } from "../fetch";
 import Form from "../components/Form";
@@ -93,6 +92,7 @@ function ChangePassword() {
 
         <div style={{ textAlign: "right" }}>
           <button
+            type="button"
             className="Button Button--big"
             disabled={loading || !password.value || arePasswordsDifferent()}
           >

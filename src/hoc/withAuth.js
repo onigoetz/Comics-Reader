@@ -1,5 +1,4 @@
-/* global process */
-import React, { createContext, useContext, useEffect } from "react";
+import { createContext, use, useEffect } from "react";
 import Router from "next/router";
 import nextCookie from "next-cookies";
 import cookie from "js-cookie";
@@ -51,7 +50,7 @@ const AuthContext = createContext({
 });
 
 export function useAuth() {
-  return useContext(AuthContext);
+  return use(AuthContext);
 }
 
 export default function withAuth(WrappedComponent) {
@@ -72,9 +71,9 @@ export default function withAuth(WrappedComponent) {
     }, []);
 
     return (
-      <AuthContext.Provider value={{ token }}>
+      <AuthContext value={{ token }}>
         <WrappedComponent {...props} />
-      </AuthContext.Provider>
+      </AuthContext>
     );
   }
 

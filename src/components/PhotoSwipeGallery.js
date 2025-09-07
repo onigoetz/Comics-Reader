@@ -162,7 +162,7 @@ export default class PhotoSwipeGallery extends React.Component {
           }}
         >
           {items.map((item, k) => (
-            <div key={k} className={`${styles.Gallery__item} pswp-item`}>
+            <div key={item.src} className={`${styles.Gallery__item} pswp-item`}>
               <a
                 className="pswp-item"
                 href={item.src}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import Form from "../components/Form";
 import Loading from "../components/Loading";
@@ -71,7 +71,9 @@ export default function Login() {
         </Label>
 
         <div style={{ textAlign: "right" }}>
-          <button className="Button Button--big">Submit</button>
+          <button className="Button Button--big" type="button">
+            Submit
+          </button>
         </div>
       </Form>
     </Layout>

@@ -1,5 +1,3 @@
-import React from "react";
-
 import withAuth from "../../hoc/withAuth";
 import Layout from "../../components/Layout";
 import List from "../../components/List";
@@ -23,7 +21,7 @@ function ListManager({ currentUrl, path, isRetina, supportsWebp }) {
         <>
           An error occured while loading this page
           <br />
-          <button className="Button" onClick={retry}>
+          <button type="button" className="Button" onClick={retry}>
             Retry
           </button>
         </>

@@ -1,5 +1,3 @@
-import React from "react";
-
 import Header from "../containers/Header";
 
 export default function Layout({ children, url, current, parent }) {

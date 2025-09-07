@@ -30,6 +30,7 @@ const nextConfiguration = {
         if (resolved && resolved.indexOf(serverPath) === 0) {
           return `commonjs ${resolved}`;
         }
+        // eslint-disable-next-line no-unused-vars
       } catch (e) {
         // Nothing to do here, it's quite common to not always resolve
       }

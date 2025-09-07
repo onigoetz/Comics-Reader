@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { fetchWithAuth } from "../../fetch";
 import withAuth, { useAuth } from "../../hoc/withAuth";
@@ -33,7 +33,7 @@ function BookManager({ currentUrl, path, isRetina, supportsWebp }) {
         <>
           An error occured while loading this page
           <br />
-          <button className="Button" onClick={retry}>
+          <button type="button" className="Button" onClick={retry}>
             Retry
           </button>
         </>
