@@ -61,7 +61,7 @@
     "@next/bundle-analyzer": "^15.0.0",
     "archive-type": "^4.0.0",
     "basic-auth": "^2.0.0",
-    "bcrypt": "^5.0.0",
+    "bcrypt": "^6.0.0",
     "better-sqlite3": "^11.0.0",
     "cache-manager": "^7.2.0",
     "cache-manager-fs-hash": "^3.0.0",
