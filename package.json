@@ -85,7 +85,7 @@
     "next": "15.5.2",
     "next-compose-plugins": "^2.2.0",
     "next-cookies": "2.0.3",
-    "node-cron": "^3.0.0",
+    "node-cron": "^4.0.0",
     "node-unrar-js": "^2.0.0",
     "normalize.css": "^8.0.1",
     "pdfjs-dist": "^3.0.279",

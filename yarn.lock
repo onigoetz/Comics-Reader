@@ -2115,7 +2115,7 @@ __metadata:
     next: "npm:15.5.2"
     next-compose-plugins: "npm:^2.2.0"
     next-cookies: "npm:2.0.3"
-    node-cron: "npm:^3.0.0"
+    node-cron: "npm:^4.0.0"
     node-unrar-js: "npm:^2.0.0"
     normalize.css: "npm:^8.0.1"
     pdfjs-dist: "npm:^3.0.279"
@@ -4594,12 +4594,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-cron@npm:^3.0.0":
-  version: 3.0.3
-  resolution: "node-cron@npm:3.0.3"
-  dependencies:
-    uuid: "npm:8.3.2"
-  checksum: 10c0/e6e817c5bf28cca69f256ecc1a2cb737cf895cb0fe22f8ec58ce614cb74dcc22e93f495984a26ece51322473238ccc0ef53b4f373035697017b8c28bddacb9b9
+"node-cron@npm:^4.0.0":
+  version: 4.2.1
+  resolution: "node-cron@npm:4.2.1"
+  checksum: 10c0/804df01df230e96fd2f8ffcde004f4d5af953bccdf3ccf993dc450526dd65f553a2f2ad4bc0faf55c90c38cbc99c9ddbb88ee16cba3fc6bc74e606da6efb249e
   languageName: node
   linkType: hard
 
@@ -6568,15 +6566,6 @@ __metadata:
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: 10c0/02ba649de1b7ca8854bfe20a82f1dfbdda3fb57a22ab4a8972a63a34553cf7aa51bc9081cf7e001b035b88186d23689d69e71b510e610a09a4c66f68aa95b672
-  languageName: node
-  linkType: hard
-
-"uuid@npm:8.3.2":
-  version: 8.3.2
-  resolution: "uuid@npm:8.3.2"
-  bin:
-    uuid: dist/bin/uuid
-  checksum: 10c0/bcbb807a917d374a49f475fae2e87fdca7da5e5530820ef53f65ba1d12131bd81a92ecf259cc7ce317cbe0f289e7d79fdfebcef9bfa3087c8c8a2fa304c9be54
   languageName: node
   linkType: hard
 
