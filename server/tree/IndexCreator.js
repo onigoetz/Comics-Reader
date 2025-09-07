@@ -5,7 +5,7 @@ import path from "node:path";
 import Table from "cli-table";
 import percentile from "percentile";
 
-import debugFn from "debug"; 
+import debugFn from "debug";
 
 import cache from "../cache.js";
 import { TYPE_DIR, TYPE_BOOK } from "./types.js";
@@ -36,10 +36,10 @@ function forEachAsync(items, cb) {
 export default class IndexCreator {
   isReady = false;
   phase = "NONE"; // NONE, SCAN, THUMBS, DONE
-    foundThumbs = 0;
-    foundBooks = 0;
-    errors = [];
-    stats = [];
+  foundThumbs = 0;
+  foundBooks = 0;
+  errors = [];
+  stats = [];
 
   constructor(dirPath) {
     this.dirPath = dirPath;
@@ -284,7 +284,9 @@ export default class IndexCreator {
    */
   async getCacheKey(node) {
     const cacheKeyVersion = 1;
-    const fileStat = await fs.stat(`${process.env.DIR_COMICS}/${node.getPath()}`);
+    const fileStat = await fs.stat(
+      `${process.env.DIR_COMICS}/${node.getPath()}`
+    );
     return `thumb:${cacheKeyVersion}:${node.getPath()}:${fileStat.size}:${
       fileStat.mtimeMs
     }`;
@@ -336,4 +338,4 @@ export default class IndexCreator {
 
     return item.getThumb();
   }
-};
+}

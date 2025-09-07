@@ -1,4 +1,5 @@
 import debugFn from "debug";
+
 const debug = debugFn("comics:batchWorker");
 
 import { createDeferred } from "./utils.js";

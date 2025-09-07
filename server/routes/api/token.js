@@ -1,4 +1,3 @@
-/* global process */
 import auth from "../../auth.js";
 
 import jwt from "jwt-simple";

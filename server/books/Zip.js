@@ -8,11 +8,7 @@ import { Iconv } from "iconv";
 
 import sizeOf from "image-size";
 
-import {
-  validImageFilter,
-  getBigatureSize,
-  sortNaturally
-} from "../utils.js";
+import { validImageFilter, getBigatureSize, sortNaturally } from "../utils.js";
 
 const iconv = new Iconv("UTF-8", "UTF-8//IGNORE");
 

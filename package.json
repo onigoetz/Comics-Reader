@@ -40,7 +40,7 @@
     "crafty:build": "crafty run",
     "crafty:watch": "crafty watch",
     "clear-cache": "rm -rf cache images/cache",
-    "lint:server": "crafty jsLint server next.config.js --preset recommended --preset node",
+    "lint:server": "crafty jsLint server next.config.mjs --preset recommended --preset node",
     "lint:client": "crafty jsLint src --preset recommended",
     "lint:css": "crafty cssLint src/**/*.css --preset legacy"
   },

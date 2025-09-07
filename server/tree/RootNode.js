@@ -36,4 +36,4 @@ export default class RootNode extends Node {
   getPath() {
     return null;
   }
-};
+}

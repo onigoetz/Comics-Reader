@@ -76,4 +76,4 @@ export default class Node {
       path: this.getPath()
     };
   }
-};
+}

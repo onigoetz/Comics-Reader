@@ -47,9 +47,6 @@ app
     server.use(compression()); // Enable Gzip
     server.use(morgan("tiny")); // Access logs
 
-    // Static assets
-
-
     registerRoutes(server);
 
     server.all("*", (req, res) => {

@@ -1,4 +1,3 @@
-/* global process */
 import comicsIndex from "../../../comics.js";
 import { getPages } from "../../../books/index.js";
 import { fromUrl } from "../../../utils.js";

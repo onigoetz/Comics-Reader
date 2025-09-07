@@ -13,7 +13,7 @@ COPY .yarn .yarn
 
 RUN apk add --no-cache --virtual .gyp g++ make python3 && yarn install
 
-COPY comics next.config.js ./
+COPY comics next.config.mjs ./
 COPY public/ ./public/
 COPY server/ ./server/
 COPY src/ ./src/

@@ -9,11 +9,7 @@ import tmp from "tmp-promise";
 
 import sizeOf from "image-size";
 
-import {
-  validImageFilter,
-  getBigatureSize,
-  sortNaturally
-} from "../utils.js";
+import { validImageFilter, getBigatureSize, sortNaturally } from "../utils.js";
 
 // Documentation of the unrar command :
 // http://acritum.com/winrar/console-rar-manual
@@ -130,4 +126,4 @@ export default class Rar {
 
     return pages.sort((a, b) => sortNaturally(a.src, b.src));
   }
-};
+}
