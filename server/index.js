@@ -49,7 +49,7 @@ app
 
     registerRoutes(server);
 
-    server.all("*", (req, res) => {
+    server.all(/.*/, (req, res) => {
       handle(req, res);
     });
 
