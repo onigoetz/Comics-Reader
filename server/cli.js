@@ -61,7 +61,7 @@ Commands
 `;
 
 const cli = meow(help, {
-  importMeta: import.meta,
+  importMeta: import.meta
 });
 
 if (!cli.input.length) {
