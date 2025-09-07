@@ -4,7 +4,7 @@ import path from "node:path";
 import fs from "node:fs";
 
 import archiveType from "archive-type";
-import readChunk from "read-chunk";
+import { readChunk } from "read-chunk";
 import debugFn from "debug";
 
 const debug = debugFn("comics:archive");
@@ -37,7 +37,7 @@ export async function open(file) {
   }
 
   // Check with mime type, people tend to misname cbr/cbz files
-  const buffer = await readChunk(file, 0, 262);
+  const buffer = await readChunk(file, { startPosition: 0, length: 262 });
   const type = archiveType(buffer);
 
   switch (type.mime) {

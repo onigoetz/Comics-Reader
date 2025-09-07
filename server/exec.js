@@ -5,7 +5,7 @@ import path from "node:path";
 import { cpus } from "node:os";
 
 import createSymlink from "create-symlink";
-import execa from "execa";
+import { execa } from "execa";
 import tmp from "tmp-promise";
 import debugFn from "debug";
 

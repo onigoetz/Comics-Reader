@@ -3,7 +3,7 @@ import prompts from "prompts";
 
 import "./env.js";
 
-import db from "./db.js";
+import { getUserByName, createUser, changePassword } from "./db.js";
 
 async function commandCreateUser() {
   let response = await prompts({
@@ -11,7 +11,7 @@ async function commandCreateUser() {
     name: "username",
     message: "Username",
     validate: value =>
-      db.getUserByName(value) ? "This user already exists" : true
+      getUserByName(value) ? "This user already exists" : true
   });
 
   const username = response.username;
@@ -24,7 +24,7 @@ async function commandCreateUser() {
 
   const password = response.password;
 
-  await db.createUser(username, password);
+  await createUser(username, password);
   console.log("User created");
 }
 
@@ -34,7 +34,7 @@ async function commandChangePassword() {
     name: "username",
     message: "What username do you want to change the password for ?",
     validate: value =>
-      db.getUserByName(value) ? true : "This user doesn't exist."
+      getUserByName(value) ? true : "This user doesn't exist."
   });
 
   const username = response.username;
@@ -47,7 +47,7 @@ async function commandChangePassword() {
 
   const password = response.password;
 
-  await db.changePassword(username, password);
+  await changePassword(username, password);
   console.log("Password changed");
 }
 
@@ -60,7 +60,9 @@ Commands
   changePassword
 `;
 
-const cli = meow(help, {});
+const cli = meow(help, {
+  importMeta: import.meta,
+});
 
 if (!cli.input.length) {
   console.log(help);
