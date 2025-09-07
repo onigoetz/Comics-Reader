@@ -1,28 +1,24 @@
 //@ts-check
 
-const path = require("path");
-const fs = require("fs");
-const { promisify } = require("util");
+import path from "node:path";
+import fs from "node:fs/promises";
 
-const imageSize = require("image-size");
+import { imageSizeFromFile } from "image-size/fromFile";
 
-const {
+import {
   getBigatureSize,
   validImageFilter,
   isDirectorySync,
   sortNaturally
-} = require("../utils");
+} from "../utils.js";
 
-const readdir = promisify(fs.readdir);
-const sizeOf = promisify(imageSize);
-
-module.exports = class Dir {
+export default class Dir {
   constructor(dirPath) {
     this.dir = dirPath;
   }
 
   async getFileNames() {
-    return readdir(this.dir);
+    return fs.readdir(this.dir);
   }
 
   async extractFile(file) {
@@ -41,7 +37,7 @@ module.exports = class Dir {
       .sort(sortNaturally)
       .map(async item => {
         const fullPath = path.join(dirPath, item);
-        const data = await sizeOf(fullPath);
+        const data = await imageSizeFromFile(fullPath);
         const size = getBigatureSize(data);
 
         return {

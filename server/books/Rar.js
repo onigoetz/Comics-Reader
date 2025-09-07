@@ -1,26 +1,26 @@
 //@ts-check
-const pathLib = require("path");
-const fs = require("fs");
+import pathLib from "node:path";
+import fs from "node:fs/promises";
 
-const toBuffer = require("typedarray-to-buffer");
+import toBuffer from "typedarray-to-buffer";
 
-const unrar = require("node-unrar-js");
-const tmp = require("tmp-promise");
+import unrar from "node-unrar-js";
+import tmp from "tmp-promise";
 
-const sizeOf = require("image-size");
+import sizeOf from "image-size";
 
-const {
+import {
   validImageFilter,
   getBigatureSize,
   sortNaturally
-} = require("../utils");
+} from "../utils.js";
 
 // Documentation of the unrar command :
 // http://acritum.com/winrar/console-rar-manual
 
 class RarBatch {
   async read(path) {
-    const data = await fs.promises.readFile(path);
+    const data = await fs.readFile(path);
     return unrar.createExtractorFromData({ data });
   }
 
@@ -64,7 +64,7 @@ class RarBatch {
   }
 }
 
-module.exports = class Rar {
+export default class Rar {
   constructor(filePath, batchWorker) {
     this.path = filePath;
     this.batchWorker = batchWorker;
@@ -87,7 +87,7 @@ module.exports = class Rar {
           postfix: pathLib.extname(file).toLowerCase()
         });
 
-        await fs.promises.writeFile(path, extractedFile.extraction);
+        await fs.writeFile(path, extractedFile.extraction);
 
         return {
           path,
@@ -104,7 +104,7 @@ module.exports = class Rar {
    * @returns
    */
   async getPages() {
-    const buf = await fs.promises.readFile(this.path);
+    const buf = await fs.readFile(this.path);
     const extractor = await unrar.createExtractorFromData({ data: buf });
 
     const list = extractor.extract({

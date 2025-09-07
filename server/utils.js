@@ -1,15 +1,17 @@
 //@ts-check
 
-const fs = require("fs");
-const path = require("path");
-const { promisify } = require("util");
-const natsort = require("natural-sort")();
+import fs from "node:fs";
+import path from "node:path";
+import { promisify } from "node:util";
+import natsort from "natural-sort";
 
-const sizes = require("./sizes");
+import sizes from "./sizes.js";
+
+export const sortNaturally = natsort();
 
 const mkdirAsync = promisify(fs.mkdir);
 
-function createDeferred() {
+export function createDeferred() {
   var deferred = {};
   var promise = new Promise((resolve, reject) => {
     deferred.resolve = resolve;
@@ -19,11 +21,11 @@ function createDeferred() {
   return deferred;
 }
 
-function normalizePath(unsafeSuffix) {
+export function normalizePath(unsafeSuffix) {
   return path.normalize(unsafeSuffix).replace(/^(\.\.(\/|\\|$))+/, "");
 }
 
-function isFile(fullPath) {
+export function isFile(fullPath) {
   return new Promise(resolve => {
     fs.stat(fullPath, (err, stat) => {
       if (err) {
@@ -35,15 +37,15 @@ function isFile(fullPath) {
   });
 }
 
-function fromUrl(url) {
+export function fromUrl(url) {
   return url.replace(/\|/g, "/");
 }
 
-function isDirectorySync(dirPath) {
+export function isDirectorySync(dirPath) {
   return fs.statSync(dirPath).isDirectory();
 }
 
-function isDirectory(fullPath) {
+export function isDirectory(fullPath) {
   return new Promise(resolve => {
     fs.stat(fullPath, (err, stat) => {
       if (err) {
@@ -55,11 +57,11 @@ function isDirectory(fullPath) {
   });
 }
 
-function getExtension(file) {
+export function getExtension(file) {
   return path.extname(file).toLowerCase();
 }
 
-function validImageFilter(item) {
+export function validImageFilter(item) {
   const filename = item.replace(/^.*[\\\/]/, "");
   return (
     filename.substring(0, 1) !== "." &&
@@ -68,11 +70,11 @@ function validImageFilter(item) {
   );
 }
 
-function getValidImages(files) {
+export function getValidImages(files) {
   return files.filter(validImageFilter);
 }
 
-function getBigatureSize(data) {
+export function getBigatureSize(data) {
   const newWidth = sizes.big.width;
   const ratio = data.width / data.height;
 
@@ -82,7 +84,7 @@ function getBigatureSize(data) {
   };
 }
 
-async function ensureDir(pathToCreate) {
+export async function ensureDir(pathToCreate) {
   const parts = pathToCreate.split(path.sep);
 
   let fullPath = "";
@@ -106,18 +108,3 @@ async function ensureDir(pathToCreate) {
     }
   }
 }
-
-module.exports = {
-  createDeferred,
-  ensureDir,
-  getExtension,
-  getBigatureSize,
-  getValidImages,
-  isDirectorySync,
-  isDirectory,
-  isFile,
-  validImageFilter,
-  fromUrl,
-  sortNaturally: natsort,
-  normalizePath
-};

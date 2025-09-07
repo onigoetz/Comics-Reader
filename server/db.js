@@ -1,8 +1,9 @@
 //@ts-check
 
-const path = require("path");
+import path from "node:path";
+import bcrypt from "bcrypt";
 
-const database = require("better-sqlite3");
+import database from "better-sqlite3";
 
 const db = database(path.join(process.env.DIR_COMICS, "comics.db"));
 
@@ -75,14 +76,14 @@ if (version !== DBVersion) {
 
 // PUBLIC METHODS
 
-function getRead(user) {
+export function getRead(user) {
   return db
     .prepare("SELECT book FROM read WHERE user = @user")
     .all({ user })
     .map(row => row.book);
 }
 
-function markRead(user, book) {
+export function markRead(user, book) {
   db.prepare("INSERT INTO read (user, book) VALUES (@user, @book)").run({
     user,
     book
@@ -91,15 +92,15 @@ function markRead(user, book) {
   return getRead(user);
 }
 
-function getUserByName(user) {
+export function getUserByName(user) {
   return db.prepare("SELECT * FROM users WHERE user = @user").get({ user });
 }
 
 function encodePassword(password) {
-  return require("bcrypt").hash(password, 10);
+  return bcrypt.hash(password, 10);
 }
 
-async function createUser(user, password) {
+export async function createUser(user, password) {
   const passwordHash = await encodePassword(password);
 
   return db
@@ -109,18 +110,10 @@ async function createUser(user, password) {
     .run({ user, passwordHash });
 }
 
-async function changePassword(user, password) {
+export async function changePassword(user, password) {
   const passwordHash = await encodePassword(password);
 
   return db
     .prepare("UPDATE users SET passwordHash = @passwordHash WHERE user = @user")
     .run({ user, passwordHash });
 }
-
-module.exports = {
-  getRead,
-  markRead,
-  getUserByName,
-  createUser,
-  changePassword
-};

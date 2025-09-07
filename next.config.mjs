@@ -1,10 +1,12 @@
-const path = require("path");
-const withPlugins = require("next-compose-plugins");
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
+import path from "node:path";
+import withPlugins from "next-compose-plugins";
+import wBA from "@next/bundle-analyzer";
+
+const withBundleAnalyzer = wBA({
   enabled: process.env.ANALYZE === "true"
 });
 
-require("./server/env");
+import "./server/env.js";
 
 const serverPath = path.join(process.cwd(), "server");
 
@@ -41,4 +43,4 @@ const nextConfiguration = {
 
 const plugins = [withBundleAnalyzer];
 
-module.exports = withPlugins([...plugins], nextConfiguration);
+export default withPlugins([...plugins], nextConfiguration);

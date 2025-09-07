@@ -10,9 +10,9 @@ import cron from "node-cron";
 
 import "./env.js";
 
-import { imagecache } from "./api/imagecache.js";
-// Kickstart index creation
-import comicsIndex from "./comics.mjs";
+// Start index creation
+import comicsIndex from "./comics.js";
+import { registerRoutes } from "./routes/index.js";
 
 const url = new URL(process.env.SERVER_URL);
 
@@ -48,11 +48,9 @@ app
     server.use(morgan("tiny")); // Access logs
 
     // Static assets
-    server.use("/images", express.static("images"));
-    server.get(
-      /\/images\/cache\/([a-zA-Z]*)\/(.*)/,
-      imagecache
-    );
+
+
+    registerRoutes(server);
 
     server.all("*", (req, res) => {
       handle(req, res);

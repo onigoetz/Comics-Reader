@@ -1,6 +1,6 @@
-import { authenticate, checkPassword } from "../../../server/auth";
-import comicsIndex from "../../../server/comics";
-import db from "../../../server/db";
+import auth from "../../auth.js";
+import comicsIndex from "../../comics.js";
+import { changePassword } from "../../db.js";
 
 export default async (req, res) => {
   if (!comicsIndex.isReady) {
@@ -8,7 +8,7 @@ export default async (req, res) => {
     return;
   }
 
-  const user = await authenticate(req, res);
+  const user = await auth.authenticate(req, res);
   if (!user) {
     return;
   }
@@ -22,7 +22,7 @@ export default async (req, res) => {
   }
 
   try {
-    await checkPassword(user.user, currentPassword);
+    await auth.checkPassword(user.user, currentPassword);
   } catch (e) {
     /* eslint-disable-next-line no-console */
     console.error(e);
@@ -30,7 +30,7 @@ export default async (req, res) => {
     return;
   }
 
-  await db.changePassword(user.user, password);
+  await changePassword(user.user, password);
 
   res.json({ success: true });
 };

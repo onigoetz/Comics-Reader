@@ -1,4 +1,4 @@
-const path = require("path");
+import path from "node:path";
 
 /**
  * "db" or "basic"

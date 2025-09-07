@@ -1,6 +1,6 @@
 import { red, underline, bold } from "colorette";
 
-import IndexCreator from "./tree/IndexCreator.mjs";
+import IndexCreator from "./tree/IndexCreator.js";
 
 const comicsIndex = new IndexCreator(process.env.DIR_COMICS);
 

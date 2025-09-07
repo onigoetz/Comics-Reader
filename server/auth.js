@@ -1,8 +1,8 @@
-const auth = require("basic-auth");
-const bcrypt = require("bcrypt");
-const jwt = require("jwt-simple");
+import auth from "basic-auth";
+import bcrypt from "bcrypt";
+import jwt from "jwt-simple";
 
-const { getUserByName } = require("./db.js");
+import { getUserByName } from "./db.js";
 
 async function findUser(payload) {
   const user = getUserByName(payload.username);
@@ -82,4 +82,6 @@ class BasicAuth {
 
 const authMode = process.env.AUTH_MODE;
 
-module.exports = authMode === "db" ? new DBAuth() : new BasicAuth();
+const authInstance = authMode === "db" ? new DBAuth() : new BasicAuth();
+
+export default authInstance;

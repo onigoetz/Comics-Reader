@@ -90,10 +90,12 @@ function User() {
 function Header({ url, current, parent }) {
   const { token } = useAuth();
 
+  const currentBook = current ? `- ${cleanName(current.name)}` : "";
+
   return (
     <>
       <Head>
-        <title>Comics Reader {current && `- ${cleanName(current.name)}`}</title>
+        <title>{`Comics Reader ${currentBook}`}</title>
 
         {/* Generic PWA meta */}
         <meta name="mobile-web-app-capable" content="yes" />

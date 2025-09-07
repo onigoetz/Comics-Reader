@@ -1,6 +1,6 @@
 //@ts-check
 
-import Node from "./Node.mjs";
+import Node from "./Node.js";
 
 export default class RootNode extends Node {
   getNode(key) {

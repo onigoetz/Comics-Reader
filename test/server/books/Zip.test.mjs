@@ -1,9 +1,12 @@
-const test = require("ava");
-const fs = require("fs");
-const path = require("path");
+import test from "ava";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from 'node:url';
 
-const Zip = require("../../../server/books/Zip.js");
-const BatchWorker = require("../../../server/batch-worker.js");
+import Zip from "../../../server/books/Zip.js";
+import BatchWorker from "../../../server/batch-worker.js";
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 const fixture = path.join(__dirname, "..", "..", "fixtures", "Comics", "Full of Fun", "Full_of_Fun_001__Decker_Pub._1957.08__c2c___soothsayr_Yoc.cbz")
 

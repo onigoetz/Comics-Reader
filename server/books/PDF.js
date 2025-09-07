@@ -1,14 +1,16 @@
 //@ts-check
-const fs = require("fs");
+import fs from "node:fs";
 
-const tmp = require("tmp-promise");
-require("core-js/actual/structured-clone"); // can be removed when moving to Node 18
-const pdfjs = require("pdfjs-dist/build/pdf.js");
+import tmp from "tmp-promise";
 
-const { exec, createTempSymlink } = require("../exec");
-const { getBigatureSize } = require("../utils");
+import "core-js/actual/structured-clone.js"; // can be removed when moving to Node 18
 
-module.exports = class PDF {
+import pdfjs from "pdfjs-dist/build/pdf.js";
+
+import { exec, createTempSymlink } from "../exec.js";
+import { getBigatureSize } from "../utils.js";
+
+export default class PDF {
   constructor(file) {
     this.file = file;
   }

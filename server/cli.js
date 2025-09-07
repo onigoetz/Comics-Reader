@@ -1,9 +1,9 @@
-const meow = require("meow");
-const prompts = require("prompts");
+import meow from "meow";
+import prompts from "prompts";
 
-require("./env");
+import "./env.js";
 
-const db = require("./db");
+import db from "./db.js";
 
 async function commandCreateUser() {
   let response = await prompts({

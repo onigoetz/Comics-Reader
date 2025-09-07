@@ -1,9 +1,12 @@
-const test = require("ava");
-const fs = require("fs");
-const path = require("path");
+import test from "ava";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from 'node:url';
 
-const Rar = require("../../../server/books/Rar.js");
-const BatchWorker = require("../../../server/batch-worker.js");
+import Rar from "../../../server/books/Rar.js";
+import BatchWorker from "../../../server/batch-worker.js";
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 const fixture = path.join(__dirname, "..", "..", "fixtures", "Comics", "Full of Fun", "Full_Of_Fun_001__c2c___1957___ABPC_.cbr")
 

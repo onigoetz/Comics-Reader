@@ -8,10 +8,10 @@ import percentile from "percentile";
 import debugFn from "debug"; 
 
 import cache from "../cache.js";
-import { TYPE_DIR, TYPE_BOOK } from "./types.mjs";
-import Node from "./Node.mjs";
-import RootNode from "./RootNode.mjs";
-import Walker from "./Walker.mjs";
+import { TYPE_DIR, TYPE_BOOK } from "./types.js";
+import Node from "./Node.js";
+import RootNode from "./RootNode.js";
+import Walker from "./Walker.js";
 import { getFileNames } from "../books/index.js";
 import { getValidImages, isDirectory, sortNaturally } from "../utils.js";
 

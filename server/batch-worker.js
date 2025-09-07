@@ -1,6 +1,7 @@
-const debug = require("debug")("comics:batchWorker");
+import debugFn from "debug";
+const debug = debugFn("comics:batchWorker");
 
-const { createDeferred } = require("./utils");
+import { createDeferred } from "./utils.js";
 
 // As we're doing things in-memory we can deal with more things in parallel than spawning threads
 // but let's not create too many items
@@ -13,7 +14,7 @@ const maxProcess = 10;
  * This means that most of the time max 6 actions will be batched for a single user
  * But in my limited benchmarks this is already a nice performance improvement
  */
-class BatchWorker {
+export default class BatchWorker {
   constructor() {
     this.queue = [];
     this.inFlight = [];
@@ -121,5 +122,3 @@ class BatchWorker {
     return deferred.promise;
   }
 }
-
-module.exports = BatchWorker;

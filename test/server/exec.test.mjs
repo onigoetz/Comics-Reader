@@ -1,8 +1,8 @@
-const test = require("ava");
-const fs = require("fs");
-const tmp = require("tmp-promise");
+import test from "ava";
+import fs from "node:fs";
+import tmp from "tmp-promise";
 
-const { exec } = require("../../server/exec.js");
+import { exec } from "../../server/exec.js";
 
 test("Should return the right result for the right execution", async (t) => {
   const promises = [];

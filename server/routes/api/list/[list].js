@@ -1,8 +1,8 @@
-import comicsIndex from "../../../../server/comics";
-import { fromUrl } from "../../../../server/utils";
-import { authenticate } from "../../../../server/auth";
-import db from "../../../../server/db";
-import { getThumbnailSize } from "../../../../server/api/imagecache";
+import comicsIndex from "../../../comics.js";
+import { fromUrl } from "../../../utils.js";
+import auth from "../../../auth.js";
+import { getRead } from "../../../db.js";
+import { getThumbnailSize } from "../../../imagecache.js";
 
 function isRead(readBooks, book) {
   return readBooks.indexOf(book) !== -1;
@@ -14,12 +14,12 @@ export default async (req, res) => {
     return;
   }
 
-  const user = await authenticate(req, res);
+  const user = await auth.authenticate(req, res);
   if (!user) {
     return;
   }
 
-  const book = fromUrl(req.query.list || "");
+  const book = fromUrl(req.params.list || "");
 
   let node;
   try {
@@ -29,7 +29,7 @@ export default async (req, res) => {
     return;
   }
 
-  const readBooks = db.getRead(user.user);
+  const readBooks = getRead(user.user);
 
   const dir = node.forClient();
 

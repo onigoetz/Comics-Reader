@@ -1,5 +1,5 @@
 /* global process */
-import { checkPassword } from "../../../server/auth";
+import auth from "../../auth.js";
 
 import jwt from "jwt-simple";
 
@@ -13,7 +13,7 @@ export default async (req, res) => {
   }
 
   try {
-    await checkPassword(username, password);
+    await auth.checkPassword(username, password);
   } catch (e) {
     /* eslint-disable-next-line no-console */
     console.error(e);

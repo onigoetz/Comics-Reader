@@ -1,18 +1,18 @@
 //@ts-check
-const pathLib = require("path");
-const fs = require("fs");
+import pathLib from "node:path";
+import fs from "node:fs";
 
-const unzipper = require("unzipper");
-const tmp = require("tmp-promise");
-const Iconv = require("iconv").Iconv;
+import unzipper from "unzipper";
+import tmp from "tmp-promise";
+import { Iconv } from "iconv";
 
-const sizeOf = require("image-size");
+import sizeOf from "image-size";
 
-const {
+import {
   validImageFilter,
   getBigatureSize,
   sortNaturally
-} = require("../utils");
+} from "../utils.js";
 
 const iconv = new Iconv("UTF-8", "UTF-8//IGNORE");
 
@@ -75,7 +75,7 @@ class ZipBatch {
   }
 }
 
-module.exports = class Zip {
+export default class Zip {
   constructor(filePath, batchWorker) {
     this.path = filePath;
     this.batchWorker = batchWorker;
@@ -140,4 +140,4 @@ module.exports = class Zip {
 
     return pages.sort((a, b) => sortNaturally(a.src, b.src));
   }
-};
+}

@@ -1,7 +1,7 @@
 import path from "path";
 
-import comicsIndex from "../../../server/comics";
-import { authenticate } from "../../../server/auth";
+import comicsIndex from "../../comics.js";
+import auth from "../../auth.js";
 
 async function getMatching(books, search) {
   const term = search.toLowerCase();
@@ -34,7 +34,7 @@ export default async (req, res) => {
     return;
   }
 
-  const user = await authenticate(req, res);
+  const user = await auth.authenticate(req, res);
   if (!user) {
     return;
   }

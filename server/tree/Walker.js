@@ -1,6 +1,6 @@
 //@ts-check
 
-import { TYPE_DIR } from "./types.mjs";
+import { TYPE_DIR } from "./types.js";
 import { sortNaturally } from "../utils.js";
 
 export default class TreeWalker {

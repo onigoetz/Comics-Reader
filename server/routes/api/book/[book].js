@@ -1,9 +1,9 @@
 /* global process */
-import comicsIndex from "../../../../server/comics";
-import { getPages } from "../../../../server/books";
-import { fromUrl } from "../../../../server/utils";
-import { authenticate } from "../../../../server/auth";
-import db from "../../../../server/db";
+import comicsIndex from "../../../comics.js";
+import { getPages } from "../../../books/index.js";
+import { fromUrl } from "../../../utils.js";
+import auth from "../../../auth.js";
+import { getRead } from "../../../db.js";
 
 export default async (req, res) => {
   try {
@@ -12,12 +12,12 @@ export default async (req, res) => {
       return;
     }
 
-    const user = await authenticate(req, res);
+    const user = await auth.authenticate(req, res);
     if (!user) {
       return;
     }
 
-    const book = fromUrl(req.query.book || "");
+    const book = fromUrl(req.params.book || "");
 
     let node;
     try {
@@ -33,7 +33,7 @@ export default async (req, res) => {
 
     const parent = node.parent ? node.parent.forClient() : null;
 
-    const readBooks = db.getRead(user.user);
+    const readBooks = getRead(user.user);
     const read = readBooks.indexOf(node.getPath()) !== -1;
 
     res.setHeader("Cache-Control", "no-cache");

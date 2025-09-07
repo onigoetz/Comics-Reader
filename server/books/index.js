@@ -1,19 +1,21 @@
 //@ts-check
 
-const path = require("path");
-const fs = require("fs");
+import path from "node:path";
+import fs from "node:fs";
 
-const archiveType = require("archive-type");
-const readChunk = require("read-chunk");
-const debug = require("debug")("comics:archive");
+import archiveType from "archive-type";
+import readChunk from "read-chunk";
+import debugFn from "debug";
 
-const cache = require("../cache");
-const { isDirectory, isFile, getExtension } = require("../utils");
-const Zip = require("./Zip");
-const Rar = require("./Rar");
-const PDF = require("./PDF");
-const Dir = require("./Dir");
-const BatchWorker = require("../batch-worker");
+const debug = debugFn("comics:archive");
+
+import cache from "../cache.js";
+import { isDirectory, isFile, getExtension } from "../utils.js";
+import Zip from "./Zip.js";
+import Rar from "./Rar.js";
+import PDF from "./PDF.js";
+import Dir from "./Dir.js";
+import BatchWorker from "../batch-worker.js";
 
 const archives = [".cbr", ".cbz", ".zip", ".rar", ".pdf"];
 
@@ -23,7 +25,7 @@ function isArchive(extension) {
   return archives.indexOf(extension.toLowerCase()) !== -1;
 }
 
-async function open(file) {
+export async function open(file) {
   debug("Opening archive", file);
   if (await isDirectory(file)) {
     debug("It's a directory", file);
@@ -73,13 +75,13 @@ async function getSourceFile(file) {
   return false;
 }
 
-async function getFileNames(dirPath) {
+export async function getFileNames(dirPath) {
   const archive = await open(dirPath);
 
   return archive.getFileNames();
 }
 
-async function getFile(file) {
+export async function getFile(file) {
   const sourceFile = await getSourceFile(file);
 
   if (!sourceFile) {
@@ -100,7 +102,7 @@ async function getFile(file) {
   throw new Error("Could not get file");
 }
 
-async function getPages(book) {
+export async function getPages(book) {
   const dirPath = path.join(process.env.DIR_COMICS, book);
   const key = `BOOK:v1:${dirPath}`;
   return cache.wrap(key, async () => {
@@ -108,10 +110,3 @@ async function getPages(book) {
     return archive.getPages();
   });
 }
-
-module.exports = {
-  open,
-  getFileNames,
-  getFile,
-  getPages
-};

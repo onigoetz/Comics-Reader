@@ -1,7 +1,7 @@
-const cacheManager = require("cache-manager");
-const fsStore = require("cache-manager-fs-hash");
+import { createCache } from "cache-manager";
+import fsStore from "cache-manager-fs-hash";
 
-const cachePreparation = cacheManager.createCache(
+const cachePreparation = createCache(
   fsStore.create({
     ttl: 60 * 60 * 24 * 90, // 3 months lifetime (in seconds)
     path: process.env.DIR_CACHE,
@@ -9,7 +9,7 @@ const cachePreparation = cacheManager.createCache(
   })
 );
 
-module.exports = {
+export default {
   async wrap(key, fn, options) {
     const cache = await cachePreparation;
 

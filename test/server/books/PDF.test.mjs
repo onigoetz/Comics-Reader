@@ -1,12 +1,15 @@
-const test = require("ava");
-const fs = require("fs");
-const path = require("path");
+import test from "ava";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from 'node:url';
 
 // This is provided by nextjs at runtime
-require("web-streams-polyfill/polyfill");
+import "web-streams-polyfill/polyfill";
 
-const PDF = require("../../../server/books/PDF.js");
-const BatchWorker = require("../../../server/batch-worker.js");
+import PDF from "../../../server/books/PDF.js";
+import BatchWorker from "../../../server/batch-worker.js";
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 const fixture = path.join(__dirname, "..", "..", "fixtures", "Comics", "pdfa.org-New PDF Optimization Easily Boost Print Shop Speed to Market.pdf");
 

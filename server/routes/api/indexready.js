@@ -1,4 +1,4 @@
-import comicsIndex from "../../../server/comics";
+import comicsIndex from "../../comics.js";
 
 export default (req, res) => {
   res.json({

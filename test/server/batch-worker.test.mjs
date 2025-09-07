@@ -1,6 +1,6 @@
-const test = require("ava");
+import test from "ava";
 
-const BatchWorker = require("../../server/batch-worker.js");
+import BatchWorker from "../../server/batch-worker.js";
 
 test("should batch task together as long as the file hasn't been opened", async (t) => {
   let openCount = 0;
