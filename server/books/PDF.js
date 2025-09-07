@@ -3,9 +3,7 @@ import fs from "node:fs";
 
 import tmp from "tmp-promise";
 
-import "core-js/actual/structured-clone.js"; // can be removed when moving to Node 18
-
-import pdfjs from "pdfjs-dist/build/pdf.js";
+import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 import { exec, createTempSymlink } from "../exec.js";
 import { getBigatureSize } from "../utils.js";
@@ -25,7 +23,7 @@ export default class PDF {
 
   async getDocument() {
     const data = new Uint8Array(await fs.promises.readFile(this.file));
-    return pdfjs.getDocument({ data }).promise;
+    return getDocument({ data }).promise;
   }
 
   async extractPage(pageNum) {
