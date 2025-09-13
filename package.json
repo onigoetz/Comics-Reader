@@ -82,7 +82,7 @@
     "meow": "^13.0.0",
     "morgan": "^1.9.1",
     "natural-sort": "^1.0.0",
-    "next": "15.5.2",
+    "next": "15.5.3",
     "next-compose-plugins": "^2.2.0",
     "next-cookies": "2.0.3",
     "node-cron": "^4.0.0",
