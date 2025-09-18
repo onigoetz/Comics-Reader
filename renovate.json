@@ -1,9 +1,8 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended",
-    "group:allNonMajor",
+    "github>onigoetz/renovate-preset:recommended",
     ":preserveSemverRanges",
-    ":automergeMinor",
-    "schedule:weekends"
+    ":automergeMinor"
   ]
 }
