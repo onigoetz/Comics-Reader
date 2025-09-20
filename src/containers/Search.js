@@ -54,7 +54,6 @@ function Search() {
   return (
     <div className={styles.Search}>
       <button
-        type="button"
         onClick={toggleSearch}
         className="Button Button--link"
         title="Search"

@@ -71,7 +71,7 @@ export default function Login() {
         </Label>
 
         <div style={{ textAlign: "right" }}>
-          <button className="Button Button--big" type="button">
+          <button className="Button Button--big">
             Submit
           </button>
         </div>

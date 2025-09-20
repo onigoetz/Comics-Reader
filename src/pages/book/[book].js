@@ -33,7 +33,7 @@ function BookManager({ currentUrl, path, isRetina, supportsWebp }) {
         <>
           An error occured while loading this page
           <br />
-          <button type="button" className="Button" onClick={retry}>
+          <button className="Button" onClick={retry}>
             Retry
           </button>
         </>

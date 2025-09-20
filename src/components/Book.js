@@ -33,7 +33,7 @@ export default function Book({ pages, read, onRead, isRetina, supportsWebp }) {
         ) : (
           <div>
             You did not read this book{" "}
-            <button type="button" className="Button" onClick={onRead}>
+            <button className="Button" onClick={onRead}>
               Mark as read
             </button>
           </div>

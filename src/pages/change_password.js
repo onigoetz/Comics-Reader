@@ -92,7 +92,6 @@ function ChangePassword() {
 
         <div style={{ textAlign: "right" }}>
           <button
-            type="button"
             className="Button Button--big"
             disabled={loading || !password.value || arePasswordsDifferent()}
           >
