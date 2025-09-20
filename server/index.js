@@ -7,6 +7,7 @@ import loudRejection from "loud-rejection";
 import compression from "compression";
 import morgan from "morgan";
 import cron from "node-cron";
+import bodyParser from "body-parser";
 
 import "./env.js";
 
@@ -46,6 +47,7 @@ app
 
     server.use(compression()); // Enable Gzip
     server.use(morgan("tiny")); // Access logs
+    server.use(bodyParser.json()); // Parse JSON request body
 
     registerRoutes(server);
 
