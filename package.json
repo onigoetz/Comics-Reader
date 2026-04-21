@@ -107,7 +107,22 @@
     "web-streams-polyfill": "^4.0.0"
   },
   "dependenciesMeta": {
+    "bcrypt": {
+      "built": true
+    },
+    "better-sqlite3": {
+      "built": true
+    },
+    "core-js": {
+      "built": false
+    },
     "iconv": {
+      "built": true
+    },
+    "sharp": {
+      "built": true
+    },
+    "unrs-resolver": {
       "built": true
     }
   },

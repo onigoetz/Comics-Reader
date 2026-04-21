@@ -1955,6 +1955,19 @@ __metadata:
     typedarray-to-buffer: "npm:^4.0.0"
     unzipper: "npm:^0.12.0"
     web-streams-polyfill: "npm:^4.0.0"
+  dependenciesMeta:
+    bcrypt:
+      built: true
+    better-sqlite3:
+      built: true
+    core-js:
+      built: false
+    iconv:
+      built: true
+    sharp:
+      built: true
+    unrs-resolver:
+      built: true
   languageName: unknown
   linkType: soft
 
