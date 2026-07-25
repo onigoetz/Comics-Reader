@@ -29,7 +29,7 @@ class Queue {
     debug("Running", item.cmd);
     const {
       cmd: [cmd, ...args],
-      options: { stdoutFile, ...options },
+      options,
       deferred
     } = item;
 
@@ -40,13 +40,7 @@ class Queue {
     };
 
     try {
-      const subprocess = execa(cmd, args, opts);
-
-      if (stdoutFile) {
-        subprocess.stdout.pipe(fs.createWriteStream(stdoutFile));
-      }
-
-      const { stdout, stderr, all } = await subprocess;
+      const { stdout, stderr, all } = await execa(cmd, args, opts);
 
       deferred.resolve({ stdout, stderr, all });
     } catch (err) {

@@ -1,6 +1,4 @@
 import test from "ava";
-import fs from "node:fs";
-import tmp from "tmp-promise";
 
 import { exec } from "../../server/exec.js";
 
@@ -66,16 +64,4 @@ test("Should properly bubble up errors while not failing other commands", async 
       "six",
     ]
   );
-});
-
-test("Should write to file when stdoutFile is set", async (t) => {
-  const file = await tmp.file();
-
-  await exec(["echo", "one"], { stdoutFile: file.path });
-
-  const content = await fs.readFileSync(file.path, { encoding: "utf-8" });
-
-  file.cleanup();
-
-  t.is(content, "one\n");
 });
