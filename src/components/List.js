@@ -23,39 +23,6 @@ function bookCount(folder) {
   return folder.booksInside === 1 ? "1 book" : `${folder.booksInside} books`;
 }
 
-export default function List({ books: rawBooks, isRetina, supportsWebp }) {
-  const readBooks = [];
-  const unreadBooks = [];
-
-  rawBooks.filter(Boolean).forEach(folder => {
-    if (allRead(folder)) {
-      readBooks.push(folder);
-    } else {
-      unreadBooks.push(folder);
-    }
-  });
-
-  return (
-    <>
-      <SubList
-        books={unreadBooks}
-        isRetina={isRetina}
-        supportsWebp={supportsWebp}
-      />
-      {readBooks.length > 0 && (
-        <>
-          <h2 className={styles.List__heading}>Read</h2>
-          <SubList
-            books={readBooks}
-            isRetina={isRetina}
-            supportsWebp={supportsWebp}
-          />
-        </>
-      )}
-    </>
-  );
-}
-
 function SubList({ books, isRetina, supportsWebp }) {
   return (
     <ul className={styles.List}>
@@ -99,5 +66,38 @@ function SubList({ books, isRetina, supportsWebp }) {
         );
       })}
     </ul>
+  );
+}
+
+export default function List({ books: rawBooks, isRetina, supportsWebp }) {
+  const readBooks = [];
+  const unreadBooks = [];
+
+  rawBooks.filter(Boolean).forEach(folder => {
+    if (allRead(folder)) {
+      readBooks.push(folder);
+    } else {
+      unreadBooks.push(folder);
+    }
+  });
+
+  return (
+    <>
+      <SubList
+        books={unreadBooks}
+        isRetina={isRetina}
+        supportsWebp={supportsWebp}
+      />
+      {readBooks.length > 0 && (
+        <>
+          <h2 className={styles.List__heading}>Read</h2>
+          <SubList
+            books={readBooks}
+            isRetina={isRetina}
+            supportsWebp={supportsWebp}
+          />
+        </>
+      )}
+    </>
   );
 }

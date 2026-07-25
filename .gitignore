@@ -13,6 +13,7 @@ coverage
 /prettier.config.js
 /.eslintrc.js
 /stylelint.config.js
+/reports
 
 .yarn/cache
 .yarn/*.gz
