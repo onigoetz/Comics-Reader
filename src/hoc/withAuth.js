@@ -1,6 +1,5 @@
 import { createContext, use, useEffect } from "react";
 import Router from "next/router";
-import nextCookie from "next-cookies";
 import cookie from "js-cookie";
 
 import { fetchWithAuth } from "../fetch";
@@ -82,8 +81,11 @@ export default function withAuth(WrappedComponent) {
 
     let token = null;
     if (authMode === "db") {
-      const cookies = nextCookie(ctx);
-      token = cookies[COOKIE_NAME];
+      // On the server Next.js parses the cookie header onto `req.cookies`,
+      // on the client we read `document.cookie` through js-cookie
+      token = ctx.req
+        ? ctx.req.cookies?.[COOKIE_NAME]
+        : cookie.get(COOKIE_NAME);
 
       // We're logged out when the password change is applied
       if (!token) {

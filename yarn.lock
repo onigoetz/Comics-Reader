@@ -1167,13 +1167,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/cookie@npm:^0.3.3":
-  version: 0.3.3
-  resolution: "@types/cookie@npm:0.3.3"
-  checksum: 10c0/96521593ca46d865d03b04b4af0324a45a1da8312b13aa2026d97a284cd6f559cc0d695a4f3255405cd301a8c93c13b22e77400ad42a0b903e06056202d49fed
-  languageName: node
-  linkType: hard
-
 "@types/esrecurse@npm:^4.3.1":
   version: 4.3.1
   resolution: "@types/esrecurse@npm:4.3.1"
@@ -2167,7 +2160,6 @@ __metadata:
     natural-sort: "npm:^1.0.0"
     next: "npm:15.5.19"
     next-compose-plugins: "npm:^2.2.0"
-    next-cookies: "npm:2.0.3"
     node-cron: "npm:^4.0.0"
     node-unrar-js: "npm:^2.0.0"
     normalize.css: "npm:^8.0.1"
@@ -2305,13 +2297,6 @@ __metadata:
   version: 1.2.2
   resolution: "cookie-signature@npm:1.2.2"
   checksum: 10c0/54e05df1a293b3ce81589b27dddc445f462f6fa6812147c033350cd3561a42bc14481674e05ed14c7bd0ce1e8bb3dc0e40851bad75415733711294ddce0b7bc6
-  languageName: node
-  linkType: hard
-
-"cookie@npm:^0.4.0":
-  version: 0.4.2
-  resolution: "cookie@npm:0.4.2"
-  checksum: 10c0/beab41fbd7c20175e3a2799ba948c1dcc71ef69f23fe14eeeff59fc09f50c517b0f77098db87dbb4c55da802f9d86ee86cdc1cd3efd87760341551838d53fca2
   languageName: node
   linkType: hard
 
@@ -4198,15 +4183,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-cookies@npm:2.0.3":
-  version: 2.0.3
-  resolution: "next-cookies@npm:2.0.3"
-  dependencies:
-    universal-cookie: "npm:^4.0.2"
-  checksum: 10c0/ce1c64f003e12a8a8ddcf528219b8bf1e3905da7f9eba1133d4681779b63c03ccf8dc1de4884a8ea0d3f7d8787c58dd6f2fe15e245b9bcdfcd913299161022ac
-  languageName: node
-  linkType: hard
-
 "next@npm:15.5.19":
   version: 15.5.19
   resolution: "next@npm:15.5.19"
@@ -5799,16 +5775,6 @@ __metadata:
   dependencies:
     imurmurhash: "npm:^0.1.4"
   checksum: 10c0/d324c5a44887bd7e105ce800fcf7533d43f29c48757ac410afd42975de82cc38ea2035c0483f4de82d186691bf3208ef35c644f73aa2b1b20b8e651be5afd293
-  languageName: node
-  linkType: hard
-
-"universal-cookie@npm:^4.0.2":
-  version: 4.0.4
-  resolution: "universal-cookie@npm:4.0.4"
-  dependencies:
-    "@types/cookie": "npm:^0.3.3"
-    cookie: "npm:^0.4.0"
-  checksum: 10c0/db5950601c2f0dbb22af930656bd6abe1f3a9eee4c488703fa806c38b27b98e2ad212445c152a4721c84ee05d1a8dd26decd13690f1c9870fac355682e17998a
   languageName: node
   linkType: hard
 
