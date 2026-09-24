@@ -39,9 +39,10 @@ class DBAuth {
 
     const token = fromAuthHeaderAsBearerToken(req.headers.authorization);
 
-    const payload = jwt.decode(token, process.env.JWT_SECRET);
-
     try {
+      // Explicitly pin the algorithm so the signature is always verified
+      // and an attacker can't switch to "none" or another algorithm.
+      const payload = jwt.decode(token, process.env.JWT_SECRET, false, "HS256");
       return await findUser(payload);
     } catch (err) {
       console.error("Failed authentication", err);
