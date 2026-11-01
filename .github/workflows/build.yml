@@ -25,6 +25,10 @@ jobs:
       run: yarn lint:client
     - name: Lint CSS
       run: yarn lint:css
+    - name: Typecheck
+      run: yarn typecheck
+    - name: Build
+      run: yarn build
     - name: Install mutool
       run: sudo apt-get install -y mupdf-tools
     - name: Tests
