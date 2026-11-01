@@ -2716,7 +2716,7 @@ __metadata:
     iconv: "npm:^3.0.0"
     image-size: "npm:^2.0.0"
     js-cookie: "npm:^3.0.0"
-    jwt-simple: "npm:^0.5.1"
+    jwt-simple: "npm:^0.6.0"
     loud-rejection: "npm:^2.1.0"
     meow: "npm:^13.0.0"
     morgan: "npm:^1.9.1"
@@ -4188,10 +4188,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwt-simple@npm:^0.5.1":
-  version: 0.5.6
-  resolution: "jwt-simple@npm:0.5.6"
-  checksum: 10c0/206f5e83e1300f1f1bc3ec9718dfd7d594411c572d15b1fe8249adceac84e3c6bdb88b85355b78a446be83fd3dc545f82fbfa80859d8923d8fee4050b3e0cfeb
+"jwt-simple@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "jwt-simple@npm:0.6.0"
+  checksum: 10c0/74cc3b0c0b68a49513831eefc27b7aae39c3cb50850d21c9c57baeb58577bf9c786a545640e10fdc0c705b243274c7eb2c76e200462c24c6f67fd4a4310cbfb4
   languageName: node
   linkType: hard
 
