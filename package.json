@@ -35,14 +35,15 @@
     "dev": "node server/index.js",
     "test": "ava",
     "test:ci": "c8 --clean --all --reporter=text --reporter=lcov --reporter=html --include=server ava",
-    "build": "next build",
+    "build": "vite build",
     "start": "NODE_ENV=production node server/index.js",
     "crafty:build": "crafty run",
     "crafty:watch": "crafty watch",
     "clear-cache": "rm -rf cache images/cache",
-    "lint:server": "crafty jsLint server next.config.mjs --preset recommended --preset node",
+    "lint:server": "crafty jsLint server vite.config.mjs --preset recommended --preset node",
     "lint:client": "crafty jsLint src --preset recommended",
-    "lint:css": "crafty cssLint src/**/*.css --preset legacy"
+    "lint:css": "crafty cssLint src/**/*.css --preset legacy",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@swissquote/crafty": "1.30.3",
@@ -50,12 +51,21 @@
     "@swissquote/crafty-preset-postcss": "1.30.3",
     "@types/compression": "^1.0.0",
     "@types/express": "^5.0.0",
+    "@types/js-cookie": "^3.0.6",
     "@types/morgan": "^1.7.35",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/react-headroom": "^3.2.3",
+    "@types/react-portal": "^4.0.7",
     "ava": "^6.0.0",
-    "c8": "^10.0.0"
+    "c8": "^10.0.0",
+    "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@next/bundle-analyzer": "^15.0.0",
+    "@tanstack/react-router": "^1.170.46",
+    "@tanstack/react-start": "^1.169.4",
+    "@vitejs/plugin-react": "^6.1.2",
     "archive-type": "^4.0.0",
     "basic-auth": "^2.0.0",
     "bcrypt": "^6.0.0",
@@ -81,8 +91,6 @@
     "meow": "^13.0.0",
     "morgan": "^1.9.1",
     "natural-sort": "^1.0.0",
-    "next": "16.3.6",
-    "next-compose-plugins": "^2.2.0",
     "node-cron": "^4.0.0",
     "node-unrar-js": "^2.0.0",
     "normalize.css": "^8.0.1",
@@ -98,9 +106,11 @@
     "react-portal": "^4.1.5",
     "read-chunk": "^5.0.0",
     "sharp": "^0.35.4",
+    "srvx": "^1.0.8",
     "tmp-promise": "^3.0.2",
     "typedarray-to-buffer": "^4.0.0",
     "unzipper": "^0.12.0",
+    "vite": "^8.3.5",
     "web-streams-polyfill": "^4.0.0"
   },
   "dependenciesMeta": {

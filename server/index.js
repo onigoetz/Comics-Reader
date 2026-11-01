@@ -1,7 +1,7 @@
 //@ts-check
-import next from "next";
 import { red, underline, bold } from "colorette";
 import express from "express";
+import { toNodeHandler } from "srvx/node";
 
 import loudRejection from "loud-rejection";
 import compression from "compression";
@@ -15,15 +15,33 @@ import "./env.js";
 import comicsIndex from "./comics.js";
 import { registerRoutes } from "./routes/index.js";
 
-const url = new URL(process.env.SERVER_URL);
+const dev = process.env.NODE_ENV !== "production";
 
-const app = next({
-  dev: process.env.NODE_ENV !== "production",
-  dir: process.cwd(),
-  port: process.env.SERVER_PORT,
-  hostname: url.hostname
-});
-const handle = app.getRequestHandler();
+/**
+ * Mount the TanStack Start application, must be registered after all other routes
+ */
+async function registerFrontend(server) {
+  if (dev) {
+    // The TanStack Start Vite plugin installs its own SSR middleware
+    const { createServer } = await import("vite");
+    const vite = await createServer({
+      server: { middlewareMode: true },
+      appType: "custom"
+    });
+    server.use(vite.middlewares);
+    return;
+  }
+
+  // Hashed assets never change, all other files are revalidated
+  server.use(
+    "/assets",
+    express.static("dist/client/assets", { immutable: true, maxAge: "1y" })
+  );
+  server.use(express.static("dist/client", { index: false }));
+
+  const { default: entry } = await import("../dist/server/server.mjs");
+  server.use(toNodeHandler(entry.fetch));
+}
 
 loudRejection();
 
@@ -40,21 +58,16 @@ cron.schedule(process.env.REFRESH_SCHEDULE, () => {
   );
 });
 
-app
-  .prepare()
+const server = express();
+
+server.use(compression()); // Enable Gzip
+server.use(morgan("tiny")); // Access logs
+server.use("/api", bodyParser.json()); // Parse JSON request body
+
+registerRoutes(server);
+
+registerFrontend(server)
   .then(() => {
-    const server = express();
-
-    server.use(compression()); // Enable Gzip
-    server.use(morgan("tiny")); // Access logs
-    server.use(bodyParser.json()); // Parse JSON request body
-
-    registerRoutes(server);
-
-    server.all(/.*/, (req, res) => {
-      handle(req, res);
-    });
-
     server.listen(process.env.SERVER_PORT, err => {
       if (err) throw err;
       console.log(`> Started server on ${process.env.SERVER_URL}`);
