@@ -71,26 +71,20 @@ sudo docker run --rm -it -v your_images_dir:/comics onigoetz/comicsreader node c
 sudo docker run --rm -it -v your_images_dir:/comics onigoetz/comicsreader node comics changePassword
 ```
 
-## Tweaking the configuration
-
-### Basedir
-
-Basedir has to be specified as an environment variable when starting the server.
-
-```
-COMICS_BASE="comics" yarn start
-# OR
-docker run -e "COMICS_BASE=comics" ...
-```
-
 ## Reverse proxy through nginx
 
+The app must be served at the root of a (sub)domain, serving it under a sub-path such as `/BD/` is not supported.
+
 ```
-location /BD/ {
-    proxy_pass http://comics:8080/BD/;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Host $server_name;
-    proxy_set_header X-Forwarded-Proto $scheme;
+server {
+    server_name comics.example.com;
+
+    location / {
+        proxy_pass http://comics:8080/;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $server_name;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
 }
 ```
 
