@@ -46,9 +46,9 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@swissquote/crafty": "1.30.3",
-    "@swissquote/crafty-preset-eslint": "1.30.3",
-    "@swissquote/crafty-preset-postcss": "1.30.3",
+    "@swissquote/crafty": "1.31.0",
+    "@swissquote/crafty-preset-eslint": "1.31.0",
+    "@swissquote/crafty-preset-postcss": "1.31.0",
     "@types/compression": "^1.0.0",
     "@types/express": "^5.0.0",
     "@types/js-cookie": "^3.0.6",
